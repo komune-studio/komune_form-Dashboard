@@ -26,13 +26,13 @@ var routes = [
     name: "Admins",
     component: AdminList,
     layout: "/admin",
-  },  
+  },
   {
     path: "/users",
     name: "Users",
     component: UserList,
     layout: "/admin",
-  },  
+  },
   {
     path: "/login",
     name: "Login",

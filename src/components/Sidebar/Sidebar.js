@@ -93,6 +93,42 @@ const SIDEBAR = [
         icon: "mdi:user-group",
         color: Palette.BARCODE_ORANGE
     },
+    {
+        path: "/top-up",
+        name: "Top Up",
+        icon: "ic:baseline-inventory",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
+        path: "/schedule",
+        name: "Schedule",
+        icon: "ic:baseline-inventory",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
+        path: "/loyalty-shop",
+        name: "Loyalty Shop",
+        icon: "ic:baseline-inventory",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
+        path: "/promotion",
+        name: "Promotion",
+        icon: "ic:baseline-inventory",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
+        path: "/orders",
+        name: "Orders",
+        icon: "ic:baseline-inventory",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
+        path: "/referral",
+        name: "Referral",
+        icon: "ic:baseline-inventory",
+        color: Palette.BARCODE_ORANGE
+    },
     // {
     //     path: "/banners",
     //     name: "Banners",
@@ -147,7 +183,7 @@ const Sidebar = (props) => {
                             }}
                             icon={prop.icon} />
                         {/*<i className={prop.icon} />*/}
-                        <div style={{color : tint}}>{prop.name}</div>
+                        <div style={{color : tint, fontWeight:600}}>{prop.name}</div>
                     </NavLink>
                 </NavItem>
             );
@@ -214,30 +250,30 @@ const Sidebar = (props) => {
                     {/* Navigation */}
                     <Nav className="mb-md-3" navbar>
                         <NavItem>
-                            <NavLink
-                                onClick={() => {
-                                    localStorage.removeItem("super_token")
-                                    localStorage.removeItem("username")
-                                    localStorage.removeItem("token")
-                                    localStorage.removeItem("role")
+                            {/*<NavLink*/}
+                            {/*    onClick={() => {*/}
+                            {/*        localStorage.removeItem("super_token")*/}
+                            {/*        localStorage.removeItem("username")*/}
+                            {/*        localStorage.removeItem("token")*/}
+                            {/*        localStorage.removeItem("role")*/}
 
-                                    sessionStorage.removeItem("super_token")
-                                    sessionStorage.removeItem("username")
-                                    sessionStorage.removeItem("role")
-                                    sessionStorage.removeItem("token")
-                                    history.push('/login')
-                                    window.location.reload()
-                                }}
-                                href="javascript:;">
-                                <Iconify
-                                    style={{
-                                        marginRight: "1rem",
-                                        lineHeight: "1.5rem",
-                                        fontSize: "1.05rem"
-                                    }}
-                                    icon="ri:logout-circle-r-line" />
-                                Keluar
-                            </NavLink>
+                            {/*        sessionStorage.removeItem("super_token")*/}
+                            {/*        sessionStorage.removeItem("username")*/}
+                            {/*        sessionStorage.removeItem("role")*/}
+                            {/*        sessionStorage.removeItem("token")*/}
+                            {/*        history.push('/login')*/}
+                            {/*        window.location.reload()*/}
+                            {/*    }}*/}
+                            {/*    href="javascript:;">*/}
+                            {/*    <Iconify*/}
+                            {/*        style={{*/}
+                            {/*            marginRight: "1rem",*/}
+                            {/*            lineHeight: "1.5rem",*/}
+                            {/*            fontSize: "1.05rem"*/}
+                            {/*        }}*/}
+                            {/*        icon="ri:logout-circle-r-line" />*/}
+                            {/*    Keluar*/}
+                            {/*</NavLink>*/}
                         </NavItem>
                     </Nav>
                 </Collapse>

@@ -13,87 +13,81 @@ import Palette from "../../../utils/Palette";
 import EditAdminModal from "./EditAdminModal";
 import EditPasswordAdminModal from "./EditPasswordAdminModal"; */
 import swal from "../../reusable/CustomSweetAlert";
+import CreateUserModal from "./CreateUserModal";
 
 const UserList = () => {
 
     const history = useHistory();
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
-/*     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [selectedUser, setSelectedUser] = useState(null)
+    const [openUserModal, setOpenUserModal] = useState(false)
     const [isEditPaswordModalOpen, setIsEditPasswordModalOpen] = useState(false)
-    const [isCreateAdminOpen, setIsCreateAdminOpen] = useState(false)
-    const [selectedAdmin, setSelectedAdmin] = useState(null) */
-
-    /* const columns = [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            filter: true,
-            sorter: (a, b) => a.id.length - b.id.length,
-        },
-        {
-            title: 'Nama admin',
-            dataIndex: 'username',
-            filter: true,
-            sorter: (a, b) => a.username.length - b.username.length,
-        },
-        {
-            title: '',
-            key: 'operation',
-            fixed: 'right',
-            width: 100,
-            render: (value) => (
-                <Space size="small">
-                    <Tooltip title="Detail">
-                        <AntButton
-                            onClick={() => {
-                                setSelectedAdmin(value)
-                                setIsEditModalOpen(true)
-
-                            }}
-                            className={"d-flex align-items-center justify-content-center"}
-                            shape="circle"
-                            icon={<Iconify icon={"material-symbols:edit"} />} />
-                    </Tooltip>
-                    <Tooltip title="Ubah kata sandi">
-                        <Link to={"/admin-edit-password/" + value?.id}>
-                        <AntButton
-                            onClick={() => {
-                                setSelectedAdmin(value)
-                                setIsEditPasswordModalOpen(true)
-                            }}
-                            className={"d-flex align-items-center justify-content-center"}
-                            shape="circle"
-                            icon={<Iconify icon={"material-symbols:lock"} />} />
-                        </Link>
-                    </Tooltip>
-                    <Tooltip title="Hapus">
-                        <AntButton
-                            onClick={() => {
-                                onDelete(value.id)
-                            }}
-                            danger
-                            className={"d-flex align-items-center justify-content-center"}
-                            shape="circle"
-                            icon={<Iconify icon={"material-symbols:delete-outline"} />} />
-                    </Tooltip>
-                </Space>
-            ),
-        },
-    ] */
-
+    const [isNewRecord, setIsNewRecord] = useState(false)
     const columns = [
         {
           id: 'id', label: 'ID', filter: false,
         },
         {
-          id: 'username', label: 'Username', filter: false,
+            id: 'username', label: 'Username', filter: false,
         },
         {
-          id: 'email', label: 'Email', filter: false,
+          id: 'full_name', label: 'Full Name', filter: false,
         },
+        {
+            id: 'email', label: 'Email', filter: false,
+        },
+        {
+          id: 'gender', label: 'Gender', filter: false,
+        },
+
         {
           id: 'phone_number', label: 'Phone Number', filter: false,
+        },
+        {
+            id: '', label: '', filter: false,
+            render: ((value) => {
+                return (
+                    <>
+                        <Space size="small">
+                            <Tooltip title="Detail">
+                                <AntButton
+                                    onClick={() => {
+                                        setSelectedUser(value)
+
+
+                                    }}
+                                    className={"d-flex align-items-center justify-content-center"}
+                                    shape="circle"
+                                    icon={<Iconify icon={"material-symbols:edit"} />} />
+                            </Tooltip>
+                            <Tooltip title="Ubah kata sandi">
+                                {/* <Link to={"/admin-edit-password/" + value?.id}> */}
+                                <AntButton
+                                    onClick={() => {
+                                        setSelectedUser(value)
+                                        setIsEditPasswordModalOpen(true)
+                                    }}
+                                    className={"d-flex align-items-center justify-content-center"}
+                                    shape="circle"
+                                    icon={<Iconify icon={"material-symbols:lock"} />} />
+                                {/* </Link> */}
+                            </Tooltip>
+                            <Tooltip title="Hapus">
+                                <AntButton
+                                    onClick={() => {
+                                        onDelete(value.id)
+                                    }}
+                                    danger
+                                    className={"d-flex align-items-center justify-content-center"}
+                                    shape="circle"
+                                    icon={<Iconify icon={"material-symbols:delete-outline"} />} />
+                            </Tooltip>
+                        </Space>
+                    </>
+                )
+
+            })
         },
         /* {
           id: '', label: '', filter: false,
@@ -153,8 +147,14 @@ const UserList = () => {
                     <CardBody>
 
                         <Row>
-                            <Col className='mb-3' md={12}>
+                            <Col className='mb-3' md={6}>
                                 <div style={{ fontWeight: "bold", fontSize: "1.1em" }}>User</div>
+                            </Col>
+                            <Col className='mb-3 text-right' md={6}>
+                              <AntButton onClick={() => {
+                                  setIsNewRecord(true)
+                                  setOpenUserModal(true)
+                              }} size={'middle'} type={'primary'}>Tambah User</AntButton>
                             </Col>
                         </Row>
 
@@ -179,39 +179,17 @@ const UserList = () => {
                 </Card>
 
             </Container>
-{/*             <CreateAdminModal
-                isOpen={isCreateAdminOpen}
+            <CreateUserModal
+                isOpen={openUserModal}
+                isNewRecord={isNewRecord}
                 adminList={dataSource}
                 close={async (refresh) => {
                     if (refresh) {
                         await initializeData()
                     }
-                    setIsCreateAdminOpen(false)
+                    setOpenUserModal(false)
                 }}
             />
-            {isEditModalOpen ? <EditAdminModal
-                isOpen={isEditModalOpen}
-                admin_data={selectedAdmin}
-                close={(refresh) => {
-                    if (refresh) {
-                        initializeData()
-                    }
-                    setIsEditModalOpen(false)
-                    setSelectedAdmin(null)
-                }}
-            /> : ''}
-            {isEditPaswordModalOpen ? <EditPasswordAdminModal
-                isOpen={isEditPaswordModalOpen}
-                admin_data={selectedAdmin}
-                close={(refresh) => {
-                    if (refresh) {
-                        initializeData()
-                    }
-                    setIsEditPasswordModalOpen(false)
-                    setSelectedAdmin(null)
-                }}
-            /> : ''} */}
-
 
         </>
     )

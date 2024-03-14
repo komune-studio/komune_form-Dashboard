@@ -57,7 +57,7 @@ const Login = () => {
             sessionStorage.token = result.token;
             sessionStorage.admin_name = result.username;
             sessionStorage.id = result.id;
-            history.push('/admins')
+            history.push('/users')
             window.location.reload()
 
         } catch (e) {

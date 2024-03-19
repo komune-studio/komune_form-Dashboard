@@ -158,6 +158,9 @@ const UserList = () => {
                               }} size={'middle'} type={'primary'}>Tambah User</AntButton>
                             </Col>
                         </Row>
+                        <Row>
+
+                        </Row>
                         <CustomTable 
                             pagination={false}
                             searchText={''}

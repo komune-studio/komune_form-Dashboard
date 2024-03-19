@@ -198,7 +198,8 @@ const AdminList = () => {
                             dataSource={dataSource}
                         /> */}
 
-                        <CustomTable 
+                        <CustomTable
+
                             pagination={false}
                             searchText={''}
                             data={dataSource}

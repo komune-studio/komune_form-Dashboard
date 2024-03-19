@@ -77,7 +77,6 @@ const Login = () => {
                 icon: 'error',
                 confirmButtonText: 'Okay'
             })
-
         }
     }
     return (

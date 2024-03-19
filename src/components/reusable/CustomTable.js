@@ -16,6 +16,7 @@ import Iconify from "../iconify";
 import {useEffect, useState} from "react";
 import {filter} from "lodash";
 import {alpha, styled} from "@mui/material/styles";
+import ListTableToolbar from "./ListTableToolbar";
 
 function applySortFilter(array, comparator, query, columns) {
   if(!array) return []
@@ -169,7 +170,7 @@ const CustomTable = ({data, columns, checkbox = false, searchText, pagination = 
   const isNotFound = !filteredData.length && !!filterName;
 
   return <>
-    {/*<UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName}/>*/}
+    <ListTableToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName}/>
     <Scrollbar>
       <TableContainer sx={{minWidth: 800}}>
         <Table>

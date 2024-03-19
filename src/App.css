@@ -17,3 +17,25 @@
 .bg-default {
     background-color: #1d1d1d !important;
 }
+
+.main-tabs .nav-item{
+    border: none;
+}
+ .main-tabs .nav-item button{
+    background: none !important;
+    color: #000 !important;
+    border-top: none !important;
+    border-left: none !important;
+
+}
+
+ .MuiTablePagination-selectLabel{
+     height:100% !important;
+     margin-top: auto !important;
+     color: #CCCCCC;
+ }
+.MuiTablePagination-displayedRows{
+     height:100% !important;
+     margin-top: auto !important;
+    color: #CCCCCC;
+ }

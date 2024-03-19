@@ -99,7 +99,7 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
   },
 }));
 
-const CustomTable = ({data, columns, checkbox = false, searchText, pagination = true}) => {
+const CustomTable = ({data, columns, checkbox = false, searchText, pagination = true, showFilter = false, mode='dark'}) => {
 
   const [selected, setSelected] = useState([]);
   const [order, setOrder] = useState('desc');
@@ -107,7 +107,6 @@ const CustomTable = ({data, columns, checkbox = false, searchText, pagination = 
   const [filterName, setFilterName] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
   useEffect(()=>{
     if(columns && columns.length > 0){
       setOrderBy(columns[0].id)
@@ -170,8 +169,11 @@ const CustomTable = ({data, columns, checkbox = false, searchText, pagination = 
   const isNotFound = !filteredData.length && !!filterName;
 
   return <>
-    <ListTableToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName}/>
-    <Scrollbar>
+  {
+    showFilter && <ListTableToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName}/>
+  }
+    
+
       <TableContainer sx={{minWidth: 800}}>
         <Table>
           <TableHead>
@@ -188,7 +190,7 @@ const CustomTable = ({data, columns, checkbox = false, searchText, pagination = 
               }
               {columns.map((headCell) => (
                 <TableCell
-                style={{color: "white"}}
+                  style={{color: mode === 'dark' ? "white" : 'black'}}
                   scope="row"
                   component={'th'}
                   key={headCell.id}
@@ -196,7 +198,7 @@ const CustomTable = ({data, columns, checkbox = false, searchText, pagination = 
                   sortDirection={orderBy === headCell.id ? order : false}
                 >
                   <TableSortLabel
-                  style={{color: "white"}}
+                  style={{color: mode === 'dark' ? "white" : 'black'}}
                     hideSortIcon
                     active={orderBy === headCell.id}
                     direction={orderBy === headCell.id ? order : 'asc'}
@@ -229,7 +231,7 @@ const CustomTable = ({data, columns, checkbox = false, searchText, pagination = 
                     columns.map((columnSetting, key)=>{
                       return <>
                         <TableCell
-                         style={{color: "white"}}
+                         style={{color : mode === 'dark' ? "white" : 'black'}}
                           align={columnSetting.alignment}>{
                           columnSetting.render ?
                             columnSetting.render(row)
@@ -275,7 +277,7 @@ const CustomTable = ({data, columns, checkbox = false, searchText, pagination = 
           )}
         </Table>
       </TableContainer>
-    </Scrollbar>
+
     {
       pagination &&   <TablePagination
         rowsPerPageOptions={[10, 25, 50, 100]}

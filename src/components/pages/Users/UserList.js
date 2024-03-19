@@ -10,6 +10,7 @@ import CustomTable from "../../reusable/CustomTable";
 import Palette from "../../../utils/Palette";
 import UserFormModal from "./UserFormModal";
 import UserResetPasswordModal from "./UserResetPasswordModal";
+import UserHistoryModal from "./UserHistoryModal";
 
 const UserList = () => {
 
@@ -20,6 +21,7 @@ const UserList = () => {
     const [openUserModal, setOpenUserModal] = useState(false)
     const [isNewRecord, setIsNewRecord] = useState(false)
     const [openUserResetModal, setOpenUserResetModal] = useState(false)
+    const [openHistory, setOpenHistory] = useState(false)
     const columns = [
         {
           id: 'id', label: 'ID', filter: false,
@@ -28,7 +30,7 @@ const UserList = () => {
             id: 'username', label: 'Username', filter: true,
         },
         {
-          id: 'full_name', label: 'Full Name', filter: false,
+          id: 'full_name', label: 'Full Name', filter: true,
         },
         {
             id: 'email', label: 'Email', filter: false,
@@ -46,6 +48,18 @@ const UserList = () => {
                 return (
                     <>
                         <Space size="small">
+                            <Tooltip title="Transaction History">
+                                <AntButton
+                                    onClick={() => {
+                                        setSelectedUser(value)
+                                        setOpenHistory(true)
+                                        setOpenUserModal(false)
+                                        setOpenUserResetModal(false)
+                                    }}
+                                    className={"d-flex align-items-center justify-content-center"}
+                                    shape="circle"
+                                    icon={<Iconify icon={"ic:outline-history"} />} />
+                            </Tooltip>
                             <Tooltip title="Edit">
                                 <AntButton
                                     onClick={() => {
@@ -161,8 +175,9 @@ const UserList = () => {
                         <Row>
 
                         </Row>
-                        <CustomTable 
-                            pagination={false}
+                        <CustomTable
+                            showFilter={true}
+                            pagination={true}
                             searchText={''}
                             data={dataSource}
                             columns={columns}
@@ -182,6 +197,18 @@ const UserList = () => {
                     setOpenUserResetModal(false)
                 }}
             />
+
+            <UserHistoryModal
+                isOpen={openHistory}
+                userData={selectedUser}
+                onClose={async (refresh) => {
+                    setOpenHistory(false)
+                    if (refresh) {
+                        await initializeData()
+                    }
+                }}
+            />
+
             <UserFormModal
                 isOpen={openUserModal}
                 isNewRecord={isNewRecord}

@@ -167,7 +167,7 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
         keyboard={false}
     >
         <Modal.Header>
-            <Modal.Title>{isNewRecord ? 'Buat User' : `Ubah User: ${userData?.username }`}</Modal.Title>
+            <Modal.Title>{isNewRecord ? 'Buat User' : `Ubah User`}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
 

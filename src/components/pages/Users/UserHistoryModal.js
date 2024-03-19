@@ -149,7 +149,7 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
                 keyboard={false}
             >
                 <Modal.Header>
-                    <Modal.Title>Riwayat Transaksi : {userData?.username}</Modal.Title>
+                    <Modal.Title>Riwayat Transaksi</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className={'py-3'}>
                     <div className={'d-flex mb-4'}>

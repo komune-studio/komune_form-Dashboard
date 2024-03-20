@@ -19,6 +19,7 @@ import Logout from "./components/pages/Logout";
 import Login from "./components/pages/Login";
 import AdminList from "./components/pages/Admins/AdminList";
 import UserList from "./components/pages/Users/UserList";
+import TopUpList from "./components/pages/TopUp/TopUpList";
 
 var routes = [
   {
@@ -31,6 +32,12 @@ var routes = [
     path: "/users",
     name: "Users",
     component: UserList,
+    layout: "/admin",
+  },
+  {
+    path: "/top-up",
+    name: "Top Up",
+    component: TopUpList,
     layout: "/admin",
   },
   {

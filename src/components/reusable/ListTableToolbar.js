@@ -24,6 +24,7 @@ const StyledRootSmall = styled(Toolbar)(({ theme }) => ({
 }));
 
 const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
+
     height:'2.75em',
     width: '50%',
     transition: theme.transitions.create(['box-shadow', 'width'], {
@@ -35,9 +36,10 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
     },
     '& fieldset': {
         borderWidth: `1px !important`,
-        borderColor: `${alpha(theme.palette.grey[500], 0.32)} !important`,
+        // borderColor: `${alpha(theme.palette.grey[500], 0.32)} !important`,
+        borderColor: `#2f2f2f !important`,
     },
-    background:'#fff'
+    background:'#2f2f2f'
 }));
 
 

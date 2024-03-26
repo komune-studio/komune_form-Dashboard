@@ -102,9 +102,9 @@ const TopUpHistory = () => {
                                     </Dropdown.Toggle>
 
                                     <Dropdown.Menu style={{color: '#fff'}}>
-                                        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                                        <Dropdown.Item href="#/action-1">Hari Ini</Dropdown.Item>
+                                        <Dropdown.Item href="#/action-2">Kemarin</Dropdown.Item>
+                                        <Dropdown.Item href="#/action-3">Minggu Ini</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </Col>

@@ -1,0 +1,41 @@
+label,p,h1,h2,h3,h4,h5,h6,small {
+    color: #FFFFFF;
+}
+.modal-content {
+    background: #161616 !important;
+}
+.modal-content .modal-header .modal-title{
+    color: #FFFFFF;
+}
+
+.ant-picker, ant-picker-input{
+    color: #8898A9;
+    background: #FFFFFF14;
+    border-color: #161616;
+}
+
+select.form-control,input.form-control{
+    background: #FFFFFF14;
+    border-color: #161616;
+}
+
+select.form-control:focus,input.form-control:focus{
+    background: #FFFFFF14;
+    border-color: #161616;
+}
+.ant-picker .ant-picker-input >input::placeholder{
+    color: #8898A9 !important;
+
+}
+.ant-picker-outlined:hover{
+    background: #FFFFFF14 !important;
+}
+.ant-picker-input::placeholder{
+    color: #CCCCCC;
+}
+.ant-picker:focus{
+    background: #FFFFFF14 !important;
+    border-color: #161616;
+}
+
+/*#FFFFFF14*/

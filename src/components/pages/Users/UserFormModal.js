@@ -1,9 +1,9 @@
 import Modal from 'react-bootstrap/Modal';
-import {DatePicker, message, Spin,Upload as AntUpload} from "antd";
-import { Button, Form } from 'react-bootstrap';
+import {Button, DatePicker, message, Spin, Upload as AntUpload} from "antd";
+import {Form} from 'react-bootstrap';
 import {useEffect, useState} from "react";
 import UserModel from "../../../models/UserModel";
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import {CloseOutlined, LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import PropTypes from "prop-types";
 import swal from "../../reusable/CustomSweetAlert";
 import moment from "moment/moment";
@@ -30,42 +30,41 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
     const [loadingUpload, setLoadingUpload] = useState(false)
 
 
-
     const handleUpload = async (file) => {
         try {
             setLoadingUpload(true)
             let result = await UploadModel.uploadPicutre(file.file?.originFileObj)
 
-            if(result?.location){
+            if (result?.location) {
                 setAvatarImage(result?.location)
                 message.success('Successfully upload user')
             }
             setLoadingUpload(false)
-        }catch (e) {
+        } catch (e) {
             console.log('isi e', e)
             message.error("Failed to upload user")
             setLoadingUpload(false)
         }
     }
     const onSubmit = async () => {
-        if(!username){
+        if (!username) {
             swal.fireError({text: "Username Wajib diisi",})
             return
         }
 
-        if(!username){
+        if (!username) {
             swal.fireError({text: "Username Wajib diisi",})
             return
         }
-        if(!fullName){
+        if (!fullName) {
             swal.fireError({text: "Nama Lengkap Wajib diisi",})
             return
         }
-        if(!email){
+        if (!email) {
             swal.fireError({text: "Email Wajib diisi",})
             return
         }
-        if(!phoneNumber){
+        if (!phoneNumber) {
             swal.fireError({text: "Nomor Telepon Wajib diisi",})
             return
         }
@@ -73,37 +72,37 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
         try {
             let result;
             let body = {
-                username : username,
-                gender : gender,
-                full_name : fullName,
-                email : email,
-                phone_number : phoneNumber,
-                birth_date : new Date(birthDate),
-                avatar_url : avatarImage
+                username: username,
+                gender: gender,
+                full_name: fullName,
+                email: email,
+                phone_number: phoneNumber,
+                birth_date: new Date(birthDate),
+                avatar_url: avatarImage
             }
             let msg = ''
-            if(isNewRecord){
-                if(!password){
+            if (isNewRecord) {
+                if (!password) {
                     swal.fireError({text: "Password Wajib diisi",})
                     return
                 }
 
                 if (!confirmPassword) {
-                    swal.fireError({ text: "Konfirmasi Password Wajib diisi", })
+                    swal.fireError({text: "Konfirmasi Password Wajib diisi",})
                     return
                 }
 
                 if (password !== confirmPassword) {
-                    swal.fireError({ text: "Password dan Konfirmasi Password tidak sama", })
+                    swal.fireError({text: "Password dan Konfirmasi Password tidak sama",})
                     return
                 }
                 Object.assign(body, {
-                    password:password
+                    password: password
                 })
-                 await UserModel.create(body)
+                await UserModel.create(body)
                 msg = "Berhasil membuat User"
-            }else{
-                 await UserModel.edit(userData?.id, body)
+            } else {
+                await UserModel.edit(userData?.id, body)
                 msg = "Berhasil update User"
             }
 
@@ -128,7 +127,7 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
 
     const initForm = () => {
         console.log('isi userData', userData)
-        if(!isNewRecord){
+        if (!isNewRecord) {
             setUsername(userData?.username)
             setBirthDate(moment(userData?.birth_date) || null)
             setEmail(userData?.email)
@@ -139,17 +138,17 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
         }
 
     }
-    useEffect(()=>{
-        if (isNewRecord){
+    useEffect(() => {
+        if (isNewRecord) {
             reset()
-        }else{
+        } else {
             initForm()
         }
 
 
     }, [isOpen])
 
-    const reset = () =>{
+    const reset = () => {
         setUsername("")
         setPassword("")
         setConfirmPassword("")
@@ -167,12 +166,18 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
         keyboard={false}
     >
         <Modal.Header>
-            <Modal.Title>{isNewRecord ? 'Buat User' : `Ubah User`}</Modal.Title>
+            <div className={'d-flex w-100 justify-content-between'}>
+                <Modal.Title>{isNewRecord ? 'Buat User' : `Ubah User`}</Modal.Title>
+                <Button onClick={() => {
+                    close()
+                }} style={{position: 'relative', top: -5, color: '#fff', fontWeight: 800}} type="link" shape="circle"
+                        icon={<CloseOutlined/>}/>
+            </div>
         </Modal.Header>
         <Modal.Body>
 
             <Form.Group>
-                <Form.Label style={{ fontSize: "0.8em" }}>Image</Form.Label>
+                <Form.Label style={{fontSize: "0.8em"}}>Image</Form.Label>
                 <AntUpload
                     rootClassName={'upload-background'}
                     name="avatar"
@@ -195,7 +200,7 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
                                         height: '80%',
                                         objectFit: 'cover'
                                     }}
-                                /> : <Spin style={{zIndex:100000}} size="large" />
+                                /> : <Spin style={{zIndex: 100000}} size="large"/>
                             }
 
                         </>
@@ -208,7 +213,7 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
                             }}
                             type="button"
                         >
-                            {loadingUpload ?  <Spin style={{zIndex:100000}} size="large" /> : <PlusOutlined/>}
+                            {loadingUpload ? <Spin style={{zIndex: 100000}} size="large"/> : <PlusOutlined/>}
                             <div
                                 style={{
                                     marginTop: 8,
@@ -220,44 +225,44 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
                     )}
                 </AntUpload>
             </Form.Group>
-                {/* Admin username */}
-                <Form.Group className="mb-3">
-                    <Form.Label style={{ fontSize: "0.8em" }}>Username</Form.Label>
-                    <Form.Control
-                        value={username}
-                        autoComplete={"username"}
-                        onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Username" />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label style={{ fontSize: "0.8em" }}>Full Name</Form.Label>
-                    <Form.Control
-                        value={fullName}
-                        autoComplete={"fullname"}
-                        onChange={(e) => setFullName(e.target.value)} type="text" placeholder="Fullname" />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                    <Form.Label style={{ fontSize: "0.8em" }}>Email</Form.Label>
-                    <Form.Control
-                        value={email}
-                        autoComplete={"email"}
-                        onChange={(e) => setEmail(e.target.value)} type="text" placeholder="Email" />
-                </Form.Group>
+            {/* Admin username */}
             <Form.Group className="mb-3">
-                <Form.Label style={{ fontSize: "0.8em" }}>Phone Number</Form.Label>
+                <Form.Label style={{fontSize: "0.8em"}}>Username</Form.Label>
+                <Form.Control
+                    value={username}
+                    autoComplete={"username"}
+                    onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Username"/>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label style={{fontSize: "0.8em"}}>Full Name</Form.Label>
+                <Form.Control
+                    value={fullName}
+                    autoComplete={"fullname"}
+                    onChange={(e) => setFullName(e.target.value)} type="text" placeholder="Fullname"/>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+                <Form.Label style={{fontSize: "0.8em"}}>Email</Form.Label>
+                <Form.Control
+                    value={email}
+                    autoComplete={"email"}
+                    onChange={(e) => setEmail(e.target.value)} type="text" placeholder="Email"/>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label style={{fontSize: "0.8em"}}>Phone Number</Form.Label>
                 <Form.Control
                     value={phoneNumber}
                     autoComplete={"email"}
-                    onChange={(e) => setPhoneNumber(e.target.value)} type="text" placeholder="Phone Number" />
+                    onChange={(e) => setPhoneNumber(e.target.value)} type="text" placeholder="Phone Number"/>
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label style={{ fontSize: "0.8em" }}>Gender</Form.Label>
+                <Form.Label style={{fontSize: "0.8em"}}>Gender</Form.Label>
                 <Form.Check
                     value={'M'}
                     type="radio"
                     aria-label="Male"
                     label="Male"
-                    onChange={(e) =>{
+                    onChange={(e) => {
                         setGender(e.target.value)
                     }}
                     checked={gender === "M"}
@@ -267,7 +272,7 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
                     type="radio"
                     aria-label="Female"
                     label="Female"
-                    onChange={(e) =>{
+                    onChange={(e) => {
                         setGender(e.target.value)
                     }}
                     checked={gender === "F"}
@@ -275,14 +280,14 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
             </Form.Group>
 
             <Form.Group className="mb-3">
-                <Form.Label style={{ fontSize: "0.8em" }}>Tanggal Lahir</Form.Label>
+                <Form.Label style={{fontSize: "0.8em"}}>Tanggal Lahir</Form.Label>
                 <DatePicker
                     getPopupContainer={(triggerNode) => {
                         return triggerNode.parentNode;
                     }}
-                    style={{width : "100%"}}
+                    style={{width: "100%"}}
                     value={birthDate}
-                    onChange={(value)=>{
+                    onChange={(value) => {
                         setBirthDate(value)
                     }}
                 />
@@ -292,29 +297,31 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
                 isNewRecord &&
                 <>
                     <Form.Group className="mb-3">
-                        <Form.Label style={{ fontSize: "0.8em" }}>Password</Form.Label>
+                        <Form.Label style={{fontSize: "0.8em"}}>Password</Form.Label>
                         <Form.Control
                             autoComplete={"password"}
-                            onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" />
+                            onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password"/>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <Form.Label style={{ fontSize: "0.8em" }}>Confirm Password</Form.Label>
+                        <Form.Label style={{fontSize: "0.8em"}}>Confirm Password</Form.Label>
                         <Form.Control
                             autoComplete={"confirm-password"}
-                            onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="Password" />
+                            onChange={(e) => setConfirmPassword(e.target.value)} type="password"
+                            placeholder="Password"/>
                     </Form.Group>
                 </>
             }
 
             <div className={"d-flex flex-row justify-content-end"}>
-                <Button size="sm" variant="outline-danger" onClick={()=>handleClose()} style={{marginRight: '5px'}}>
+                <Button className={'text-white'} type={'link'} size="sm" variant="outline-danger"
+                        onClick={() => handleClose()} style={{marginRight: '5px'}}>
                     Batal
                 </Button>
-                <Button size="sm" variant="primary" onClick={() => {
+                <Button type={'primary'} size="sm" variant="primary" onClick={() => {
                     onSubmit()
                 }}>
-                    {isNewRecord ? 'Buat' : 'Ubah'}
+                    {isNewRecord ? 'Simpan' : 'Ubah'}
                 </Button>
             </div>
         </Modal.Body>

@@ -1,27 +1,32 @@
 .swal2-container {
     z-index: 20000 !important;
 }
-.ant-picker-outlined{
+
+.ant-picker-outlined {
     z-index: 1000000000 !important;
 }
-.ant-picker-focused{
+
+.ant-picker-focused {
     z-index: 1000000000 !important;
 }
-.ant-picker{
+
+.ant-picker {
     z-index: 1000000000 !important;
 }
 
 #date-popup > div {
     position: relative !important;
 }
+
 .bg-default {
     background-color: #1d1d1d !important;
 }
 
-.main-tabs .nav-item{
+.main-tabs .nav-item {
     border: none;
 }
- .main-tabs .nav-item button{
+
+.main-tabs .nav-item button {
     background: none !important;
     color: #000 !important;
     border-top: none !important;
@@ -29,16 +34,38 @@
 
 }
 
- .MuiTablePagination-selectLabel{
-     height:100% !important;
-     margin-top: auto !important;
-     color: #CCCCCC;
- }
-.MuiTablePagination-displayedRows{
-     height:100% !important;
-     margin-top: auto !important;
+.MuiTablePagination-selectLabel {
+    height: 100% !important;
+    margin-top: auto !important;
     color: #CCCCCC;
- }
-.MuiToolbar-root{
+}
+
+.MuiTablePagination-displayedRows {
+    height: 100% !important;
+    margin-top: auto !important;
+    color: #CCCCCC;
+}
+
+.MuiToolbar-root {
     padding-left: 0 !important;
+}
+
+.info-hint p {
+    color: #C2C2C2;
+    font-family: Helixa;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px; /* 133.333% */
+}
+
+.btn-default-tab {
+    background: #121212 !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.btn-primary-tab {
+    background: #404040 !important;
+    border: none !important;
+    color: #ffffff !important;
 }

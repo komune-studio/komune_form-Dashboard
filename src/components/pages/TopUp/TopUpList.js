@@ -22,16 +22,16 @@ const TopUpList = () => {
     const [selectedTopUp, setSelectedTopUp] = useState(null)
     const columns = [
         {
-            id: 'image', label: 'Foto Paket', filter: true,
+            id: 'image', label: 'Foto Paket', filter: true, width: '10%',
             render: (row => {
                 return <Image height={100} width={150} src={row.image}></Image>
             })
         },
         {
-            id: 'package_name', label: 'Paket Topup', filter: true,
+            id: 'package_name', label: 'Foto paket top up', filter: true, width: '15%'
         },
         {
-            id: 'currency', label: 'Tipe Paket', filter: true,
+            id: 'currency', label: 'Nama paket top up', filter: true, width: '15%'
         },
         {
             id: 'price', label: 'Harga Paket', filter: true,
@@ -46,11 +46,11 @@ const TopUpList = () => {
             })
         },
         {
-            id: 'description', label: 'Deskripsi', filter: true,
+            id: 'description', label: 'Deskripsi paket', filter: true,
         },
 
         {
-            id: 'active', label: 'Status Paket', filter: false,
+            id: 'active', label: 'Status Paket', filter: false, width: '12%',
             render: (row => {
                 return <Switch disabled={true} defaultChecked={row.active} onChange={() => {
                     changeActive(row.id, row.active)
@@ -65,6 +65,8 @@ const TopUpList = () => {
                         <Space size="small">
                             <Tooltip title="Edit">
                                 <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
                                     onClick={() => {
                                         setSelectedTopUp(value)
                                         setOpenTopUpModal(true)
@@ -72,27 +74,32 @@ const TopUpList = () => {
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:edit"}/>}/>
+                                    icon={<Iconify icon={"material-symbols:edit"}/>}
+                                >Ubah</AntButton>
                             </Tooltip>
-                            <Tooltip title={value?.active ? 'Aktif' : 'Tidak Aktif'}>
+                            <Tooltip title={value?.active ? 'Hapus' : 'Restore'}>
                                 {
                                     value?.active ?
                                         <AntButton
                                             onClick={() => {
                                                 onDelete(value.id)
                                             }}
-                                            danger
+                                            type={'link'}
+                                            style={{color: Palette.MAIN_THEME}}
                                             className={"d-flex align-items-center justify-content-center"}
                                             shape="circle"
-                                            icon={<Iconify icon={"material-symbols:delete-outline"}/>}/>
+                                            icon={<Iconify icon={"material-symbols:delete-outline"}/>}
+                                        >Hapus</AntButton>
                                         : <AntButton
                                             onClick={() => {
                                                 onRestore(value.id)
                                             }}
-                                            danger
+                                            type={'link'}
+                                            style={{color: Palette.MAIN_THEME}}
                                             className={"d-flex align-items-center justify-content-center"}
                                             shape="circle"
-                                            icon={<Iconify icon={"mdi:restore"}/>}/>
+                                            icon={<Iconify icon={"mdi:restore"}/>}
+                                        >Restore</AntButton>
                                 }
 
                             </Tooltip>
@@ -178,14 +185,16 @@ const TopUpList = () => {
                       className="card-stats mb-4 mb-xl-0">
                     <CardBody>
                         <TopUpTitleBar/>
-                        <Row>
-                         <Col className='mb-3 text-right' md={12}>
-                                <AntButton onClick={() => {
-                                    setOpenTopUpModal(true)
-                                    setIsNewRecord(true)
-                                }} size={'middle'} type={'primary'}>Tambah Top Up</AntButton>
-                            </Col>
-                        </Row>
+
+                        <AntButton style={{
+                            float: 'right',
+                            position: 'relative',
+                            top: '10px'
+                        }} onClick={() => {
+                            setOpenTopUpModal(true)
+                            setIsNewRecord(true)
+                        }} size={'middle'} type={'primary'}>Tambah Top Up</AntButton>
+
                         {/* <Row style={{position: "relative", top: 65}}>
                             <Col className='mb-3 text-right' md={12}>
                                 <AntButton onClick={() => {

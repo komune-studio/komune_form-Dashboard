@@ -20,25 +20,33 @@ const PromotionList = () => {
     const [isNewRecord, setIsNewRecord] = useState(false)
     const [selectedData, setSelectedData] = useState(null)
     const columns = [
-
         {
-            id: 'name', label: 'Name', filter: true,
-        },
-        {
-            id: 'image_url', label: 'Foto Promo', filter: true,
+            id: 'image_url', label: 'Banner promo', filter: true,
             render: (row => {
                 return <Image height={100} width={150} src={row.image_url}></Image>
             })
         },
         {
-            id: 'description', label: 'Deskripsi', filter: true,
+            id: 'name', label: 'Nama Promo', filter: true,
+        },
+
+        {
+            id: 'description', label: 'Deskripsi Promo', filter: true,
         },
         {
-            id: 'created_at', label: 'Tanggal Dibuat', filter: true,
+            id: 'active', label: 'Status Promo', filter: false, width: '12%',
             render: (row => {
-                return moment(row.created_at).format('DD MMM YYYY HH:mm')
+                return <Switch disabled={true} defaultChecked={row.active} onChange={() => {
+                    changeActive(row.id, row.active)
+                }}/>
             })
         },
+        // {
+        //     id: 'created_at', label: 'Tanggal Dibuat', filter: true,
+        //     render: (row => {
+        //         return moment(row.created_at).format('DD MMM YYYY HH:mm')
+        //     })
+        // },
         {
             id: '', label: '', filter: false,
             render: ((value) => {
@@ -47,6 +55,8 @@ const PromotionList = () => {
                         <Space size="small">
                             <Tooltip title="Edit">
                                 <AntButton
+                                    style={{color: Palette.MAIN_THEME}}
+                                    type={'link'}
                                     onClick={() => {
                                         setSelectedData(value)
                                         setOpenModal(true)
@@ -54,19 +64,24 @@ const PromotionList = () => {
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:edit"}/>}/>
+                                    icon={<Iconify icon={"material-symbols:edit"}/>}>
+                                    Ubah
+                                </AntButton>
                             </Tooltip>
-                            <Tooltip title={value?.active ? 'Aktif' : 'Tidak Aktif'}>
+                            <Tooltip title={value?.active ? 'Hapus' : 'Restore'}>
                                 {
                                     value?.active ?
                                         <AntButton
                                             onClick={() => {
                                                 onDelete(value.id)
                                             }}
-                                            danger
+                                            type={'link'}
+                                            style={{color: Palette.MAIN_THEME}}
                                             className={"d-flex align-items-center justify-content-center"}
                                             shape="circle"
-                                            icon={<Iconify icon={"material-symbols:delete-outline"}/>}/>
+                                            icon={<Iconify icon={"material-symbols:delete-outline"}/>}>
+                                            Hapus
+                                        </AntButton>
                                         : <AntButton
                                             onClick={() => {
                                                 onRestore(value.id)
@@ -169,9 +184,6 @@ const PromotionList = () => {
                                     setIsNewRecord(true)
                                 }} size={'middle'} type={'primary'}>Tambah Promosi</AntButton>
                             </Col>
-                        </Row>
-                        <Row>
-
                         </Row>
                         <CustomTable
                             showFilter={true}

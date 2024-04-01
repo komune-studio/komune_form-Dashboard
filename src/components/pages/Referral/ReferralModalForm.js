@@ -1,7 +1,7 @@
 import Modal from 'react-bootstrap/Modal';
-import {DatePicker, message, Spin, Upload as AntUpload} from "antd";
-import {Button, Form} from 'react-bootstrap';
-import {useEffect, useState} from "react";
+import {Button, DatePicker, message, Spin, Switch, Upload as AntUpload} from "antd";
+import {Col, Form, Row} from 'react-bootstrap';
+import React, {useEffect, useState} from "react";
 import UserModel from "../../../models/UserModel";
 import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import PropTypes from "prop-types";
@@ -100,38 +100,68 @@ export default function ReferralModalForm({isOpen, close, isNewRecord, referralD
         </Modal.Header>
         <Modal.Body>
             <Form.Group className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Kode Referral;</Form.Label>
+                <Form.Label style={{fontSize: "0.8em"}}>Kode Referral</Form.Label>
+                <div className={'info-hint mb-2 mt-2'}>
+                    <p>Teks ini merupakan instruksi untuk foto yang perlu diupload.</p>
+                </div>
                 <Form.Control
                     value={code}
                     autoComplete={"referralCode"}
                     onChange={(e) => setCode(e.target.value)} type="text" placeholder="Masukan Kode Referral"/>
             </Form.Group>
-            <Form.Group controlId="exampleForm.ControlSelect1">
-                <Form.Label style={{fontSize: "0.8em"}}>Tipe Referral</Form.Label>
-                <Form.Control value={type} onChange={(e) => {
-                    setType(e.target.value)
-                }} as="select">
-                    <option value={""}>Pilih tipe Referral</option>
-                    <option value={"fixed"}>Fixed</option>
-                    <option value={"percentage"}>Percentage</option>
-                </Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Value</Form.Label>
-                <Form.Control
-                    value={value}
-                    autoComplete={"values"}
-                    onChange={(e) => setValue(e.target.value)} type="number" placeholder="Masukan Harga Paket"/>
-            </Form.Group>
+            <div className={'info-hint mb-2 mt-2'}>
+                <p>
+                    Tentukan tipe hadiah yang ingin anda berikan. Anda dapat memilih dari dua tipe hadiah:
+                </p>
+                <p>1. Percentage Discount - Misalnya: potongan 10% saat mereka menggunakan kode referral ketika membeli
+                    item.</p>
+                <p>
+
+                    2.Fixed Discount - Misalnya: Diskon Rp 50.000 ketika mereka menggunakan kode referral ketika membeli
+                    item.
+                </p>
+            </div>
+            <Row>
+                <Col md={6}>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label style={{fontSize: "0.8em"}}>Pilih tipe hadiah</Form.Label>
+                        <Form.Control value={type} onChange={(e) => {
+                            setType(e.target.value)
+                        }} as="select">
+                            <option value={""}>Pilih tipe Referral</option>
+                            <option value={"fixed"}>Fixed</option>
+                            <option value={"percentage"}>Percentage</option>
+                        </Form.Control>
+                    </Form.Group>
+                </Col>
+                <Col md={6}>
+                    <Form.Group className="mb-3">
+                        <Form.Label style={{fontSize: "0.8em"}}>Nilai hadiah</Form.Label>
+                        <Form.Control
+                            value={value}
+                            autoComplete={"values"}
+                            onChange={(e) => setValue(e.target.value)} type="number" placeholder="Masukan Harga Paket"/>
+                    </Form.Group>
+
+                </Col>
+            </Row>
+            <div className={'d-flex'} style={{justifyContent: 'space-between'}}>
+                <div className={'info-hint mb-2 mt-2'}>
+                    <span className={'text-white'} style={{fontSize: 16}}>Aktifkan di Barcode Gokart App</span>
+                    <p>Promo aktif akan muncul di Barcode Gokart App dan bisa dilihat oleh pelanggan.</p>
+                </div>
+                <Switch defaultChecked={true}/>
+            </div>
 
             <div className={"d-flex flex-row justify-content-end"}>
-                <Button size="sm" variant="outline-danger" onClick={() => handleClose()} style={{marginRight: '5px'}}>
+                <Button className={'text-white'} type={'link'} size="sm" variant="outline-danger"
+                        onClick={() => handleClose()} style={{marginRight: '5px'}}>
                     Batal
                 </Button>
-                <Button size="sm" variant="primary" onClick={() => {
+                <Button type={'primary'} size="sm" variant="primary" onClick={() => {
                     onSubmit()
                 }}>
-                    {isNewRecord ? 'Buat' : 'Ubah'}
+                    {isNewRecord ? 'Simpan' : 'Ubah'}
                 </Button>
             </div>
         </Modal.Body>

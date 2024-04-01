@@ -3,9 +3,8 @@ import React from "react";
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import {Link, useLocation} from "react-router-dom";
 
-export default function TopUpTitleBar() {
+export default function LoyaltyShopTitleBar() {
     const location = useLocation()
-    console.log('log', location)
     return (
         <>
             <Row className={'mb-4'}>
@@ -15,14 +14,16 @@ export default function TopUpTitleBar() {
                 <Col md={12}>
                     <ButtonGroup aria-label="Basic example">
                         <Link
-                            className={`btn ${location.pathname === '/top-up-history' ? 'btn-primary-tab' : 'btn-default-tab'}`}
-                            to={'/top-up-history'}>
-                            Hisory
+                            // style={{background: '#121212'}}
+                            className={`btn ${location.pathname === '/loyalty-shop-history' ? 'btn-primary-tab' : 'btn-default-tab'}`}
+                            to={'/loyalty-shop-history'}>
+                            Histori Tukar Poin
                         </Link>
                         <Link
-                            className={`btn ${location.pathname === '/top-up-list' ? 'btn-primary-tab' : 'btn-default-tab'}`}
-                            to={'/top-up-list'}>
-                            Pengaturan
+                            // style={{background: '#404040', border: 'none'}}
+                            className={`btn ${location.pathname === '/loyalty-shop-catalog' ? 'btn-primary-tab' : 'btn-default-tab'}`}
+                            to={'/loyalty-shop-catalog'}>
+                            Katalog
                         </Link>
                     </ButtonGroup>
                 </Col>

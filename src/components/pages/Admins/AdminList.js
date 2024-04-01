@@ -1,12 +1,12 @@
-import { Table, Image, Space, Button as AntButton, Tooltip, Modal, message, Input } from 'antd';
+import {Table, Image, Space, Button as AntButton, Tooltip, Modal, message, Input} from 'antd';
 import HeaderNav from "components/Headers/HeaderNav.js";
-import React, { useState, useEffect } from 'react';
-import { Card, Row, CardBody, Container, Button } from "reactstrap";
+import React, {useState, useEffect} from 'react';
+import {Card, Row, CardBody, Container, Button} from "reactstrap";
 import Admin from '../../../models/AdminModel'
-import { Link, useHistory } from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import Iconify from "../../reusable/Iconify";
 import Palette from 'utils/Palette';
-import { InputGroup, Form, Col, } from "react-bootstrap";
+import {InputGroup, Form, Col,} from "react-bootstrap";
 import CustomTable from "../../reusable/CustomTable";
 import CustomTableOld from "../../reusable/CustomTableOld";
 import CreateAdminModal from "./CreateAdminModal";
@@ -84,60 +84,66 @@ const AdminList = () => {
 
     const columns = [
         {
-          id: 'id', label: 'ID', filter: false,
+            id: 'id', label: 'ID', filter: false,
         },
         {
-          id: 'username', label: 'Username', filter: true,
+            id: 'username', label: 'Username', filter: true,
         },
         // {
         //   id: 'created_at', label: 'Created At', filter: false,
         // },
         {
-          id: '', label: '', filter: false,
-          render: ((value) => {
-            return (
-              <>
-                <Space size="small">
-                    <Tooltip title="Detail">
-                        <AntButton
-                            onClick={() => {
-                                setSelectedAdmin(value)
-                                setIsEditModalOpen(true)
+            id: '', label: '', filter: false,
+            render: ((value) => {
+                return (
+                    <>
+                        <Space size="small">
+                            <Tooltip title="Detail">
+                                <AntButton
+                                    onClick={() => {
+                                        setSelectedAdmin(value)
+                                        setIsEditModalOpen(true)
 
-                            }}
-                            className={"d-flex align-items-center justify-content-center"}
-                            shape="circle"
-                            icon={<Iconify icon={"material-symbols:edit"} />} />
-                    </Tooltip>
-                    <Tooltip title="Ubah kata sandi">
-                        {/* <Link to={"/admin-edit-password/" + value?.id}> */}
-                        <AntButton
-                            onClick={() => {
-                                setSelectedAdmin(value)
-                                setIsEditPasswordModalOpen(true)
-                            }}
-                            className={"d-flex align-items-center justify-content-center"}
-                            shape="circle"
-                            icon={<Iconify icon={"material-symbols:lock"} />} />
-                        {/* </Link> */}
-                    </Tooltip>
-                    <Tooltip title="Hapus">
-                        <AntButton
-                            onClick={() => {
-                                onDelete(value.id)
-                            }}
-                            danger
-                            className={"d-flex align-items-center justify-content-center"}
-                            shape="circle"
-                            icon={<Iconify icon={"material-symbols:delete-outline"} />} />
-                    </Tooltip>
-                </Space>
-              </>
-              )
-    
-          })
+                                    }}
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
+                                    className={"d-flex align-items-center justify-content-center"}
+                                    shape="circle"
+                                    icon={<Iconify icon={"material-symbols:edit"}/>}>Ubah</AntButton>
+
+                            </Tooltip>
+                            <Tooltip title="Ubah kata sandi">
+                                {/* <Link to={"/admin-edit-password/" + value?.id}> */}
+                                <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
+                                    onClick={() => {
+                                        setSelectedAdmin(value)
+                                        setIsEditPasswordModalOpen(true)
+                                    }}
+                                    className={"d-flex align-items-center justify-content-center"}
+                                    shape="circle"
+                                    icon={<Iconify icon={"material-symbols:lock"}/>}>Reset Pssword</AntButton>
+                                {/* </Link> */}
+                            </Tooltip>
+                            <Tooltip title="Hapus">
+                                <AntButton
+                                    onClick={() => {
+                                        onDelete(value.id)
+                                    }}
+                                    danger
+                                    className={"d-flex align-items-center justify-content-center"}
+                                    shape="circle"
+                                    icon={<Iconify icon={"material-symbols:delete-outline"}/>}>Hapus</AntButton>
+
+                            </Tooltip>
+                        </Space>
+                    </>
+                )
+
+            })
         },
-        ]
+    ]
 
     const deleteItem = async (id) => {
         try {
@@ -180,12 +186,13 @@ const AdminList = () => {
     return (
         <>
             <Container fluid style={{minHeight: "90vh"}}>
-                <Card style={{background : Palette.BACKGROUND_DARK_GRAY, color: "white"}} className="card-stats mb-4 mb-xl-0">
+                <Card style={{background: Palette.BACKGROUND_DARK_GRAY, color: "white"}}
+                      className="card-stats mb-4 mb-xl-0">
                     <CardBody>
 
                         <Row>
                             <Col className='mb-3' md={12}>
-                                <div style={{ fontWeight: "bold", fontSize: "1.1em" }}>Admin</div>
+                                <div style={{fontWeight: "bold", fontSize: "1.1em"}}>Admin</div>
                             </Col>
                         </Row>
 

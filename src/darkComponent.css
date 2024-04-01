@@ -1,50 +1,102 @@
-label,p,h1,h2,h3,h4,h5,h6,small {
+label, p, h1, h2, h3, h4, h5, h6, small {
     color: #FFFFFF;
 }
+
 .modal-content {
     background: #161616 !important;
 }
-.modal-content .modal-header .modal-title{
+
+.modal-content .modal-header .modal-title {
     color: #FFFFFF;
 }
-.MuiInputAdornment-root{
-    color:#ffffff !important;
+
+.MuiInputAdornment-root {
+    color: #ffffff !important;
 }
 
 
-textarea.form-control,select.form-control,input.form-control{
+textarea.form-control, select.form-control, input.form-control {
     background: #FFFFFF14;
     border-color: #161616;
-    color:#fff;
+    color: #fff;
 }
 
-textarea.form-control:focus,select.form-control:focus,input.form-control:focus{
+textarea.form-control:focus, select.form-control:focus, input.form-control:focus {
     background: #FFFFFF14;
     border-color: #161616;
-    color:#fff;
+    color: #fff;
 }
-.ant-picker, ant-picker-input{
-    color:#fff;
+
+.ant-picker, ant-picker-input {
+    color: #fff;
     background: #FFFFFF14;
     border-color: #161616;
 }
-.ant-picker .ant-picker-input >input::placeholder{
+
+.ant-picker .ant-picker-input > input::placeholder {
     color: #8898A9 !important;
 
 }
-.ant-picker-outlined:hover{
+
+.ant-picker-outlined:hover {
     background: #FFFFFF14 !important;
 }
-.ant-picker-input::placeholder{
+
+.ant-picker-input::placeholder {
     color: #CCCCCC;
 }
-.ant-picker:focus{
+
+.ant-picker:focus {
     background: #FFFFFF14 !important;
     border-color: #161616;
 }
 
-.ant-upload button{
+.ant-upload button {
     color: #c0c0c0;
 }
+
+.ant-btn {
+    height: auto !important;
+    padding: 8px 16px !important;
+}
+
+.ant-btn-primary {
+    background: #ef6024 !important;
+}
+
+.ant-switch-inner {
+    background: #913e1c !important;
+}
+
+.ant-switch-handle::before {
+    background: #ef6024 !important;
+    top: -6px !important;
+    left: -5px !important;
+    right: -3px !important;
+    bottom: -2px !important;
+    border-radius: 100% !important;
+}
+
+.ant-modal-mask {
+    background-color: rgb(118 81 52 / 45%) !important;
+}
+
+.modal-backdrop {
+    background-color: rgb(221 123 46) !important;
+}
+
+.ant-modal-content {
+    background: #161616 !important;
+    color: #fff;
+}
+
+.ant-modal-confirm-title, .ant-modal-confirm-content {
+    color: #ffffff !important;
+}
+.ant-message-notice-content{
+    background: #2F2F2F !important;
+    color: #fff;
+}
+
 
 /*#FFFFFF14*/

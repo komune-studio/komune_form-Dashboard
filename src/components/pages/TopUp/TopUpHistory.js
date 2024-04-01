@@ -35,32 +35,53 @@ const TopUpHistory = () => {
             })
         },
         {
-            id: 'currency', label: 'Tipe Paket', filter: true,
-        },
-        {
-            id: 'price', label: 'Harga Paket', filter: true,
+            id: 'user_id', label: 'User', filter: true,
             render: (row => {
-                return row?.price ? 'Rp.' + Helper.formatNumber(row.price) : 0
+                return row?.user?.name
             })
         },
+        // {
+        //     id: 'currency', label: 'Tipe Paket', filter: true,
+        // },
+        // {
+        //     id: 'price', label: 'Jumlah top up', filter: true,
+        //     render: (row => {
+        //         return row?.price ? 'Rp.' + Helper.formatNumber(row.price) : 0
+        //     })
+        // },
         {
-            id: 'amount', label: 'Amount', filter: true,
-            render: (row => {
-                return row?.amount ? Helper.formatNumber(row.amount) : 0
-            })
-        },
-        {
-            id: 'payment_method', label: 'Metode Pembayaran', filter: true,
+            id: 'payment_method', label: 'Tipe pembayaran', filter: true,
             render: (row => {
                 return row?.transactions?.payment_method
             })
         },
         {
+            id: 'amount', label: 'Jumlah top up', filter: true,
+            render: (row => {
+                return <>
+                    {
+                        row?.currency === 'COIN' ?
+                            <div>
+                                <Iconify icon={'fluent-emoji-flat:coin'}></Iconify>
+                                {Helper.formatNumber(row.amount || 0)}
+                            </div> : <div>
+                                <Iconify icon={'maki:racetrack'}></Iconify>
+                                {Helper.formatNumber(row.amount || 0)}
+                            </div>
+
+                    }
+
+                </>
+
+            })
+        },
+
+        {
             id: 'status', label: 'Status', filter: true,
             render: (row => {
                 return row?.transactions?.paid_status === 'SETTLEMENT' || 'CAPTURE' || 'APPROVED' ?
                     <span style={{color: Palette.THEME_GREEN}}><Iconify
-                        icon={'icons8:checked'}></Iconify> {row?.transactions?.paid_status}</span> :
+                        icon={'lets-icons:check-fill'}></Iconify> {row?.transactions?.paid_status}</span> :
                     <span style={{color: Palette.THEME_RED}}><Iconify
                         icon={'carbon:close-filled'}></Iconify> {row?.transactions?.paid_status}</span>
             })
@@ -93,22 +114,27 @@ const TopUpHistory = () => {
                       className="card-stats mb-4 mb-xl-0">
                     <CardBody>
                         <TopUpTitleBar/>
-                        <Row style={{position: "relative", top: 65}}>
-                            <Col className='mb-3 text-right' md={12}>
-                                <Dropdown>
-                                    <Dropdown.Toggle style={{zIndex: 1000}} variant="outline-secondary"
-                                                     id="dropdown-basic">
-                                        Minggu Ini
-                                    </Dropdown.Toggle>
 
-                                    <Dropdown.Menu style={{color: '#fff'}}>
-                                        <Dropdown.Item href="#/action-1">Hari Ini</Dropdown.Item>
-                                        <Dropdown.Item href="#/action-2">Kemarin</Dropdown.Item>
-                                        <Dropdown.Item href="#/action-3">Minggu Ini</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Col>
-                        </Row>
+                        <div style={{float: 'right'}}>
+                            <Dropdown>
+                                <Dropdown.Toggle style={{zIndex: 1000}} variant="outline-secondary"
+                                                 id="dropdown-basic">
+                                    <span style={{color:'#fff'}}>  Minggu Ini</span>
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu style={{color: '#fff'}}>
+                                    <Dropdown.Item href="#/action-1">Hari Ini</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-2">Kemarin</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-3">Minggu Ini</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Button className={'ml-3 bg-transparent text-white'}><Iconify
+                                icon={'mdi:filter'}></Iconify> Export</Button>
+                            <Button className={'ml-1 bg-transparent text-white'}><Iconify
+                                icon={'mdi:download'}></Iconify> Export</Button>
+
+                        </div>
+
                         <CustomTable
                             showFilter={true}
                             pagination={true}

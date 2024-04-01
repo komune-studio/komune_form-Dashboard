@@ -1,14 +1,15 @@
 import Modal from 'react-bootstrap/Modal';
-import {DatePicker, message, Spin, Upload as AntUpload} from "antd";
-import {Button, Form} from 'react-bootstrap';
+import {DatePicker, message, Spin, Upload as AntUpload, Button} from "antd";
+import {Col, Form, Row} from 'react-bootstrap';
 import {useEffect, useState} from "react";
 import UserModel from "../../../models/UserModel";
-import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
+import {LoadingOutlined, PlusOutlined, CloseOutlined} from '@ant-design/icons';
 import PropTypes from "prop-types";
 import swal from "../../reusable/CustomSweetAlert";
 import moment from "moment/moment";
 import UploadModel from "../../../models/UploadModel"
 import TopUp from "../../../models/TopUpModel";
+import {Icon} from "@iconify/react";
 
 TopUpFormModal.propTypes = {
     close: PropTypes.func,
@@ -59,8 +60,8 @@ export default function TopUpFormModal({isOpen, close, isNewRecord, topUpData}) 
                 description: description,
                 promotional_text: promotionalText,
                 image: topUpImage,
-                amount : coins,
-                currency : currency
+                amount: coins,
+                currency: currency
             }
             let msg = ''
             if (isNewRecord) {
@@ -122,124 +123,150 @@ export default function TopUpFormModal({isOpen, close, isNewRecord, topUpData}) 
 
     return <Modal
         show={isOpen}
+        size={'lg'}
         backdrop="static"
         keyboard={false}
     >
         <Modal.Header>
-            <Modal.Title>{isNewRecord ? 'Buat Paket Top Up' : `Ubah Paket Top Up`}</Modal.Title>
+            <div className={'d-flex w-100 justify-content-between'}>
+                <Modal.Title>{isNewRecord ? 'Buat Paket Top Up' : `Ubah Paket Top Up`}</Modal.Title>
+                <Button onClick={() => {
+                    close()
+                }} style={{position:'relative', top : -5, color:'#fff', fontWeight:800}} type="link" shape="circle" icon={<CloseOutlined />}/>
+
+            </div>
+
         </Modal.Header>
+
         <Modal.Body>
-            <Form.Group>
-                <Form.Label style={{fontSize: "0.8em"}}>Image</Form.Label>
-                <AntUpload
-                    rootClassName={'upload-background'}
-                    name="avatar"
-                    listType="picture-card"
-                    fileList={[]}
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    onChange={(file) => {
-                        handleUpload(file)
-                    }}
-                >
-                    {topUpImage ? (
-                        <>
-                            {
-                                !loadingUpload ? <img
-                                    src={topUpImage}
-                                    alt="avatar"
-                                    style={{
-                                        width: '80%',
-                                        height: '80%',
-                                        objectFit: 'cover'
-                                    }}
-                                /> : <Spin style={{zIndex: 100000}} size="large"/>
-                            }
+            <Row>
+                <Col md={6}>
+                    <Form.Group>
+                        <Form.Label style={{fontSize: "0.8em"}}>Foto paket*</Form.Label>
+                        <div className={'info-hint mb-2 mt-2'}>
+                            <p>Teks ini merupakan instruksi untuk foto yang perlu diupload.</p>
+                        </div>
 
-                        </>
-
-                    ) : (
-                        <button
-                            style={{
-                                border: 0,
-                                background: 'none',
+                        <AntUpload
+                            rootClassName={'upload-background'}
+                            name="avatar"
+                            listType="picture-card"
+                            fileList={[]}
+                            className="avatar-uploader"
+                            showUploadList={false}
+                            onChange={(file) => {
+                                handleUpload(file)
                             }}
-                            type="button"
                         >
-                            {loadingUpload ? <Spin style={{zIndex: 100000}} size="large"/> : <PlusOutlined/>}
-                            <div
-                                style={{
-                                    marginTop: 8,
-                                }}
-                            >
-                                Upload
-                            </div>
-                        </button>
-                    )}
-                </AntUpload>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Nama Paket</Form.Label>
-                <Form.Control
-                    value={packageName}
-                    autoComplete={"packageName"}
-                    onChange={(e) => setPackageName(e.target.value)} type="text" placeholder="Masukan Nama Paket"/>
-            </Form.Group>
-            <Form.Group controlId="exampleForm.ControlSelect1">
-                <Form.Label style={{fontSize: "0.8em"}}>Tipe Paket</Form.Label>
-                <Form.Control value={currency} onChange={(e) => {
-                    setCurrency(e.target.value)
-                }} as="select">
-                    <option>Pilih tipe paket</option>
-                    <option value={"COIN"}>COIN</option>
-                    <option value={"RIDES"}>RIDE</option>
-                </Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Harga Paket</Form.Label>
-                <Form.Control
+                            {topUpImage ? (
+                                <>
+                                    {
+                                        !loadingUpload ? <img
+                                            src={topUpImage}
+                                            alt="avatar"
+                                            style={{
+                                                width: '80%',
+                                                height: '80%',
+                                                objectFit: 'cover'
+                                            }}
+                                        /> : <Spin style={{zIndex: 100000}} size="large"/>
+                                    }
 
-                    value={price}
-                    autoComplete={"pricing"}
-                    onChange={(e) => setPrice(e.target.value)} type="number" placeholder="Masukan Harga Paket"/>
-            </Form.Group>
+                                </>
 
-            <Form.Group className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Koin Yang Didapat</Form.Label>
-                <Form.Control
+                            ) : (
+                                <button
+                                    style={{
+                                        border: 0,
+                                        background: 'none',
+                                    }}
+                                    type="button"
+                                >
+                                    {loadingUpload ? <Spin style={{zIndex: 100000}} size="large"/> :
+                                        <Icon width={30} height={30} icon={'material-symbols:image'}/>}
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                        }}
+                                    >
+                                        Upload
+                                    </div>
+                                </button>
+                            )}
+                        </AntUpload>
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label style={{fontSize: "0.8em"}}>Nama Paket</Form.Label>
+                        <Form.Control
+                            value={packageName}
+                            autoComplete={"packageName"}
+                            onChange={(e) => setPackageName(e.target.value)} type="text"
+                            placeholder="Masukan Nama Paket"/>
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label style={{fontSize: "0.8em"}}>Tipe Paket</Form.Label>
+                        <Form.Control value={currency} onChange={(e) => {
+                            setCurrency(e.target.value)
+                        }} as="select">
+                            <option>Pilih tipe paket</option>
+                            <option value={"COIN"}>COIN</option>
+                            <option value={"RIDES"}>RIDE</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group className="mb-3 mt-2">
+                        <Form.Label style={{fontSize: "0.8em"}}>Promotional Text</Form.Label>
+                        <Form.Control
+                            value={promotionalText}
+                            autoComplete={"promotionalText"}
+                            onChange={(e) => setPromotionalText(e.target.value)} type="text"
+                            placeholder="Masukan Promotional Text"/>
+                    </Form.Group>
 
-                    value={coins}
-                    autoComplete={"pricing"}
-                    onChange={(e) => setCoins(e.target.value)} type="number" placeholder="Masukan Koin yang didapat"/>
-            </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label style={{fontSize: "0.8em"}}>Deskripsi</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={3}
+                            value={description}
+                            autoComplete={"email"}
+                            onChange={(e) => setDescription(e.target.value)} type="text"
+                            placeholder="Masukan Deskripsi Paket"/>
+                    </Form.Group>
+                </Col>
+                <Col md={6}>
 
-            <Form.Group className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Promotional Text</Form.Label>
-                <Form.Control
-                    value={promotionalText}
-                    autoComplete={"promotionalText"}
-                    onChange={(e) => setPromotionalText(e.target.value)} type="text" placeholder="Masukan Promotional Text"/>
-            </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label style={{fontSize: "0.8em"}}>Harga Paket</Form.Label>
+                        <Form.Control
 
-            <Form.Group className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Deskripsi</Form.Label>
-                <Form.Control
-                    as="textarea"
-                    rows={3}
-                    value={description}
-                    autoComplete={"email"}
-                    onChange={(e) => setDescription(e.target.value)} type="text" placeholder="Masukan Deskripsi Paket"/>
-            </Form.Group>
+                            value={price}
+                            autoComplete={"pricing"}
+                            onChange={(e) => setPrice(e.target.value)} type="number" placeholder="Masukan Harga Paket"/>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label style={{fontSize: "0.8em"}}>Koin Yang Didapat</Form.Label>
+                        <Form.Control
+
+                            value={coins}
+                            autoComplete={"pricing"}
+                            onChange={(e) => setCoins(e.target.value)} type="number"
+                            placeholder="Masukan Koin yang didapat"/>
+                    </Form.Group>
+
+
+                </Col>
+            </Row>
 
 
             <div className={"d-flex flex-row justify-content-end"}>
-                <Button size="sm" variant="outline-danger" onClick={() => handleClose()} style={{marginRight: '5px'}}>
+                <Button className={'text-white'} type={'link'} size="sm" variant="outline-danger" onClick={() => handleClose()} style={{marginRight: '5px'}}>
                     Batal
                 </Button>
-                <Button size="sm" variant="primary" onClick={() => {
+                <Button type={'primary'} size="sm" variant="primary" onClick={() => {
                     onSubmit()
                 }}>
-                    {isNewRecord ? 'Buat' : 'Ubah'}
+                    {isNewRecord ? 'Simpan' : 'Ubah'}
                 </Button>
             </div>
         </Modal.Body>

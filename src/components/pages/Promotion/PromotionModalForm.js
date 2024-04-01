@@ -1,9 +1,9 @@
 import Modal from 'react-bootstrap/Modal';
-import {DatePicker, message, Spin, Upload as AntUpload} from "antd";
-import {Button, Form} from 'react-bootstrap';
-import {useEffect, useState} from "react";
+import {Button, DatePicker, message, Spin, Switch, Upload as AntUpload} from "antd";
+import {Form} from 'react-bootstrap';
+import React, {useEffect, useState} from "react";
 import UserModel from "../../../models/UserModel";
-import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
+import {CloseOutlined, LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import PropTypes from "prop-types";
 import swal from "../../reusable/CustomSweetAlert";
 import moment from "moment/moment";
@@ -37,7 +37,7 @@ export default function PromotionModalForm({isOpen, close, isNewRecord, selected
             let body = {
                 name: name,
                 description: description,
-                image_url : imageUrl
+                image_url: imageUrl
             }
             let msg = ''
             if (isNewRecord) {
@@ -95,12 +95,12 @@ export default function PromotionModalForm({isOpen, close, isNewRecord, selected
             setLoadingUpload(true)
             let result = await UploadModel.uploadPicutre(file.file?.originFileObj)
 
-            if(result?.location){
+            if (result?.location) {
                 setImageUrl(result?.location)
                 message.success('Successfully upload user')
             }
             setLoadingUpload(false)
-        }catch (e) {
+        } catch (e) {
             console.log('isi e', e)
             message.error("Failed to upload user")
             setLoadingUpload(false)
@@ -108,23 +108,28 @@ export default function PromotionModalForm({isOpen, close, isNewRecord, selected
     }
 
     return <Modal
+        size={'lg'}
         show={isOpen}
         backdrop="static"
         keyboard={false}
     >
+
+
         <Modal.Header>
-            <Modal.Title>{isNewRecord ? 'Buat Promosi' : `Ubah Promosi`}</Modal.Title>
+            <div className={'d-flex w-100 justify-content-between'}>
+                <Modal.Title>{isNewRecord ? 'Buat Promo' : `Ubah Promo`}</Modal.Title>
+                <Button onClick={() => {
+                    close()
+                }} style={{position: 'relative', top: -5, color: '#fff', fontWeight: 800}} type="link" shape="circle"
+                        icon={<CloseOutlined/>}/>
+            </div>
         </Modal.Header>
         <Modal.Body>
-            <Form.Group className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Nama Promo</Form.Label>
-                <Form.Control
-                    value={name}
-                    autoComplete={"referralCode"}
-                    onChange={(e) => setName(e.target.value)} type="text" placeholder="Masukan Nama Promo"/>
-            </Form.Group>
             <Form.Group>
-                <Form.Label style={{ fontSize: "0.8em" }}>Image</Form.Label>
+                <Form.Label style={{fontSize: "0.8em"}}>Banner promo*</Form.Label>
+                <div className={'info-hint mb-2 mt-2'}>
+                    <p>Teks ini merupakan instruksi untuk foto yang perlu diupload.</p>
+                </div>
                 <AntUpload
                     rootClassName={'upload-background'}
                     name="avatar"
@@ -147,7 +152,7 @@ export default function PromotionModalForm({isOpen, close, isNewRecord, selected
                                         height: '80%',
                                         objectFit: 'cover'
                                     }}
-                                /> : <Spin style={{zIndex:100000}} size="large" />
+                                /> : <Spin style={{zIndex: 100000}} size="large"/>
                             }
 
                         </>
@@ -160,7 +165,7 @@ export default function PromotionModalForm({isOpen, close, isNewRecord, selected
                             }}
                             type="button"
                         >
-                            {loadingUpload ?  <Spin style={{zIndex:100000}} size="large" /> : <PlusOutlined/>}
+                            {loadingUpload ? <Spin style={{zIndex: 100000}} size="large"/> : <PlusOutlined/>}
                             <div
                                 style={{
                                     marginTop: 8,
@@ -173,6 +178,14 @@ export default function PromotionModalForm({isOpen, close, isNewRecord, selected
                 </AntUpload>
             </Form.Group>
             <Form.Group className="mb-3">
+                <Form.Label style={{fontSize: "0.8em"}}>Nama Promo</Form.Label>
+                <Form.Control
+                    value={name}
+                    autoComplete={"referralCode"}
+                    onChange={(e) => setName(e.target.value)} type="text" placeholder="Masukan Nama Promo"/>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
                 <Form.Label style={{fontSize: "0.8em"}}>Deskripsi Promo</Form.Label>
                 <Form.Control
                     as="textarea"
@@ -181,15 +194,23 @@ export default function PromotionModalForm({isOpen, close, isNewRecord, selected
                     autoComplete={"description"}
                     onChange={(e) => setDescription(e.target.value)} type="text" placeholder="Masukan Deskripsi Promo"/>
             </Form.Group>
+            <div className={'d-flex'} style={{justifyContent: 'space-between'}}>
+                <div className={'info-hint mb-2 mt-2'}>
+                    <span className={'text-white'} style={{fontSize: 16}}>Aktifkan di Barcode Gokart App</span>
+                    <p>Promo aktif akan muncul di Barcode Gokart App dan bisa dilihat oleh pelanggan.</p>
+                </div>
+                <Switch defaultChecked={true}/>
+            </div>
 
             <div className={"d-flex flex-row justify-content-end"}>
-                <Button size="sm" variant="outline-danger" onClick={() => handleClose()} style={{marginRight: '5px'}}>
+                <Button className={'text-white'} type={'link'} size="sm" variant="outline-danger"
+                        onClick={() => handleClose()} style={{marginRight: '5px'}}>
                     Batal
                 </Button>
-                <Button size="sm" variant="primary" onClick={() => {
+                <Button type={'primary'} size="sm" variant="primary" onClick={() => {
                     onSubmit()
                 }}>
-                    {isNewRecord ? 'Buat' : 'Ubah'}
+                    {isNewRecord ? 'Simpan' : 'Ubah'}
                 </Button>
             </div>
         </Modal.Body>

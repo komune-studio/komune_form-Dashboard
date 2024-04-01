@@ -57,7 +57,7 @@ var routes = [
         layout: "/admin",
     },
     {
-        path: "/loyalty-shop",
+        path: "/loyalty-shop-catalog",
         name: "Loyalty Shop",
         component: LoyaltyShopList,
         layout: "/admin",

@@ -1,5 +1,6 @@
 export default class Palette {
     static KOMUNE_YELLOW = "#febe10"
+    static MAIN_THEME = "#ef6024"
     static CATALYST_PINK = "#ef6024"
 
     static BARCODE_ORANGE = "#ef6024"

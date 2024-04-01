@@ -1,11 +1,11 @@
-import { Table, Image, Space, Button as AntButton, Tooltip, Modal, message, Input } from 'antd';
+import {Table, Image, Space, Button as AntButton, Tooltip, Modal, message, Input} from 'antd';
 import HeaderNav from "components/Headers/HeaderNav.js";
-import React, { useState, useEffect } from 'react';
-import { Card, Row, CardBody, Container, Button } from "reactstrap";
+import React, {useState, useEffect} from 'react';
+import {Card, Row, CardBody, Container, Button} from "reactstrap";
 import User from '../../../models/UserModel'
-import { Link, useHistory } from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import Iconify from "../../reusable/Iconify";
-import { InputGroup, Form, Col, } from "react-bootstrap";
+import {InputGroup, Form, Col,} from "react-bootstrap";
 import CustomTable from "../../reusable/CustomTable";
 import Palette from "../../../utils/Palette";
 import UserFormModal from "./UserFormModal";
@@ -24,23 +24,23 @@ const UserList = () => {
     const [openHistory, setOpenHistory] = useState(false)
     const columns = [
         {
-          id: 'id', label: 'ID', filter: false,
+            id: 'id', label: 'ID', filter: false,
         },
         {
             id: 'username', label: 'Username', filter: true,
         },
         {
-          id: 'full_name', label: 'Full Name', filter: true,
+            id: 'full_name', label: 'Full Name', filter: true,
         },
         {
             id: 'email', label: 'Email', filter: false,
         },
         {
-          id: 'gender', label: 'Gender', filter: false,
+            id: 'gender', label: 'Gender', filter: false,
         },
 
         {
-          id: 'phone_number', label: 'Phone Number', filter: false,
+            id: 'phone_number', label: 'Phone Number', filter: false,
         },
         {
             id: '', label: '', filter: false,
@@ -50,6 +50,8 @@ const UserList = () => {
                         <Space size="small">
                             <Tooltip title="Transaction History">
                                 <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
                                     onClick={() => {
                                         setSelectedUser(value)
                                         setOpenHistory(true)
@@ -58,10 +60,12 @@ const UserList = () => {
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"ic:outline-history"} />} />
+                                    icon={<Iconify icon={"ic:outline-history"}/>}/>
                             </Tooltip>
                             <Tooltip title="Edit">
                                 <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
                                     onClick={() => {
                                         setOpenUserResetModal(false)
                                         setOpenUserModal(true)
@@ -72,11 +76,13 @@ const UserList = () => {
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:edit"} />} />
+                                    icon={<Iconify icon={"material-symbols:edit"}/>}/>
                             </Tooltip>
                             <Tooltip title="Ubah kata sandi">
                                 {/* <Link to={"/admin-edit-password/" + value?.id}> */}
                                 <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
                                     onClick={() => {
                                         setSelectedUser(value)
                                         setOpenUserResetModal(true)
@@ -84,18 +90,20 @@ const UserList = () => {
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:lock"} />} />
+                                    icon={<Iconify icon={"material-symbols:lock"}/>}/>
                                 {/* </Link> */}
                             </Tooltip>
                             <Tooltip title="Hapus">
                                 <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
                                     onClick={() => {
                                         onDelete(value.id)
                                     }}
                                     danger
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:delete-outline"} />} />
+                                    icon={<Iconify icon={"material-symbols:delete-outline"}/>}/>
                             </Tooltip>
                         </Space>
                     </>
@@ -114,7 +122,7 @@ const UserList = () => {
     
           })
         }, */
-        ]
+    ]
 
     const deleteItem = async (id) => {
         try {
@@ -157,19 +165,20 @@ const UserList = () => {
     return (
         <>
             <Container fluid>
-                <Card style={{background : Palette.BACKGROUND_DARK_GRAY, color: "white"}} className="card-stats mb-4 mb-xl-0">
+                <Card style={{background: Palette.BACKGROUND_DARK_GRAY, color: "white"}}
+                      className="card-stats mb-4 mb-xl-0">
                     <CardBody>
 
                         <Row>
                             <Col className='mb-3' md={6}>
-                                <div style={{ fontWeight: "bold", fontSize: "1.1em" }}>User</div>
+                                <div style={{fontWeight: "bold", fontSize: "1.1em"}}>User</div>
                             </Col>
                             <Col className='mb-3 text-right' md={6}>
-                              <AntButton onClick={() => {
-                                  setIsNewRecord(true)
-                                  setOpenUserModal(true)
-                                  setOpenUserResetModal(false)
-                              }} size={'middle'} type={'primary'}>Tambah User</AntButton>
+                                <AntButton onClick={() => {
+                                    setIsNewRecord(true)
+                                    setOpenUserModal(true)
+                                    setOpenUserResetModal(false)
+                                }} size={'middle'} type={'primary'}>Tambah User</AntButton>
                             </Col>
                         </Row>
                         <Row>

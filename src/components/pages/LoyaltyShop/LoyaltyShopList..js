@@ -10,6 +10,9 @@ import LoyaltyShopModel from "../../../models/LoyaltyShopModel";
 import Helper from "../../../utils/Helper";
 import LoyaltyShopModalForm from "./LoyaltyShopModalForm";
 import moment from "moment/moment";
+import {Icon} from "@iconify/react";
+import TopUpTitleBar from "../TopUp/TopUpTitleBar";
+import LoyaltyShopTitleBar from "./LoyaltyShopTitleBar";
 
 const LoyaltyShopList = () => {
 
@@ -20,10 +23,6 @@ const LoyaltyShopList = () => {
     const [isNewRecord, setIsNewRecord] = useState(false)
     const [selectedData, setSelectedData] = useState(null)
     const columns = [
-
-        {
-            id: 'name', label: 'Name', filter: true,
-        },
         {
             id: 'image_url', label: 'Foto Loyalty', filter: true,
             render: (row => {
@@ -31,16 +30,29 @@ const LoyaltyShopList = () => {
             })
         },
         {
-            id: 'price', label: 'Harga', filter: true,
+            id: 'name', label: 'Nama Barang', filter: true, width: '15%'
+        },
+
+        {
+            id: 'description', label: 'Deskripsi Barang', filter: true, width: '15%'
+        },
+        {
+            id: 'price', label: 'Nilai Poin', filter: true, width: '15%',
             render: (row => {
-                return row?.price ? 'Rp.' + Helper.formatNumber(row.price) : 0
+                return <span><Icon style={{color: Palette.MAIN_THEME}} icon={'mdi:crown'}/>{row.price} points</span>
             })
         },
         {
-            id: 'description', label: 'Deskripsi', filter: true,
+            id: 'active', label: 'Status Promo', filter: false, width: '12%',
+            render: (row => {
+                return <Switch disabled={true} defaultChecked={row.active} onChange={() => {
+                    changeActive(row.id, row.active)
+                }}/>
+            })
         },
+
         {
-            id: 'created_at', label: 'Tanggal Dibuat', filter: true,
+            id: 'created_at', label: 'Tanggal Dibuat', filter: true, width: '15%',
             render: (row => {
                 return moment(row.created_at).format('DD MMM YYYY HH:mm')
             })
@@ -58,29 +70,39 @@ const LoyaltyShopList = () => {
                                         setOpenModal(true)
                                         setIsNewRecord(false)
                                     }}
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:edit"}/>}/>
+                                    icon={<Iconify icon={"material-symbols:edit"}/>}
+
+                                >Edit</AntButton>
                             </Tooltip>
-                            <Tooltip title={value?.active ? 'Aktif' : 'Tidak Aktif'}>
+                            <Tooltip title={value?.active ? 'Hapus' : 'Restore'}>
                                 {
                                     value?.active ?
                                         <AntButton
                                             onClick={() => {
                                                 onDelete(value.id)
                                             }}
-                                            danger
+                                            type={'link'}
+                                            style={{color: Palette.MAIN_THEME}}
                                             className={"d-flex align-items-center justify-content-center"}
                                             shape="circle"
-                                            icon={<Iconify icon={"material-symbols:delete-outline"}/>}/>
+                                            icon={<Iconify icon={"material-symbols:delete-outline"}/>}>
+                                            Hapus
+                                        </AntButton>
                                         : <AntButton
                                             onClick={() => {
                                                 onRestore(value.id)
                                             }}
-                                            danger
+                                            type={'link'}
+                                            style={{color: Palette.MAIN_THEME}}
                                             className={"d-flex align-items-center justify-content-center"}
                                             shape="circle"
-                                            icon={<Iconify icon={"mdi:restore"}/>}/>
+                                            icon={<Iconify icon={"mdi:restore"}/>}>
+                                            Restore
+                                        </AntButton>
                                 }
 
                             </Tooltip>
@@ -125,6 +147,17 @@ const LoyaltyShopList = () => {
         Modal.confirm({
             title: "Apakah Anda yakin ingin nonaktifkan paket ini?",
             okText: "Yes",
+            okButtonProps: {
+                danger: false,
+                type: 'primary',
+
+            },
+            cancelButtonProps: {
+                danger: false,
+                type: 'link',
+                style: {color: '#fff'}
+
+            },
             okType: "danger",
             onOk: () => {
                 deleteItem(record)
@@ -165,17 +198,24 @@ const LoyaltyShopList = () => {
                 <Card style={{background: Palette.BACKGROUND_DARK_GRAY, color: "white"}}
                       className="card-stats mb-4 mb-xl-0">
                     <CardBody>
-                        <Row>
-                            <Col className='mb-3' md={6}>
-                                <div style={{fontWeight: "bold", fontSize: "1.1em"}}>Loyalty Shop</div>
-                            </Col>
-                            <Col className='mb-3 text-right' md={6}>
+                        <LoyaltyShopTitleBar/>
+                        <AntButton style={{
+                            float: 'right',
+                            position: 'relative',
+                            top: '10px'
+                        }} onClick={() => {
+                            setOpenModal(true)
+                            setIsNewRecord(true)
+                        }} size={'middle'} type={'primary'}>Tambah Barang</AntButton>
+
+                        {/* <Row style={{position: "relative", top: 65}}>
+                            <Col className='mb-3 text-right' md={12}>
                                 <AntButton onClick={() => {
-                                    setOpenModal(true)
+                                    setOpenTopUpModal(true)
                                     setIsNewRecord(true)
-                                }} size={'middle'} type={'primary'}>Tambah Loyalty</AntButton>
+                                }} size={'middle'} type={'primary'}>Tambah Top Up</AntButton>
                             </Col>
-                        </Row>
+                        </Row> */}
                         <Row>
 
                         </Row>

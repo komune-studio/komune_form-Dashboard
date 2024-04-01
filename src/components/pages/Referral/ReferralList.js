@@ -22,15 +22,23 @@ const ReferralList = () => {
     const columns = [
 
         {
-            id: 'code', label: 'Kode Referral', filter: true,
+            id: 'code', label: 'Kode referral', filter: true,
         },
         {
-            id: 'type', label: 'Tipe Referral', filter: true,
+            id: 'type', label: 'Tipe hadiah', filter: true,
         },
         {
-            id: 'price', label: 'Nilai Hadiah', filter: true,
+            id: 'price', label: 'Nilai hadiah', filter: true,
             render: (row => {
                 return row?.type === "percentage" ? row.value + '%' : 'Rp.' + Helper.formatNumber(row.value)
+            })
+        },
+        {
+            id: 'active', label: 'Status Paket', filter: false, width: '12%',
+            render: (row => {
+                return <Switch disabled={true} defaultChecked={row.active} onChange={() => {
+                    changeActive(row.id, row.active)
+                }}/>
             })
         },
         {
@@ -41,6 +49,8 @@ const ReferralList = () => {
                         <Space size="small">
                             <Tooltip title="Edit">
                                 <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
                                     onClick={() => {
                                         setSelectedReferral(value)
                                         setOpenReferralModal(true)
@@ -48,7 +58,9 @@ const ReferralList = () => {
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:edit"}/>}/>
+                                    icon={<Iconify icon={"material-symbols:edit"}/>}>
+                                    Ubah
+                                </AntButton>
                             </Tooltip>
                             <Tooltip title={value?.active ? 'Aktif' : 'Tidak Aktif'}>
                                 {
@@ -57,18 +69,24 @@ const ReferralList = () => {
                                             onClick={() => {
                                                 onDelete(value.id)
                                             }}
-                                            danger
+                                            type={'link'}
+                                            style={{color: Palette.MAIN_THEME}}
                                             className={"d-flex align-items-center justify-content-center"}
                                             shape="circle"
-                                            icon={<Iconify icon={"material-symbols:delete-outline"}/>}/>
+                                            icon={<Iconify icon={"material-symbols:delete-outline"}/>}>
+                                            Hapus
+                                        </AntButton>
                                         : <AntButton
                                             onClick={() => {
                                                 onRestore(value.id)
                                             }}
-                                            danger
+                                            style={{color: Palette.MAIN_THEME}}
+                                            type={'link'}
                                             className={"d-flex align-items-center justify-content-center"}
                                             shape="circle"
-                                            icon={<Iconify icon={"mdi:restore"}/>}/>
+                                            icon={<Iconify icon={"mdi:restore"}/>}>
+                                            Restore
+                                        </AntButton>
                                 }
 
                             </Tooltip>
@@ -161,7 +179,7 @@ const ReferralList = () => {
                                 <AntButton onClick={() => {
                                     setOpenReferralModal(true)
                                     setIsNewRecord(true)
-                                }} size={'middle'} type={'primary'}>Tambah Kode Referral</AntButton>
+                                }} size={'middle'} type={'primary'}>Tambah Referral</AntButton>
                             </Col>
                         </Row>
                         <Row>

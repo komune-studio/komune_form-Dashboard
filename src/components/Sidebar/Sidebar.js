@@ -106,7 +106,7 @@ const SIDEBAR = [
         color: Palette.BARCODE_ORANGE
     },
     {
-        path: "/loyalty-shop",
+        path: "/loyalty-shop-catalog",
         name: "Loyalty Shop",
         icon: "lets-icons:shop",
         color: Palette.BARCODE_ORANGE

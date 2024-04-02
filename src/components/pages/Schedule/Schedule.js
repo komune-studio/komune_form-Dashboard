@@ -1,0 +1,200 @@
+import Palette from "utils/Palette";
+import Iconify from "components/reusable/Iconify";
+import moment from "moment";
+
+const SCHEDULES = [
+    { backgroundColor: "#D1E7DD", color: "#0F5132" },
+    { backgroundColor: Palette.LIGHT_GRAY, color: Palette.WHITE_GRAY },
+    { backgroundColor: "#FFF3CD", color: "#664D03" },
+    { backgroundColor: "#F8D7DA", color: "#842029" },
+];
+
+const OPERATIONAL_HOURS = [
+    "08:00",
+    "09.00",
+    "10.00",
+    "11.00",
+    "12.00",
+    "13.00",
+    "14.00",
+    "15.00",
+    "16.00",
+    "17.00",
+    "18.00",
+    "19.00",
+    "20.00",
+    "21.00",
+    "22.00",
+];
+
+const getPastWeekDates = () => {
+    const result = [];
+
+    for (let i = 0; i < 7; i++) {
+        let date = new Date();
+        date.setDate(date.getDate() - i);
+        result.push(date);
+    }
+
+    return result;
+};
+
+const PAST_WEEK_DATES = getPastWeekDates();
+
+export default function Schedule() {
+    return (
+        <div
+            className="container-fluid"
+            style={{ color: "#FFF", fontFamily: "Helixa" }}
+        >
+            {/* Schedule title & pagination */}
+            <div className="d-flex justify-content-between">
+                {/* Schedule title */}
+                <div className="font-weight-bold" style={{ fontSize: 20 }}>
+                    Schedule
+                </div>
+
+                {/* Schedule pagination */}
+                <div
+                    className="d-flex font-weight-bold align-items-center justify-content-center"
+                    style={{ fontSize: 12, gap: 8 }}
+                >
+                    <div
+                        className="d-flex align-items-center justify-content-center"
+                        style={{
+                            gap: 10,
+                            padding: "6px 8px 6px 12px",
+                            backgroundColor: Palette.LIGHT_GRAY,
+                            borderRadius: 4,
+                        }}
+                    >
+                        <div>Jan 2024</div>
+                        <div
+                            className="border"
+                            style={{ borderRadius: 4, padding: "2px 8px" }}
+                        >
+                            W5
+                        </div>
+                    </div>
+                    <div
+                        className="d-flex align-items-center justify-content-center"
+                        style={{ gap: 12 }}
+                    >
+                        <button className="btn p-0">
+                            <Iconify
+                                icon="mdi:chevron-left"
+                                size={16}
+                                color="#FFF"
+                            />
+                        </button>
+                        <button className="btn p-0">
+                            <Iconify
+                                icon="mdi:chevron-right"
+                                size={16}
+                                color="#FFF"
+                            />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Schedule table */}
+            <div className="d-flex" style={{ marginTop: 34 }}>
+                {/* Table y-axis header */}
+                <div className="d-flex flex-column">
+                    <div style={{ flex: 1 }}></div>
+
+                    {/* Loop for getting the y-axis of the table (every hour in a day) */}
+                    {OPERATIONAL_HOURS.map((text, index) => (
+                        <TableYAxis key={index} text={text} />
+                    ))}
+                </div>
+
+                {/* Table content  */}
+                <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ gap: 0, flex: 1 }}
+                >
+                    {/* Loop for each date in current pagination */}
+                    {PAST_WEEK_DATES.map((date, index) => (
+                        <div
+                            className="d-flex flex-column justify-content-center align-items-center"
+                            style={{ gap: 0, flex: 1 }}
+                            key={index}
+                        >
+                            {/* Current column header || current date */}
+                            <div
+                                style={{
+                                    fontSize: 14,
+                                    color: Palette.INACTIVE_GRAY,
+                                    flex: 1,
+                                    marginBottom: 16,
+                                }}
+                            >
+                                {moment(date).format("LL")}
+                            </div>
+
+                            {/* Loop for getting schedule data in every hour in current date  */}
+                            {[...new Array(12).fill("08.00")].map(
+                                (text, index) => (
+                                    <div
+                                        className="d-flex flex-column"
+                                        style={{
+                                            gap: 4,
+                                            padding: "4px 4px",
+                                            border: "1px solid #404040",
+                                            flex: 1,
+                                            width: "100%",
+                                        }}
+                                        key={index}
+                                    >
+                                        {/* Loop for getting schedule data in current hour */}
+                                        {SCHEDULES.map((item, index) => (
+                                            <ScheduleItem
+                                                key={index}
+                                                backgroundColor={
+                                                    item.backgroundColor
+                                                }
+                                                color={item.color}
+                                            />
+                                        ))}
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function TableYAxis(props) {
+    return (
+        <div
+            className="d-flex justify-content-center align-items-start font-weight-bold"
+            style={{ flex: 1, padding: "2px 4px", fontSize: 12 }}
+        >
+            {props.text}
+        </div>
+    );
+}
+
+function ScheduleItem(props) {
+    return (
+        <div
+            className="d-flex justify-content-between align-items-center"
+            style={{
+                padding: "4px 8px",
+                backgroundColor: props.backgroundColor,
+                color: props.color,
+                borderRadius: 24,
+                fontSize: 10,
+                flex: 1,
+            }}
+        >
+            <div className="font-weight-bold">Beginner</div>
+            <div>4 slot(s) available</div>
+        </div>
+    );
+}

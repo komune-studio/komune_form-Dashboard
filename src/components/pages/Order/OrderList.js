@@ -29,13 +29,17 @@ export default function OrderList() {
         {
             id: 'user_id', label: 'User', filter: true,
             render: (row => {
-                return row?.user?.name
+                return row?.users?.username
             })
         },
         {
             id: 'quantity', label: 'Jumlah tiket dibeli', filter: true,
             render: (row => {
-                return row?.quantity
+                let total = 0
+                for(let bd of row.barcoins_usage_detail){
+                    total+=bd.quantity
+                }
+                return total
             })
         },
         {

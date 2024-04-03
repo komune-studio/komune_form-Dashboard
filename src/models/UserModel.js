@@ -33,4 +33,8 @@ export default class User {
     return await ApiRequest.set(`v1/user/${id}`, "DELETE");
   }
 
+  static processUserQR = async (body) => {
+    return await ApiRequest.set("v1/user/getQR", "POST", body);
+}
+
 }

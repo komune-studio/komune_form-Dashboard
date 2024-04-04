@@ -63,7 +63,7 @@ export default function (props) {
                             :
                             <>
                                 <Route path="/" render={(props) => <AdminLayout {...props} />}/>
-                                {/*<Redirect from="*" to="/dashboard" />*/}
+                                <Redirect from="/" to="/schedule" />
                                 {/*<Route path={"*"} component={Dashboard}/>*/}
                                 {/*<Route from="*" to="/admin/admin"/>*/}
                             </>

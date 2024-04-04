@@ -80,6 +80,7 @@ const LoyaltyShopList = () => {
                     <Switch
                         disabled={true}
                         defaultChecked={row.active}
+                        checked={row.active}
                         style={{backgroundColor: row.active}}
                         onChange={() => {
                             changeActive(row.id, row.active);

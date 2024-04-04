@@ -23,7 +23,8 @@ export default function LoyaltyModalForm({isOpen, close, isNewRecord, selectedDa
     const [imageUrl, setImageUrl] = useState(null)
     const [description, setDescription] = useState(null)
     const [price, setPrice] = useState(null)
-    const [loadingUpload, setLoadingUpload] = useState(false)
+    const [active, setActive] = useState(false)
+    const [loadingUpload, setLoadingUpload] = useState(true)
 
     const onSubmit = async () => {
         if (!name) {
@@ -48,6 +49,7 @@ export default function LoyaltyModalForm({isOpen, close, isNewRecord, selectedDa
                 description: description,
                 image_url: imageUrl,
                 price: price,
+                active: active,
             }
             let msg = ''
             if (isNewRecord) {
@@ -224,7 +226,7 @@ export default function LoyaltyModalForm({isOpen, close, isNewRecord, selectedDa
                             <span className={'text-white'} style={{fontSize: 16}}>Aktifkan di Barcode Gokart App</span>
                             <p>Promo aktif akan muncul di Barcode Gokart App dan bisa dilihat oleh pelanggan.</p>
                         </div>
-                        <Switch defaultChecked={true}/>
+                        <Switch defaultChecked={active} checked={active} onChange={() => setActive(!active)} />
                     </div>
                 </Col>
             </Row>

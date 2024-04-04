@@ -84,6 +84,7 @@ export default function LoyaltyModalForm({isOpen, close, isNewRecord, selectedDa
             setDescription(selectedData?.description)
             setImageUrl(selectedData?.image_url)
             setPrice(selectedData?.price)
+            setActive(selectedData?.active)
         }
 
     }

@@ -22,6 +22,7 @@ export default function ReferralModalForm({isOpen, close, isNewRecord, referralD
     const [code, setCode] = useState(null)
     const [type, setType] = useState(null)
     const [value, setValue] = useState(null)
+    const [active, setActive] = useState(false)
     const [loadingUpload, setLoadingUpload] = useState(false)
 
     const onSubmit = async () => {
@@ -37,7 +38,8 @@ export default function ReferralModalForm({isOpen, close, isNewRecord, referralD
             let body = {
                 code: code,
                 type: type,
-                value: value.toString()
+                value: value.toString(),
+                active: active,
             }
             let msg = ''
             if (isNewRecord) {
@@ -71,6 +73,7 @@ export default function ReferralModalForm({isOpen, close, isNewRecord, referralD
             setCode(referralData?.code)
             setValue(referralData?.value)
             setType(referralData?.type)
+            setActive(referralData?.active)
         }
 
     }
@@ -150,7 +153,7 @@ export default function ReferralModalForm({isOpen, close, isNewRecord, referralD
                     <span className={'text-white'} style={{fontSize: 16}}>Aktifkan di Barcode Gokart App</span>
                     <p>Promo aktif akan muncul di Barcode Gokart App dan bisa dilihat oleh pelanggan.</p>
                 </div>
-                <Switch defaultChecked={true}/>
+                <Switch defaultChecked={true} checked={active} onChange={() => setActive(!active)} />
             </div>
 
             <div className={"d-flex flex-row justify-content-end"}>

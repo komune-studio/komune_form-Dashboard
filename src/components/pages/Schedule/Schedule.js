@@ -2,6 +2,7 @@ import Palette from "utils/Palette";
 import Iconify from "components/reusable/Iconify";
 import moment from "moment";
 
+// Data-data sementara (tunggu API)
 const SCHEDULES = [
     { backgroundColor: "#D1E7DD", color: "#0F5132" },
     { backgroundColor: Palette.LIGHT_GRAY, color: Palette.WHITE_GRAY },
@@ -40,8 +41,6 @@ const getPastWeekDates = () => {
 
     return result;
 };
-
-const PAST_WEEK_DATES = getPastWeekDates();
 
 export default function Schedule() {
     return (
@@ -121,8 +120,8 @@ export default function Schedule() {
                     ))}
                 </div>
 
-                {/* Looping through each date in current pagination */}
-                {PAST_WEEK_DATES.map((date, index) => (
+                {/* Loop through all dates in current section */}
+                {getPastWeekDates().map((date, index) => (
                     <div
                         className="d-flex flex-column"
                         style={{
@@ -130,7 +129,7 @@ export default function Schedule() {
                         }}
                         key={index}
                     >
-                        {/* Current column header || current date */}
+                        {/* Table x-axis header || current date */}
                         <div
                             className="d-flex align-items-center justify-content-center"
                             style={{
@@ -142,7 +141,7 @@ export default function Schedule() {
                             {moment(date).format("LL")}
                         </div>
 
-                        {/* Loop for getting schedule data in every hour in current date  */}
+                        {/* Loop for getting schedule data from each hour in current date  */}
                         {OPERATIONAL_HOURS.map((text, index) => (
                             <div
                                 className="d-flex flex-column"

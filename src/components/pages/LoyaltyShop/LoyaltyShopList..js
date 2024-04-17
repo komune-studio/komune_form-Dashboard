@@ -81,9 +81,9 @@ const LoyaltyShopList = () => {
                     <Switch
                         defaultChecked={row.active}
                         checked={row.active}
-                        style={{backgroundColor: row.active}}
+                        style={{ backgroundColor: row.active }}
                         onChange={() => {
-                            changeActive(row.id, row.active, row);
+                            onActiveStatusChange(row.id, row.active, row);
                         }}
                     />
                 );
@@ -179,11 +179,11 @@ const LoyaltyShopList = () => {
 
     const changeActive = async (id, currStatus, data) => {
         try {
-            await LoyaltyShopModel.edit(id, {...data, active: !currStatus});
+            await LoyaltyShopModel.edit(id, { ...data, active: !currStatus });
             message.success("Data updated successfully!");
             initializeData();
         } catch (e) {
-            console.log('ACTIVE TOGGLE ERROR');
+            console.log("ACTIVE TOGGLE ERROR");
             message.error("There was error from server");
         }
     };
@@ -239,6 +239,28 @@ const LoyaltyShopList = () => {
             okType: "danger",
             onOk: () => {
                 restoreItem(record);
+            },
+        });
+    };
+
+    const onActiveStatusChange = (id, currStatus, data) => {
+        Modal.confirm({
+            title: currStatus
+                ? "Apakah Anda yakin ingin nonaktifkan paket ini?"
+                : "Apakah Anda yakin ingin mengaktifkan paket ini?",
+            okText: "Yes",
+            okButtonProps: {
+                danger: false,
+                type: "primary",
+            },
+            cancelButtonProps: {
+                danger: false,
+                type: "link",
+                style: { color: "#fff" },
+            },
+            okType: "danger",
+            onOk: () => {
+                changeActive(id, currStatus, data);
             },
         });
     };

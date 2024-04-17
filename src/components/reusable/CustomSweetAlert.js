@@ -1,10 +1,11 @@
 import sweetalert from "sweetalert2";
+import Palette from "utils/Palette";
 
 const swal = {
     fire: (options) => {
         return sweetalert.fire({
             ...options,
-            confirmButtonColor: 'rgb(255,109,198)',
+            confirmButtonColor: Palette.BARCODE_ORANGE,
             customClass: {
                 container: 'swal-fonts',
                 ...options.customClass,
@@ -16,7 +17,7 @@ const swal = {
             title: 'Error',
             icon: 'error',
             confirmButtonText: 'Okay',
-            confirmButtonColor: 'rgb(255,109,198)',
+            confirmButtonColor: Palette.BARCODE_ORANGE,
             customClass: {
                 container: 'swal-fonts',
                 ...options.customClass,

@@ -206,7 +206,7 @@ export default function OrderCreate() {
                                                             "fluent-emoji-flat:coin"
                                                         }
                                                     ></Iconify>
-                                                    {item.price}
+                                                    {Helper.formatNumber(item.price)}
                                                 </div>
                                             </Col>
                                             <Col md={6}>

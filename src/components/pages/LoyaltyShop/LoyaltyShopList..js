@@ -21,6 +21,7 @@ import moment from "moment/moment";
 import { Icon } from "@iconify/react";
 import TopUpTitleBar from "../TopUp/TopUpTitleBar";
 import LoyaltyShopTitleBar from "./LoyaltyShopTitleBar";
+import { data } from "jquery";
 
 const LoyaltyShopList = () => {
     const history = useHistory();
@@ -32,7 +33,7 @@ const LoyaltyShopList = () => {
     const columns = [
         {
             id: "image_url",
-            label: "Foto Loyalty",
+            label: "Foto Barang",
             filter: true,
             render: (row) => {
                 return (
@@ -72,18 +73,17 @@ const LoyaltyShopList = () => {
         },
         {
             id: "active",
-            label: "Status Promo",
+            label: "Status Barang",
             filter: false,
             width: "12%",
             render: (row) => {
                 return (
                     <Switch
-                        disabled={true}
                         defaultChecked={row.active}
                         checked={row.active}
                         style={{backgroundColor: row.active}}
                         onChange={() => {
-                            changeActive(row.id, row.active);
+                            changeActive(row.id, row.active, row);
                         }}
                     />
                 );
@@ -129,7 +129,7 @@ const LoyaltyShopList = () => {
                                     Edit
                                 </AntButton>
                             </Tooltip>
-                            <Tooltip
+                            {/* <Tooltip
                                 title={value?.active ? "Hapus" : "Restore"}
                             >
                                 {value?.active ? (
@@ -169,7 +169,7 @@ const LoyaltyShopList = () => {
                                         Restore
                                     </AntButton>
                                 )}
-                            </Tooltip>
+                            </Tooltip> */}
                         </Space>
                     </>
                 );
@@ -177,7 +177,16 @@ const LoyaltyShopList = () => {
         },
     ];
 
-    const changeActive = (id, currStatus) => {};
+    const changeActive = async (id, currStatus, data) => {
+        try {
+            await LoyaltyShopModel.edit(id, {...data, active: !currStatus});
+            message.success("Data updated successfully!");
+            initializeData();
+        } catch (e) {
+            console.log('ACTIVE TOGGLE ERROR');
+            message.error("There was error from server");
+        }
+    };
 
     const deleteItem = async (id) => {
         try {

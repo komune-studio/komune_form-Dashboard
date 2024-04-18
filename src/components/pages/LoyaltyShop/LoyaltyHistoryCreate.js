@@ -18,7 +18,7 @@ export default function LoyaltyHistoryCreate() {
     const [quantity, setQuantity] = useState({});
     const [total, setTotal] = useState(0);
     const [scannedUser, setScannedUser] = useState(null);
-    const [scanTextInput, setScanTextInput] = useState(null);
+    const [scanTextInput, setScanTextInput] = useState("");
 
     const columns = [
         {
@@ -135,6 +135,7 @@ export default function LoyaltyHistoryCreate() {
 
         setQuantity(quantityObject);
         setScanTextInput("");
+        setScannedUser(null);
     };
 
     const handleSubmit = async () => {
@@ -186,9 +187,7 @@ export default function LoyaltyHistoryCreate() {
                     </div>
                     <div style={{ flex: 1 }}>&nbsp;Tukar Poin</div>
                     <AntButton
-                        onClick={() => {
-                            resetForms();
-                        }}
+                        onClick={resetForms}
                         style={{
                             backgroundColor: "transparent",
                             borderColor: Palette.BARCODE_ORANGE,
@@ -299,10 +298,7 @@ export default function LoyaltyHistoryCreate() {
                                         fontSize: "0.85em",
                                     }}
                                 >
-                                    <Iconify
-                                        icon={"fluent-emoji-flat:coin"}
-                                    ></Iconify>
-                                    {"hello"}
+                                    {Helper.formatNumber(scannedUser.loyalty)} points
                                 </div>
                             </div>
                         ) : (

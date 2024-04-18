@@ -3,7 +3,6 @@ import { Container } from "reactstrap";
 import { Col, Form, Row } from "react-bootstrap";
 import { Button as AntButton, Image } from "antd";
 import swal from "components/reusable/CustomSweetAlert";
-import { Icon } from "@iconify/react";
 import LoyaltyShopModel from "../../../models/LoyaltyShopModel";
 import UserModel from "models/UserModel";
 import Iconify from "components/reusable/Iconify";
@@ -11,11 +10,12 @@ import CustomTable from "components/reusable/CustomTable";
 import { useHistory } from "react-router-dom";
 import Helper from "utils/Helper";
 import Palette from "utils/Palette";
+import LoyaltyHistoryModel from "models/LoyaltyHistoryModel";
 
 export default function LoyaltyHistoryCreate() {
     const history = useHistory();
     const [loyaltyItems, setLoyaltyItems] = useState([]);
-    const [quantity, setQuantity] = useState([]);
+    const [quantity, setQuantity] = useState({});
     const [total, setTotal] = useState(0);
     const [scannedUser, setScannedUser] = useState(null);
     const [scanTextInput, setScanTextInput] = useState(null);
@@ -25,7 +25,7 @@ export default function LoyaltyHistoryCreate() {
             id: "item",
             label: "Item",
             filter: true,
-            render: (row, index) => {
+            render: (row) => {
                 return (
                     <div
                         className="d-flex justify-content-start align-items-center"
@@ -39,7 +39,7 @@ export default function LoyaltyHistoryCreate() {
                         ></Image>
                         <div>
                             <div>{row.name}</div>
-                            <div>{row.price} points</div>
+                            <div>{Helper.formatNumber(row.price)} points</div>
                         </div>
                     </div>
                 );
@@ -49,20 +49,17 @@ export default function LoyaltyHistoryCreate() {
             id: "quantity",
             label: "Quantity",
             filter: false,
-            render: (row, index) => {
+            render: (row) => {
                 return (
                     <div style={{ flex: 1 }}>
                         <Form.Group className="mb-3">
                             <Form.Control
-                                value={quantity[index]}
+                                value={quantity[row.id]}
                                 onChange={(e) => {
-                                    setQuantity(quantity.map((item, idx) => {
-                                        if (idx === index) {
-                                            return e.target.value
-                                        } else {
-                                            return item
-                                        }
-                                    }))
+                                    handleQuantityInputChange(
+                                        row,
+                                        parseInt(e.target.value)
+                                    );
                                 }}
                                 placeholder="Qty"
                                 type="number"
@@ -76,37 +73,11 @@ export default function LoyaltyHistoryCreate() {
             id: "total",
             label: "Total",
             filter: false,
-            render: (row, index) => {
-                return <div>{'hello'}</div>;
+            render: (row) => {
+                return <div>{Helper.formatNumber(row.price * quantity[row.id])}</div>;
             },
         },
     ];
-
-    const getLoyaltyItems = async () => {
-        try {
-            let result = await LoyaltyShopModel.getAll();
-            setLoyaltyItems(result);
-            setQuantity(Array(result.length).fill(0))
-            console.log("LOYALTY ITEMS", result);
-        } catch (e) {
-            swal.fireError({ text: e.error_message ? e.error_message : null });
-        }
-    };
-
-    const resetValue = () => {};
-
-    const editValue = (value) => {
-        setScanTextInput(value);
-
-        let timer;
-        clearTimeout(timer);
-
-        timer = setTimeout(() => {
-            if (value.length > 100) findUserByQR(value);
-        }, 300);
-    };
-
-    const onSubmit = () => {};
 
     const findUserByQR = async (value) => {
         try {
@@ -121,9 +92,82 @@ export default function LoyaltyHistoryCreate() {
         }
     };
 
+    const getLoyaltyItems = async () => {
+        try {
+            let result = await LoyaltyShopModel.getAll();
+            setLoyaltyItems(result);
+
+            let quantityObject = {};
+            for (let item of result) {
+                quantityObject[item.id] = 0;
+            }
+
+            setQuantity(quantityObject);
+        } catch (e) {
+            swal.fireError({ text: e.error_message ? e.error_message : null });
+        }
+    };
+
+    const handleScanTextInputChange = (value) => {
+        setScanTextInput(value);
+
+        let timer;
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {
+            if (value.length > 100) findUserByQR(value);
+        }, 300);
+    };
+
+    const handleQuantityInputChange = (row, newValue) => {
+        setQuantity({
+            ...quantity,
+            [row.id]: newValue <= 0 ? 0 : newValue,
+        });
+    };
+
+    const resetForms = () => {
+        let quantityObject = {};
+
+        for (let item of loyaltyItems) {
+            quantityObject[item.id] = 0;
+        }
+
+        setQuantity(quantityObject);
+        setScanTextInput("");
+    };
+
+    const handleSubmit = async () => {
+        try {
+            const details = [];
+            for (let item of loyaltyItems) {
+                if (quantity[item.id] > 0) {
+                    details.push({ id: item.id, quantity: quantity[item.id] });
+                }
+            }
+
+            await LoyaltyHistoryModel.create({
+                user_id: scannedUser.id,
+                details: details,
+            });
+            swal.fire({ text: "Loyalty Usage Success!", icon: "success" });
+            history.push("/loyalty-history");
+        } catch (e) {
+            swal.fireError({ text: e.error_message ? e.error_message : null });
+        }
+    };
+
     useEffect(() => {
         getLoyaltyItems();
     }, []);
+
+    useEffect(() => {
+        let sum = 0;
+        loyaltyItems.forEach((item) => {
+            sum += item.price * quantity[item.id];
+        });
+        setTotal(sum);
+    }, [quantity, loyaltyItems]);
 
     return (
         <Container fluid style={{ color: "white" }}>
@@ -143,7 +187,7 @@ export default function LoyaltyHistoryCreate() {
                     <div style={{ flex: 1 }}>&nbsp;Tukar Poin</div>
                     <AntButton
                         onClick={() => {
-                            resetValue();
+                            resetForms();
                         }}
                         style={{
                             backgroundColor: "transparent",
@@ -153,18 +197,6 @@ export default function LoyaltyHistoryCreate() {
                         }}
                     >
                         Reset
-                    </AntButton>
-                    <AntButton
-                        onClick={() => {
-                            onSubmit();
-                        }}
-                        style={{
-                            backgroundColor: Palette.BARCODE_ORANGE,
-                            borderColor: Palette.BARCODE_ORANGE,
-                            color: "white",
-                        }}
-                    >
-                        Simpan
                     </AntButton>
                 </Col>
                 <Col md={6}>
@@ -188,6 +220,46 @@ export default function LoyaltyHistoryCreate() {
                             data={loyaltyItems}
                             columns={columns}
                         />
+                    </div>
+                    <div
+                        style={{
+                            backgroundColor: "black",
+                            marginLeft: 16,
+                            marginRight: 16,
+                            marginTop: 24,
+                            padding: 16,
+                            width: "100%",
+                            borderRadius: 8,
+                            gap: 16,
+                        }}
+                        className="d-flex flex-column"
+                    >
+                        <div>Pembayaran</div>
+                        <div
+                            style={{
+                                padding: 12,
+                                borderRadius: 4,
+                                border: "1px solid #404040",
+                            }}
+                            className="d-flex justify-content-between align-items-center"
+                        >
+                            <div>Total</div>
+                            <div>{Helper.formatNumber(total)}</div>
+                        </div>
+                        <div style={{ textAlign: "end" }}>
+                            <AntButton
+                                onClick={() => {
+                                    handleSubmit();
+                                }}
+                                style={{
+                                    backgroundColor: Palette.BARCODE_ORANGE,
+                                    borderColor: Palette.BARCODE_ORANGE,
+                                    color: "white",
+                                }}
+                            >
+                                Tukar Poin
+                            </AntButton>
+                        </div>
                     </div>
                 </Col>
                 <Col md={6}>
@@ -246,7 +318,9 @@ export default function LoyaltyHistoryCreate() {
                                         <Form.Control
                                             value={scanTextInput}
                                             onChange={(e) =>
-                                                editValue(e.target.value)
+                                                handleScanTextInputChange(
+                                                    e.target.value
+                                                )
                                             }
                                             placeholder="Tekan lalu scan"
                                         />

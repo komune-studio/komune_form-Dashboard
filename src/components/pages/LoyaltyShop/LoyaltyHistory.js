@@ -31,8 +31,8 @@ export default function LoyaltyHistory() {
             filter: true,
         },
         {
-            id: "user_id",
-            label: "User",
+            id: "user_username",
+            label: "Username",
             filter: true,
         },
         {
@@ -50,7 +50,6 @@ export default function LoyaltyHistory() {
         try {
             let result = await LoyaltyHistoryModel.getAll();
             setDataSource(result);
-            console.log("LOYALTY HISTORY", result);
         } catch (e) {
             swal.fireError({ text: e.error_message ? e.error_message : null });
         }

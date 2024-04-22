@@ -2,6 +2,9 @@ import Palette from "utils/Palette";
 import Iconify from "components/reusable/Iconify";
 import moment from "moment";
 
+import swal from "components/reusable/CustomSweetAlert";
+import TournamentModel from "models/TournamentModel";
+
 // Data-data sementara (tunggu API)
 const SCHEDULES = [
     { backgroundColor: "#D1E7DD", color: "#0F5132" },
@@ -43,6 +46,28 @@ const getPastWeekDates = () => {
 
     return result;
 };
+
+// DEV
+
+const createTournament = async () => {
+
+    try {
+        const result = await TournamentModel.create({
+            name: 'Pitstop Grand Finale',
+            location: 'Mall of Indonesia',
+            model: 'SODI SX9',
+            start_date: moment().toISOString(),
+            end_date: moment().toISOString(),
+            detail: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sapien sapien, elementum et lacinia placerat, lobortis non justo. Maecenas consequat vel ante non mollis.',
+            type: 'classic',
+        })
+        console.log(result)
+        swal.fire({text: "Data berhasil dibuat", icon: "success"})
+    } catch(e) {
+        swal.fireError(e);
+    }
+}
+
 
 export default function Schedule() {
     return (

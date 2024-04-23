@@ -113,12 +113,12 @@ export default function LoyaltyModalForm({isOpen, close, isNewRecord, selectedDa
 
             if (result?.location) {
                 setImageUrl(result?.location)
-                message.success('Successfully upload user')
+                message.success('Image uploaded successfully')
             }
             setLoadingUpload(false)
         } catch (e) {
             console.log('isi e', e)
-            message.error("Failed to upload user")
+            message.error("Failed to upload image")
             setLoadingUpload(false)
         }
     }

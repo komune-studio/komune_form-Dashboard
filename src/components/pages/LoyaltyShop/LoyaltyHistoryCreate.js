@@ -328,7 +328,7 @@ export default function LoyaltyHistoryCreate() {
 													e.target.value
 												)
 											}
-											placeholder="Tekan lalu scan"
+											placeholder="Scan QR atau ketik username user"
 										/>
 									</Form.Group>
 								</div>

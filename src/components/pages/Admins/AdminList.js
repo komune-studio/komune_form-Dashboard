@@ -123,11 +123,13 @@ const AdminList = () => {
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:lock"}/>}>Reset Pssword</AntButton>
+                                    icon={<Iconify icon={"material-symbols:lock"}/>}>Reset Password</AntButton>
                                 {/* </Link> */}
                             </Tooltip>
                             <Tooltip title="Hapus">
                                 <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
                                     onClick={() => {
                                         onDelete(value.id)
                                     }}

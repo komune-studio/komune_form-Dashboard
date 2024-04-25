@@ -27,6 +27,10 @@ label {
     z-index: 1000000000 !important;
 }
 
+input::placeholder {
+    color: '#FFF' !important;
+}
+
 #date-popup > div {
     position: relative !important;
 }

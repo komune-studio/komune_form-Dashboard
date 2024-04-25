@@ -70,6 +70,12 @@ export default function TournamentList() {
 			label: 'MODEL',
 			filter: true,
 		},
+		{
+			id: 'type',
+			label: 'KATEGORI',
+			filter: false,
+			render: (row) => <>{Helper.toTitleCase(row?.type || '')}</>
+		}
 	];
 
 	useEffect(() => {
@@ -153,6 +159,7 @@ export default function TournamentList() {
 			<TournamentCreateModalForm
 				isOpen={showModal}
 				closeModal={() => setShowModal(false)}
+				updateTournamentsData={getTournamentsData}
 			/>
 		</>
 	);
@@ -160,13 +167,13 @@ export default function TournamentList() {
 
 function TournamentCreateModalForm(props) {
 	const [formData, setFormData] = useState({
-		name: '',
-		location: '',
-		model: '',
-		type: '',
-		start_date: new Date(),
-		end_date: new Date(),
-		detail: '',
+		name: null,
+		location: null,
+		model: null,
+		type: null,
+		start_date: null,
+		end_date: null,
+		detail: null,
 	});
 
 	const updateFormData = (name, value) => {
@@ -175,23 +182,27 @@ function TournamentCreateModalForm(props) {
 
 	const handleClose = () => {
 		setFormData({
-			name: '',
-			location: '',
-			model: '',
-			type: '',
-			start_date: new Date(),
-			end_date: new Date(),
-			detail: '',
+			name: null,
+			location: null,
+			model: null,
+			type: null,
+			start_date: null,
+			end_date: null,
+			detail: null,
 		});
-		
+
 		props.closeModal();
 	};
 
 	const handleSubmit = async () => {
+		if (Object.values(formData).indexOf(null) > -1) {
+			return swal.fireError({text: 'Mohon lengkapi semua kolom terlebih dahulu!'});
+		}
+		
 		try {
 			let result = await TournamentModel.create(formData);
 			swal.fire({text: 'Turnamen berhasil dibuat!', icon: 'success'});
-			console.log(result);
+			props.updateTournamentsData();
 			handleClose();
 		} catch(e) {
 			swal.fireError({text: e?.error_message || 'Gagal membuat turnamen'})

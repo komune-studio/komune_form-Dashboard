@@ -107,7 +107,8 @@ const CustomTable = ({
                          pagination = true,
                          showFilter = false,
                          mode = 'dark',
-                         extendToolbar = null
+                         extendToolbar = null,
+                         rowAction
                      }) => {
 
     const [selected, setSelected] = useState([]);
@@ -233,7 +234,7 @@ const CustomTable = ({
                         const selectedItem = selected.indexOf(id) !== -1;
 
                         return (
-                            <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedItem}>
+                            <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedItem} onClick={() => rowAction?.onClick(row)} style={{cursor: rowAction?.onClick ? 'pointer' : 'default'}}>
                                 {
                                     checkbox && <TableCell padding="checkbox">
                                         <Checkbox checked={selectedItem} onChange={(event) => handleClick(event, id)}/>

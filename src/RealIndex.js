@@ -48,7 +48,14 @@ export default function (props) {
             theme={{
                 token: {
                     colorPrimary: Palette.CATALYST_PINK,
+                    fontFamily: 'Open Sans, sans-serif',
                 },
+                components: {
+                    Table: {
+                        headerBg: '#00000',
+                        borderColor: '#FFF'
+                    }
+                }
             }}
         >
             <BrowserRouter basename="/">

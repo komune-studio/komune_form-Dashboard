@@ -130,7 +130,7 @@ const SIDEBAR = [
         color: Palette.BARCODE_ORANGE
     },
     {
-        path: "/tournaments",
+        path: "/tournament",
         name: "Tournament",
         icon: "mdi:tournament",
         color: Palette.BARCODE_ORANGE

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import {useHistory} from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { ButtonGroup, Form } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import { Flex, Spin, Button as AntButton } from 'antd';
+import { Flex, Spin, Button as AntButton, Table } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import swal from 'components/reusable/CustomSweetAlert';
@@ -16,6 +17,7 @@ export default function TournamentList() {
 	const [category, setCategory] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [showModal, setShowModal] = useState(false);
+	const history = useHistory();
 
 	const tournamentsDataFormatter = (data) => {
 		let formatted = {};
@@ -74,8 +76,8 @@ export default function TournamentList() {
 			id: 'type',
 			label: 'KATEGORI',
 			filter: false,
-			render: (row) => <>{Helper.toTitleCase(row?.type || '')}</>
-		}
+			render: (row) => <>{Helper.toTitleCase(row?.type || '')}</>,
+		},
 	];
 
 	useEffect(() => {
@@ -113,6 +115,7 @@ export default function TournamentList() {
 							Tambah Turnamen
 						</AntButton>
 					</Flex>
+
 					{/* Page content */}
 					<div>
 						{/* Tournament category selector */}
@@ -151,11 +154,13 @@ export default function TournamentList() {
 								showFilter={true}
 								pagination={true}
 								searchText={''}
+								rowAction={{onClick: (rowData) => history.push(`/tournament/${rowData.id}`)}}
 							/>
 						)}
 					</div>
 				</div>
 			</Container>
+			
 			<TournamentCreateModalForm
 				isOpen={showModal}
 				closeModal={() => setShowModal(false)}
@@ -196,18 +201,22 @@ function TournamentCreateModalForm(props) {
 
 	const handleSubmit = async () => {
 		if (Object.values(formData).indexOf(null) > -1) {
-			return swal.fireError({text: 'Mohon lengkapi semua kolom terlebih dahulu!'});
+			return swal.fireError({
+				text: 'Mohon lengkapi semua kolom terlebih dahulu!',
+			});
 		}
-		
+
 		try {
 			let result = await TournamentModel.create(formData);
-			swal.fire({text: 'Turnamen berhasil dibuat!', icon: 'success'});
+			swal.fire({ text: 'Turnamen berhasil dibuat!', icon: 'success' });
 			props.updateTournamentsData();
 			handleClose();
-		} catch(e) {
-			swal.fireError({text: e?.error_message || 'Gagal membuat turnamen'})
+		} catch (e) {
+			swal.fireError({
+				text: e?.error_message || 'Gagal membuat turnamen',
+			});
 		}
-	}
+	};
 
 	return (
 		<Modal
@@ -315,7 +324,12 @@ function TournamentCreateModalForm(props) {
 					>
 						Batal
 					</AntButton>
-					<AntButton type={'primary'} size="sm" variant="primary" onClick={handleSubmit}>
+					<AntButton
+						type={'primary'}
+						size="sm"
+						variant="primary"
+						onClick={handleSubmit}
+					>
 						Simpan
 					</AntButton>
 				</Flex>

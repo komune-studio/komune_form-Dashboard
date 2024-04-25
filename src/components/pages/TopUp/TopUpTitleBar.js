@@ -17,7 +17,7 @@ export default function TopUpTitleBar() {
                         <Link
                             className={`btn ${location.pathname === '/top-up-history' ? 'btn-primary-tab' : 'btn-default-tab'}`}
                             to={'/top-up-history'}>
-                            Hisory
+                            History
                         </Link>
                         <Link
                             className={`btn ${location.pathname === '/top-up-list' ? 'btn-primary-tab' : 'btn-default-tab'}`}

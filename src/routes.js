@@ -30,6 +30,7 @@ import OrderCreate from "components/pages/Order/OrderCreate";
 import LoyaltyHistory from "components/pages/LoyaltyShop/LoyaltyHistory";
 import LoyaltyHistoryCreate from "components/pages/LoyaltyShop/LoyaltyHistoryCreate";
 import TournamentList from "components/pages/Tournament/TournamentList";
+import TournamentDetail from "components/pages/Tournament/TournamentDetail";
 
 var routes = [
     {
@@ -117,10 +118,17 @@ var routes = [
         component: Logout,
     },
     {
-        path: "/tournaments",
+        path: "/tournament/:id",
+        name: "Tournament Detail",
+        layout: "/admin",
+        component: TournamentDetail,
+    },
+    {
+        path: "/tournament",
         name: "Tournament",
         layout: "/admin",
         component: TournamentList,
-    }
+    },
+
 ];
 export default routes;

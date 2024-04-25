@@ -129,6 +129,12 @@ const SIDEBAR = [
         icon: "material-symbols:partner-exchange-outline-rounded",
         color: Palette.BARCODE_ORANGE
     },
+    {
+        path: "/tournaments",
+        name: "Tournament",
+        icon: "mdi:tournament",
+        color: Palette.BARCODE_ORANGE
+    }
     // {
     //     path: "/banners",
     //     name: "Banners",

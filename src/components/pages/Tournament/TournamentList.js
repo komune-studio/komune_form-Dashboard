@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { ButtonGroup, Form } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import { Flex, Spin, Button as AntButton, Table } from 'antd';
+import { Flex, Spin, Button as AntButton } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import swal from 'components/reusable/CustomSweetAlert';
@@ -28,6 +28,8 @@ export default function TournamentList() {
 			} else {
 				formatted[item.type] = [item];
 			}
+
+			return item
 		});
 
 		return formatted;
@@ -54,7 +56,7 @@ export default function TournamentList() {
 	const tableColumnFormat = [
 		{
 			id: 'start_date',
-			label: 'DATE',
+			label: 'TANGGAL MULAI',
 			filter: false,
 			render: (row) => {
 				return (
@@ -64,7 +66,7 @@ export default function TournamentList() {
 		},
 		{
 			id: 'name',
-			label: 'TITLE',
+			label: 'NAMA TURNAMEN',
 			filter: true,
 		},
 		{
@@ -104,7 +106,7 @@ export default function TournamentList() {
 							className="mb-3"
 							style={{ fontWeight: 'bold', fontSize: '1.1em' }}
 						>
-							Tournament List
+							List Turnamen
 						</div>
 						{/* Create new tournament button */}
 						<AntButton
@@ -172,13 +174,13 @@ export default function TournamentList() {
 
 function TournamentCreateModalForm(props) {
 	const [formData, setFormData] = useState({
-		name: null,
-		location: null,
-		model: null,
-		type: null,
-		start_date: null,
-		end_date: null,
-		detail: null,
+		name: '',
+		location: '',
+		model: '',
+		type: '',
+		start_date: '',
+		end_date: '',
+		detail: '',
 	});
 
 	const updateFormData = (name, value) => {
@@ -187,20 +189,20 @@ function TournamentCreateModalForm(props) {
 
 	const handleClose = () => {
 		setFormData({
-			name: null,
-			location: null,
-			model: null,
-			type: null,
-			start_date: null,
-			end_date: null,
-			detail: null,
+			name: '',
+			location: '',
+			model: '',
+			type: '',
+			start_date: '',
+			end_date: '',
+			detail: '',
 		});
 
 		props.closeModal();
 	};
 
 	const handleSubmit = async () => {
-		if (Object.values(formData).indexOf(null) > -1) {
+		if (Object.values(formData).indexOf('') > -1) {
 			return swal.fireError({
 				text: 'Mohon lengkapi semua kolom terlebih dahulu!',
 			});

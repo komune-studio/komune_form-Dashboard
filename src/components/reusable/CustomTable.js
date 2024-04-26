@@ -234,7 +234,7 @@ const CustomTable = ({
                         const selectedItem = selected.indexOf(id) !== -1;
 
                         return (
-                            <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedItem} onClick={() => rowAction?.onClick(row)} style={{cursor: rowAction?.onClick ? 'pointer' : 'default'}}>
+                            <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedItem} style={{cursor: rowAction?.onClick ? 'pointer' : 'default'}}>
                                 {
                                     checkbox && <TableCell padding="checkbox">
                                         <Checkbox checked={selectedItem} onChange={(event) => handleClick(event, id)}/>
@@ -246,6 +246,7 @@ const CustomTable = ({
                                         return <>
                                             <TableCell
                                                 style={{color: mode === 'dark' ? "white" : 'black'}}
+                                                onClick={columnSetting.link ? () => rowAction?.onClick(row) : null}
                                                 align={columnSetting.alignment}>{
                                                 columnSetting.render ?
                                                     columnSetting.render(row)

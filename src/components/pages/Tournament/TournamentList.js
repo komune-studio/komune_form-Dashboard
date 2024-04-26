@@ -1,22 +1,23 @@
 import { useState, useEffect } from 'react';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { ButtonGroup, Form } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import { Flex, Spin, Button as AntButton } from 'antd';
+import { Flex, Spin, Button as AntButton, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import TournamentModel from 'models/TournamentModel';
 import swal from 'components/reusable/CustomSweetAlert';
 import CustomTable from 'components/reusable/CustomTable';
+import Iconify from 'components/reusable/Iconify';
 import Palette from 'utils/Palette';
-import TournamentModel from 'models/TournamentModel';
 import Helper from 'utils/Helper';
 
 export default function TournamentList() {
 	const [tournaments, setTournaments] = useState({});
 	const [category, setCategory] = useState('');
 	const [loading, setLoading] = useState(false);
-	const [showModal, setShowModal] = useState(false);
+	const [modal, setModal] = useState({});
 	const history = useHistory();
 
 	const tournamentsDataFormatter = (data) => {
@@ -29,7 +30,7 @@ export default function TournamentList() {
 				formatted[item.type] = [item];
 			}
 
-			return item
+			return item;
 		});
 
 		return formatted;
@@ -58,6 +59,7 @@ export default function TournamentList() {
 			id: 'start_date',
 			label: 'TANGGAL MULAI',
 			filter: false,
+			link: true,
 			render: (row) => {
 				return (
 					<>{moment(row.start_date).format('dddd, DD MMMM YYYY')}</>
@@ -65,20 +67,73 @@ export default function TournamentList() {
 			},
 		},
 		{
+			id: 'end_date',
+			label: 'TANGGAL SELESAI',
+			filter: false,
+			link: true,
+			render: (row) => {
+				return <>{moment(row.end_date).format('dddd, DD MMMM YYYY')}</>;
+			},
+		},
+		{
 			id: 'name',
 			label: 'NAMA TURNAMEN',
 			filter: true,
+			link: true,
 		},
 		{
 			id: 'model',
 			label: 'MODEL',
 			filter: true,
+			link: true,
 		},
 		{
 			id: 'type',
 			label: 'KATEGORI',
 			filter: false,
+			link: true,
 			render: (row) => <>{Helper.toTitleCase(row?.type || '')}</>,
+		},
+		{
+			id: '',
+			label: '',
+			filter: false,
+			link: false,
+			render: (row) => {
+				return (
+					<>
+						<Flex align={'center'} justify={'start'}>
+							<Tooltip title="Edit">
+								<AntButton
+									type={'link'}
+									shape={'circle'}
+									icon={
+										<Iconify
+											icon={'material-symbols:edit'}
+										/>
+									}
+									style={{ color: Palette.MAIN_THEME }}
+									onClick={() => {
+										setModal({
+											show: true,
+											formType: 'edit',
+											initialData: {
+												...row,
+												start_date: moment(
+													row.start_date
+												).format('YYYY-MM-DD'),
+												end_date: moment(
+													row.end_date
+												).format('YYYY-MM-DD'),
+											},
+										});
+									}}
+								/>
+							</Tooltip>
+						</Flex>
+					</>
+				);
+			},
 		},
 	];
 
@@ -112,7 +167,12 @@ export default function TournamentList() {
 						<AntButton
 							size={'middle'}
 							type={'primary'}
-							onClick={() => setShowModal(true)}
+							onClick={() => {
+								setModal({
+									show: true,
+									formType: 'create',
+								});
+							}}
 						>
 							Tambah Turnamen
 						</AntButton>
@@ -156,38 +216,37 @@ export default function TournamentList() {
 								showFilter={true}
 								pagination={true}
 								searchText={''}
-								rowAction={{onClick: (rowData) => history.push(`/tournament/${rowData.id}`)}}
+								rowAction={{
+									onClick: (rowData) =>
+										history.push(
+											`/tournament/${rowData.id}`
+										),
+								}}
 							/>
 						)}
 					</div>
 				</div>
 			</Container>
-			
-			<TournamentCreateModalForm
-				isOpen={showModal}
-				closeModal={() => setShowModal(false)}
+
+			<TournamentListModal
+				isOpen={modal?.show}
+				closeModal={() => setModal({ show: false })}
 				updateTournamentsData={getTournamentsData}
+				tournamentData={modal?.initialData || {}}
+				formType={modal?.formType}
 			/>
 		</>
 	);
 }
 
-function TournamentCreateModalForm(props) {
-	const [formData, setFormData] = useState({
-		name: '',
-		location: '',
-		model: '',
-		type: '',
-		start_date: '',
-		end_date: '',
-		detail: '',
-	});
+function TournamentListModal(props) {
+	const [formData, setFormData] = useState({});
 
 	const updateFormData = (name, value) => {
 		setFormData({ ...formData, [name]: value });
 	};
 
-	const handleClose = () => {
+	const resetForm = () => {
 		setFormData({
 			name: '',
 			location: '',
@@ -197,7 +256,22 @@ function TournamentCreateModalForm(props) {
 			end_date: '',
 			detail: '',
 		});
+	};
 
+	const preFillForm = (data) => {
+		setFormData({
+			name: data?.name || '',
+			location: data?.location || '',
+			model: data?.model || '',
+			type: data?.type || '',
+			start_date: data?.start_date || '',
+			end_date: data?.end_date || '',
+			detail: data?.detail || '',
+		});
+	};
+
+	const handleClose = () => {
+		resetForm();
 		props.closeModal();
 	};
 
@@ -220,6 +294,14 @@ function TournamentCreateModalForm(props) {
 		}
 	};
 
+	useEffect(() => {
+		if (props.formType === 'edit') {
+			preFillForm(props.tournamentData);
+		} else {
+			resetForm();
+		}
+	}, [props.tournamentData, props.formType]);
+
 	return (
 		<Modal
 			size={'lg'}
@@ -229,7 +311,11 @@ function TournamentCreateModalForm(props) {
 		>
 			<Modal.Header>
 				<Flex justify="space-between" align="center" className="w-100">
-					<Modal.Title>Buat Turnamen</Modal.Title>
+					<Modal.Title>
+						{props.formType === 'create'
+							? 'Buat Turnamen'
+							: 'Ubah Turnamen'}
+					</Modal.Title>
 					<div onClick={handleClose} style={{ cursor: 'pointer' }}>
 						<CloseOutlined style={{ color: '#FFF' }} />
 					</div>

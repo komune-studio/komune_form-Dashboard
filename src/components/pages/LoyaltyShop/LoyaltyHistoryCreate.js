@@ -148,6 +148,8 @@ export default function LoyaltyHistoryCreate() {
 	};
 
 	const handleSubmit = async () => {
+		if (total === 0) return swal.fireError({text: 'Belum ada barang yang dimasukkan!'})
+		
 		try {
 			const details = [];
 			for (let item of loyaltyItems) {

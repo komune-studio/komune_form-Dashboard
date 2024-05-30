@@ -27,6 +27,7 @@ import PromotionList from "./components/pages/Promotion/PromotionList";
 import LoyaltyShopList from "./components/pages/LoyaltyShop/LoyaltyShopList.";
 import OrderList from "./components/pages/Order/OrderList";
 import OrderCreate from "components/pages/Order/OrderCreate";
+import OrderCreateV2 from "./components/pages/Order/OrderCreateV2";
 import LoyaltyHistory from "components/pages/LoyaltyShop/LoyaltyHistory";
 import LoyaltyHistoryCreate from "components/pages/LoyaltyShop/LoyaltyHistoryCreate";
 import TournamentList from "components/pages/Tournament/TournamentList";
@@ -66,7 +67,7 @@ var routes = [
     {
         path: "/orders/create",
         name: "Order Create",
-        component: OrderCreate,
+        component: OrderCreateV2,
         layout: "/admin",
     },
     {

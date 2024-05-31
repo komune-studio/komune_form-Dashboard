@@ -6,8 +6,8 @@ import { Form } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Palette from 'utils/Palette';
 import Iconify from 'components/reusable/Iconify';
-
 import swal from 'components/reusable/CustomSweetAlert';
+import UserModel from 'models/UserModel';
 import TournamentModel from 'models/TournamentModel';
 
 // Data-data sementara (tunggu API)
@@ -289,7 +289,9 @@ function ScheduleActionModal({
 		repeat: '',
 		skillLevel: '',
 	});
-	const [registerFormData, setRegisterFormData] = useState({});
+
+	const [registerInputValue, setRegisterInputValue] = useState('');
+	const [registeredDrivers, setRegisteredDrivers] = useState([]);
 
 	const resetForms = () => {
 		setCreateFormData({
@@ -299,74 +301,35 @@ function ScheduleActionModal({
 			skillLevel: '',
 		});
 
-		setRegisterFormData({});
+		setRegisteredDrivers([]);
 	};
 
-	const CreateScheduleForm = () => (
-		<>
-			<Flex vertical gap={8}>
-				<Form.Label>Waktu Mulai</Form.Label>
-				<Form.Control
-					placeholder={'...'}
-					value={createFormData.startTime}
-					onChange={(e) =>
-						setCreateFormData({
-							...createFormData,
-							startTime: e.target.value,
-						})
-					}
-				/>
-			</Flex>
-			<Flex vertical gap={8}>
-				<Form.Label>Durasi</Form.Label>
-				<Form.Control
-					placeholder={'...'}
-					value={createFormData.duration}
-					onChange={(e) =>
-						setCreateFormData({
-							...createFormData,
-							duration: e.target.value,
-						})
-					}
-				/>
-			</Flex>
-			<Flex vertical gap={8}>
-				<Form.Label>Berulang</Form.Label>
-				<Form.Control
-					placeholder={'...'}
-					value={createFormData.repeat}
-					onChange={(e) =>
-						setCreateFormData({
-							...createFormData,
-							repeat: e.target.value,
-						})
-					}
-				/>
-			</Flex>
-			<Flex vertical gap={8}>
-				<Form.Label>Skill Level</Form.Label>
-				<Form.Control
-					placeholder={'...'}
-					value={createFormData.skillLevel}
-					onChange={(e) =>
-						setCreateFormData({
-							...createFormData,
-							skillLevel: e.target.value,
-						})
-					}
-				/>
-			</Flex>
-		</>
-	);
+	const handleRegisterInputChange = async (value) => {
+		try {
+			setRegisterInputValue(value);
 
-	const RegisterDriverForm = () => (
-		<>
-			<Flex vertical gap={8}>
-				<Form.Label>Driver</Form.Label>
-				<Form.Control placeholder={'...'} />
-			</Flex>
-		</>
-	);
+			let getUserData;
+			clearTimeout(getUserData);
+
+			getUserData = setTimeout(async () => {
+				if (value.length > 100) {
+					let result = await UserModel.processUserQR({
+						token: value,
+					});
+					setRegisteredDrivers([...registeredDrivers, result]);
+				}
+			}, 300);
+		} catch (e) {
+			swal.fireError({
+				title: `Error`,
+				text: e.error_message
+					? e.error_message
+					: 'Invalid credential, please try again.',
+			});
+		}
+
+		setTimeout(() => setRegisterInputValue(''), 300);
+	};
 
 	return (
 		<Modal size={'lg'} show={isOpen} backdrop="static" keyboard={false}>
@@ -377,7 +340,7 @@ function ScheduleActionModal({
 					</Modal.Title>
 					<AntButton
 						onClick={() => {
-                            resetForms();
+							resetForms();
 							handleClose();
 						}}
 						style={{
@@ -400,6 +363,7 @@ function ScheduleActionModal({
 								<Form.Label>Waktu Mulai</Form.Label>
 								<Form.Control
 									placeholder={'...'}
+									type="date"
 									value={createFormData.startTime}
 									onChange={(e) =>
 										setCreateFormData({
@@ -410,9 +374,10 @@ function ScheduleActionModal({
 								/>
 							</Flex>
 							<Flex vertical gap={8}>
-								<Form.Label>Durasi</Form.Label>
+								<Form.Label>Durasi (menit)</Form.Label>
 								<Form.Control
-									placeholder={'...'}
+									placeholder={0}
+									type="number"
 									value={createFormData.duration}
 									onChange={(e) =>
 										setCreateFormData({
@@ -425,7 +390,8 @@ function ScheduleActionModal({
 							<Flex vertical gap={8}>
 								<Form.Label>Berulang</Form.Label>
 								<Form.Control
-									placeholder={'...'}
+									placeholder={0}
+									type="number"
 									value={createFormData.repeat}
 									onChange={(e) =>
 										setCreateFormData({
@@ -453,8 +419,43 @@ function ScheduleActionModal({
 						<>
 							<Flex vertical gap={8}>
 								<Form.Label>Driver</Form.Label>
-								<Form.Control placeholder={'...'} />
+								<Flex gap={8}>
+									<Form.Control
+										value={registerInputValue}
+										placeholder={
+											'Scan QR / masukkan email atau username user...'
+										}
+										onChange={(e) =>
+											handleRegisterInputChange(
+												e.target.value
+											)
+										}
+									/>
+									<AntButton
+										type={'primary'}
+										onClick={() =>
+											setRegisteredDrivers([
+												...registeredDrivers,
+												registerInputValue,
+											])
+										}
+									>
+										Tambah Driver
+									</AntButton>
+								</Flex>
 							</Flex>
+							{registeredDrivers.length > 0 ? (
+								<Flex vertical gap={8}>
+									{registeredDrivers.map((driver, index) => (
+										<RegisteredDriversListItem
+											key={driver.id}
+											driver={driver}
+											registeredDrivers={registeredDrivers}
+											setRegisteredDrivers={setRegisteredDrivers}
+										/>
+									))}
+								</Flex>
+							) : null}
 						</>
 					)}
 				</Flex>
@@ -486,5 +487,36 @@ function ScheduleActionModal({
 				</Flex>
 			</Modal.Body>
 		</Modal>
+	);
+}
+
+function RegisteredDriversListItem({ driver, registeredDrivers, setRegisteredDrivers }) {
+	return (
+		<Flex
+			style={{
+				color: '#FFF',
+				backgroundColor: Palette.BACKGROUND_DARK_GRAY,
+				padding: '8px 12px',
+				borderRadius: 8,
+			}}
+			align={'center'}
+			flex={1}
+		>
+			<div style={{ flex: 1 }}>{driver.username}</div>
+			<div
+				style={{
+					color: Palette.THEME_RED,
+					fontSize: 12,
+					cursor: 'pointer',
+				}}
+				onClick={() => {
+					setRegisteredDrivers(
+						registeredDrivers.filter(item => item.id !== driver.id)
+					)
+				}}
+			>
+				Hapus
+			</div>
+		</Flex>
 	);
 }

@@ -34,6 +34,10 @@ export default class User {
 
   static processUserQR = async (body) => {
     return await ApiRequest.set("v1/user/getQR", "POST", body);
-}
+  }
+
+  static getByUsername = async (username) => {
+    return await ApiRequest.set(`v1/user/name/${username}`, "GET");
+  }
 
 }

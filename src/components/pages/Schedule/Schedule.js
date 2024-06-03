@@ -40,54 +40,7 @@ const OPERATIONAL_HOURS = [
 
 const DATE_HEADER_HEIGHT = 25;
 
-const getPastWeekDates = () => {
-	const result = [];
-
-	for (let i = 0; i < 7; i++) {
-		let date = new Date();
-		date.setDate(date.getDate() - i);
-		result.push(date);
-	}
-
-	return result;
-};
-
-// NOTE --> ini function buat create tournament, numpang taruh di file ini
-const createTournament = async () => {
-	try {
-		const result = await TournamentModel.create({
-			name: 'Pitstop Grand Finale',
-			location: 'Mall of Indonesia',
-			model: 'SODI SX9',
-			start_date: moment().toISOString(),
-			end_date: moment().toISOString(),
-			detail: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sapien sapien, elementum et lacinia placerat, lobortis non justo. Maecenas consequat vel ante non mollis.',
-			type: 'classic',
-		});
-		console.log(result);
-		swal.fire({ text: 'Data berhasil dibuat', icon: 'success' });
-	} catch (e) {
-		swal.fireError(e);
-	}
-};
-
-// NOTE --> ini function buat create tournament detail, numpang taruh di file ini
-const createTournamentDetail = async (tournamentId) => {
-	try {
-		const result = await TournamentModel.createDetail({
-			body: {
-				username: 'michael',
-				time_in_millisecond: 1200,
-				laps: 20,
-			},
-			id: tournamentId,
-		});
-		console.log(result);
-		swal.fire({ text: 'Data detail berhasil dibuat', icon: 'success' });
-	} catch (e) {
-		swal.fireError(e);
-	}
-};
+const SKILL_LEVEL = ['BEGINNER', 'ADVANCED', 'PRO'];
 
 export default function Schedule() {
 	const [modalSetting, setModalSetting] = useState({
@@ -286,25 +239,28 @@ function ScheduleActionModal({
 	const [createFormData, setCreateFormData] = useState({
 		startTime: '',
 		duration: '',
-		repeat: '',
 		skillLevel: '',
 	});
-
 	const [registerInputValue, setRegisterInputValue] = useState('');
 	const [registeredDrivers, setRegisteredDrivers] = useState([]);
+	const [driverSearchResult, setDriverSearchResult] = useState(null);
 
 	const resetForms = () => {
 		setCreateFormData({
 			startTime: '',
 			duration: '',
-			repeat: '',
 			skillLevel: '',
 		});
 
 		setRegisteredDrivers([]);
 	};
 
-	const handleRegisterInputChange = async (value) => {
+	const resetRegisterForm = () => {
+		setRegisterInputValue('');
+		setDriverSearchResult(null);
+	};
+
+	const handleDriverRegistrationInputChange = async (value) => {
 		try {
 			setRegisterInputValue(value);
 
@@ -317,6 +273,7 @@ function ScheduleActionModal({
 						token: value,
 					});
 					setRegisteredDrivers([...registeredDrivers, result]);
+					setTimeout(() => setRegisterInputValue(''), 300)
 				}
 			}, 300);
 		} catch (e) {
@@ -327,8 +284,24 @@ function ScheduleActionModal({
 					: 'Invalid credential, please try again.',
 			});
 		}
+	};
 
-		setTimeout(() => setRegisterInputValue(''), 300);
+	const handleDriverSearch = async () => {
+		try {
+			let result = await UserModel.getByUsername(registerInputValue);
+			if (!result || result.length < 1) {
+			}
+
+			setDriverSearchResult(result);
+		} catch (e) {
+			console.log(e);
+			swal.fireError({
+				title: 'Error',
+				text: e.error_message
+					? e.error_message
+					: 'Unable to process search request!',
+			});
+		}
 	};
 
 	return (
@@ -388,23 +361,9 @@ function ScheduleActionModal({
 								/>
 							</Flex>
 							<Flex vertical gap={8}>
-								<Form.Label>Berulang</Form.Label>
-								<Form.Control
-									placeholder={0}
-									type="number"
-									value={createFormData.repeat}
-									onChange={(e) =>
-										setCreateFormData({
-											...createFormData,
-											repeat: e.target.value,
-										})
-									}
-								/>
-							</Flex>
-							<Flex vertical gap={8}>
-								<Form.Label>Skill Level</Form.Label>
-								<Form.Control
-									placeholder={'...'}
+								<Form.Label>Level Skill</Form.Label>
+								<Form.Select
+									className="form-control"
 									value={createFormData.skillLevel}
 									onChange={(e) =>
 										setCreateFormData({
@@ -412,46 +371,133 @@ function ScheduleActionModal({
 											skillLevel: e.target.value,
 										})
 									}
-								/>
+								>
+									{SKILL_LEVEL.map((skill) => (
+										<option key={skill} value={skill}>
+											{skill}
+										</option>
+									))}
+								</Form.Select>
 							</Flex>
 						</>
 					) : (
 						<>
+							{/* Driver Regisration Form - Action Buttons */}
 							<Flex vertical gap={8}>
-								<Form.Label>Driver</Form.Label>
+								<Form.Label style={{ fontWeight: 700 }}>
+									SEARCH
+								</Form.Label>
 								<Flex gap={8}>
 									<Form.Control
 										value={registerInputValue}
 										placeholder={
-											'Scan QR / masukkan email atau username user...'
+											'Scan QR atau masukkan username user'
 										}
 										onChange={(e) =>
-											handleRegisterInputChange(
+											handleDriverRegistrationInputChange(
 												e.target.value
 											)
 										}
 									/>
 									<AntButton
 										type={'primary'}
-										onClick={() =>
+										onClick={handleDriverSearch}
+									>
+										Cari Driver
+									</AntButton>
+									<AntButton
+										type={'primary'}
+										disabled={!driverSearchResult}
+										onClick={() => {
+											if (!driverSearchResult) {
+												swal.fireError({
+													title: 'Error',
+													text: 'Search value is empty!',
+												});
+											}
+
 											setRegisteredDrivers([
 												...registeredDrivers,
-												registerInputValue,
-											])
-										}
+												driverSearchResult,
+											]);
+											resetRegisterForm();
+										}}
 									>
 										Tambah Driver
 									</AntButton>
 								</Flex>
 							</Flex>
+
+							{/* Search Driver Result */}
+							{driverSearchResult ? (
+								<Flex
+									style={{
+										color: '#FFF',
+										backgroundColor: '#FFFFFF14',
+										padding: '8px 12px',
+										borderRadius: 8,
+									}}
+									justify="space-between"
+									align="center"
+								>
+									<Flex
+										gap={8}
+										justify="center"
+										align="center"
+									>
+										<div>
+											<img
+												src={
+													driverSearchResult.avatar_url
+												}
+												height={48}
+												width={48}
+											/>
+										</div>
+										<Flex vertical>
+											<div style={{ fontWeight: 700 }}>
+												{driverSearchResult.username}
+											</div>
+											<div
+												style={{
+													font: 10,
+													color: Palette.INACTIVE_GRAY,
+												}}
+											>
+												{driverSearchResult.email}
+											</div>
+										</Flex>
+									</Flex>
+									<Flex>
+										<div style={{ fontWeight: 700 }}>
+											PRO
+										</div>
+									</Flex>
+								</Flex>
+							) : null}
+
+							{/* Registered Drivers List */}
 							{registeredDrivers.length > 0 ? (
 								<Flex vertical gap={8}>
+									<div
+										style={{
+											color: '#FFF',
+											fontWeight: 700,
+											marginTop: 24,
+										}}
+									>
+										REGISTERED DRIVER
+									</div>
 									{registeredDrivers.map((driver, index) => (
 										<RegisteredDriversListItem
 											key={driver.id}
 											driver={driver}
-											registeredDrivers={registeredDrivers}
-											setRegisteredDrivers={setRegisteredDrivers}
+											registeredDrivers={
+												registeredDrivers
+											}
+											setRegisteredDrivers={
+												setRegisteredDrivers
+											}
 										/>
 									))}
 								</Flex>
@@ -490,7 +536,11 @@ function ScheduleActionModal({
 	);
 }
 
-function RegisteredDriversListItem({ driver, registeredDrivers, setRegisteredDrivers }) {
+function RegisteredDriversListItem({
+	driver,
+	registeredDrivers,
+	setRegisteredDrivers,
+}) {
 	return (
 		<Flex
 			style={{
@@ -499,10 +549,21 @@ function RegisteredDriversListItem({ driver, registeredDrivers, setRegisteredDri
 				padding: '8px 12px',
 				borderRadius: 8,
 			}}
+			justify={'space-between'}
 			align={'center'}
 			flex={1}
 		>
-			<div style={{ flex: 1 }}>{driver.username}</div>
+			<Flex gap={8} justify="center" align="center">
+				<div>
+					<img src={driver.avatar_url} height={48} width={48} />
+				</div>
+				<Flex vertical>
+					<div style={{ fontWeight: 700 }}>{driver.username}</div>
+					<div style={{ font: 10, color: Palette.INACTIVE_GRAY }}>
+						{driver.email}
+					</div>
+				</Flex>
+			</Flex>
 			<div
 				style={{
 					color: Palette.THEME_RED,
@@ -511,8 +572,10 @@ function RegisteredDriversListItem({ driver, registeredDrivers, setRegisteredDri
 				}}
 				onClick={() => {
 					setRegisteredDrivers(
-						registeredDrivers.filter(item => item.id !== driver.id)
-					)
+						registeredDrivers.filter(
+							(item) => item.id !== driver.id
+						)
+					);
 				}}
 			>
 				Hapus
@@ -520,3 +583,52 @@ function RegisteredDriversListItem({ driver, registeredDrivers, setRegisteredDri
 		</Flex>
 	);
 }
+
+function getPastWeekDates() {
+	const result = [];
+
+	for (let i = 0; i < 7; i++) {
+		let date = new Date();
+		date.setDate(date.getDate() - i);
+		result.push(date);
+	}
+
+	return result;
+}
+
+// NOTE --> ini function buat create tournament, numpang taruh di file ini
+const createTournament = async () => {
+	try {
+		const result = await TournamentModel.create({
+			name: 'Pitstop Grand Finale',
+			location: 'Mall of Indonesia',
+			model: 'SODI SX9',
+			start_date: moment().toISOString(),
+			end_date: moment().toISOString(),
+			detail: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sapien sapien, elementum et lacinia placerat, lobortis non justo. Maecenas consequat vel ante non mollis.',
+			type: 'classic',
+		});
+		console.log(result);
+		swal.fire({ text: 'Data berhasil dibuat', icon: 'success' });
+	} catch (e) {
+		swal.fireError(e);
+	}
+};
+
+// NOTE --> ini function buat create tournament detail, numpang taruh di file ini
+const createTournamentDetail = async (tournamentId) => {
+	try {
+		const result = await TournamentModel.createDetail({
+			body: {
+				username: 'michael',
+				time_in_millisecond: 1200,
+				laps: 20,
+			},
+			id: tournamentId,
+		});
+		console.log(result);
+		swal.fire({ text: 'Data detail berhasil dibuat', icon: 'success' });
+	} catch (e) {
+		swal.fireError(e);
+	}
+};

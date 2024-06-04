@@ -344,6 +344,12 @@ function ScheduleActionModal({ isOpen, isCreateMode, handleClose }) {
 			resetCreateForm();
 		} catch (e) {
 			console.log(e);
+			swal.fireError({
+				title: `Error`,
+				text: e.error_message
+					? e.error_message
+					: 'Failed to create new session, please try again.',
+			});
 		}
 	};
 

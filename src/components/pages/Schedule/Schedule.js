@@ -44,8 +44,6 @@ export default function Schedule() {
 				});
 			});
 
-			console.log('SORT RESULT', groupedResult);
-
 			setDisplayedSchedule(groupedResult);
 		} catch (e) {
 			console.log(e);
@@ -140,6 +138,7 @@ export default function Schedule() {
 				handleClose={() =>
 					setModalSetting({ ...modalSetting, isOpen: false })
 				}
+				refreshData={getThisWeekSchedule}
 			/>
 		</>
 	);
@@ -150,6 +149,7 @@ function ScheduleActionModal({
 	isCreateMode,
 	scheduleId,
 	handleClose,
+	refreshData
 }) {
 	const [createFormData, setCreateFormData] = useState({
 		start_time: new Date(),
@@ -236,10 +236,12 @@ function ScheduleActionModal({
 	const handleSubmit = () => {
 		if (isCreateMode) {
 			handleCreateFormSubmit();
+			refreshData();
 			return;
 		}
 
 		handleRegisterFormSubmit();
+		refreshData();
 	};
 
 	const handleCreateFormSubmit = async () => {

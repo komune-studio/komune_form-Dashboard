@@ -174,7 +174,7 @@ function ScheduleItem({ data, currentDateMoment, setModalSetting }) {
 			setModalSetting({
 				isOpen: true,
 				isCreateMode: false,
-				scheduleId: data.id,
+				scheduleData: data,
 			});
 		}
 	};

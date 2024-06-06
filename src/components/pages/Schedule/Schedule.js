@@ -13,6 +13,7 @@ import UserModel from 'models/UserModel';
 import ScheduleModel from 'models/ScheduleModel';
 import Avatar from 'assets/img/brand/avatar.png';
 import ScheduleTable from './ScheduleTable';
+import Helper from 'utils/Helper';
 
 const SKILL_LEVEL = ['BEGINNER', 'ADVANCED', 'PRO', 'MAINTENANCE', 'EVENT'];
 
@@ -122,7 +123,7 @@ export default function Schedule() {
 			<ScheduleActionModal
 				isOpen={modalSetting.isOpen}
 				isCreateMode={modalSetting.isCreateMode}
-				scheduleId={modalSetting?.scheduleId || null}
+				scheduleData={modalSetting?.scheduleData || null}
 				handleClose={() =>
 					setModalSetting({ ...modalSetting, isOpen: false })
 				}
@@ -135,7 +136,7 @@ export default function Schedule() {
 function ScheduleActionModal({
 	isOpen,
 	isCreateMode,
-	scheduleId,
+	scheduleData,
 	handleClose,
 	refreshData,
 }) {
@@ -287,7 +288,7 @@ function ScheduleActionModal({
 		registeredDriversList.forEach(async (driver) => {
 			try {
 				let result = await ScheduleModel.registerDriver({
-					schedule_slot_id: scheduleId,
+					schedule_slot_id: scheduleData.id,
 					apex_nickname: driver.apex_nickname,
 					user_id: driver?.id || null,
 				});
@@ -309,7 +310,13 @@ function ScheduleActionModal({
 			<Modal.Header>
 				<div className={'d-flex w-100 justify-content-between'}>
 					<Modal.Title>
-						{isCreateMode ? 'Buat Sesi' : `Daftarkan Driver`}
+						{isCreateMode
+							? 'Buat Sesi'
+							: `${Helper.toTitleCase(
+									scheduleData?.skill_level || ''
+							  )} Session (${moment(
+									scheduleData?.start_time
+							  ).format('dddd, DD MMMM YYYY - HH:mm')})`}
 					</Modal.Title>
 					<AntButton
 						onClick={() => {

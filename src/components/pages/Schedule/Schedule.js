@@ -157,6 +157,18 @@ function ScheduleActionModal({
 		}
 	};
 
+	const getModalHeaderTitle = () => {
+		const scheduleDataMoment = moment(scheduleData?.start_time);
+		const title = Helper.toTitleCase(scheduleData?.skill_level);
+		const scheduleDate = scheduleDataMoment.format('dddd, DD MMMM YYYY');
+		const scheduleStartTime = scheduleDataMoment.format('HH:mm');
+		const scheduleEndTime = scheduleDataMoment
+			.add(scheduleData?.duration_minutes, 'minute')
+			.format('HH:mm');
+
+		return `${title} Session (${scheduleDate} / ${scheduleStartTime} - ${scheduleEndTime})`;
+	};
+
 	const resetAllForms = () => {
 		setCreateFormData({
 			start_time: new Date(),
@@ -164,6 +176,7 @@ function ScheduleActionModal({
 			skill_level: '',
 		});
 		setRegisterFormData('');
+		setRegisteredDriversList([]);
 	};
 
 	const resetCreateForm = () => {
@@ -286,13 +299,7 @@ function ScheduleActionModal({
 			<Modal.Header>
 				<div className={'d-flex w-100 justify-content-between'}>
 					<Modal.Title>
-						{isCreateMode
-							? 'Buat Sesi'
-							: `${Helper.toTitleCase(
-									scheduleData?.skill_level || ''
-							  )} Session (${moment(
-									scheduleData?.start_time
-							  ).format('dddd, DD MMMM YYYY - HH:mm')})`}
+						{isCreateMode ? 'Buat Sesi' : getModalHeaderTitle()}
 					</Modal.Title>
 					<AntButton
 						onClick={() => {
@@ -400,11 +407,24 @@ function ScheduleActionModal({
 
 							{/* Registered Drivers List */}
 							{registeredDriversList.length > 0 ? (
-								<DriversListComponent
-									title={'DRIVER TERDAFTAR'}
-									data={registeredDriversList}
-									handleDelete={handleUnregisterDriver}
-								/>
+								<Flex vertical gap={8}>
+									<div
+										style={{
+											color: '#FFF',
+											fontWeight: 700,
+											marginTop: 24,
+										}}
+									>
+										DRIVER TERDAFTAR
+									</div>
+									{registeredDriversList.map((driver, index) => (
+										<DriversListItemComponent
+											key={driver.id}
+											driver={driver}
+											handleDelete={handleUnregisterDriver}
+										/>
+									))}
+								</Flex>
 							) : null}
 						</>
 					)}
@@ -441,29 +461,6 @@ function ScheduleActionModal({
 				</Flex>
 			</Modal.Body>
 		</Modal>
-	);
-}
-
-function DriversListComponent({ title, data, handleDelete }) {
-	return (
-		<Flex vertical gap={8}>
-			<div
-				style={{
-					color: '#FFF',
-					fontWeight: 700,
-					marginTop: 24,
-				}}
-			>
-				{title}
-			</div>
-			{data.map((driver, index) => (
-				<DriversListItemComponent
-					key={driver.id}
-					driver={driver}
-					handleDelete={handleDelete}
-				/>
-			))}
-		</Flex>
 	);
 }
 

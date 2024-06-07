@@ -221,6 +221,7 @@ function ScheduleActionModal({
 		try {
 			await ScheduleModel.unregisterDriver(driverId);
 			getRegisteredDriversList();
+			refreshData();
 		} catch (e) {
 			console.log(e);
 			swal.fireError({

@@ -232,20 +232,9 @@ function ScheduleActionModal({
 		}
 	};
 
-	const handleSubmit = () => {
-		if (isCreateMode) {
-			handleCreateFormSubmit();
-			refreshData();
-			return;
-		}
-
-		handleRegisterFormSubmit();
-		refreshData();
-	};
-
 	const handleCreateFormSubmit = async () => {
 		try {
-			let result = await ScheduleModel.create({
+			await ScheduleModel.create({
 				...createFormData,
 				duration_minutes: parseInt(createFormData.duration_minutes),
 			});
@@ -254,6 +243,7 @@ function ScheduleActionModal({
 				icon: 'success',
 			});
 			resetCreateForm();
+			refreshData();
 		} catch (e) {
 			console.log(e);
 			swal.fireError({
@@ -276,6 +266,7 @@ function ScheduleActionModal({
 
 			getRegisteredDriversList();
 			resetRegisterForm();
+			refreshData();
 		} catch (e) {
 			console.log(e);
 			swal.fireError({
@@ -452,7 +443,7 @@ function ScheduleActionModal({
 							size="sm"
 							variant="primary"
 							onClick={() => {
-								handleSubmit();
+								handleCreateFormSubmit();
 							}}
 						>
 							Buat sesi

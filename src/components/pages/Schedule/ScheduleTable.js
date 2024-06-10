@@ -167,8 +167,6 @@ function ScheduleItem({ data, currentDateMoment, setModalSetting }) {
 
 	const handleClick = () => {
 		if (
-			data.skill_level !== 'EVENT' &&
-			data.skill_level !== 'MAINTENANCE' &&
 			slotAvailable > 0
 		) {
 			setModalSetting({

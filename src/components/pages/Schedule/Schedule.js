@@ -468,7 +468,10 @@ function ScheduleActionModal({
 								<Flex justify="end" style={{ marginTop: 18 }}>
 									<AntButton
 										type={'primary'}
-										onClick={handleUpdateFormSubmit}
+										onClick={() => {
+											handleUpdateFormSubmit();
+											handleClose();
+										}}
 									>
 										Ubah
 									</AntButton>
@@ -476,61 +479,71 @@ function ScheduleActionModal({
 							</Flex>
 
 							{/* Driver Regisration Form */}
-							<Flex vertical gap={8} style={{ marginTop: 24 }}>
-								<Form.Label style={{ fontWeight: 400 }}>
-									Daftarkan Driver
-								</Form.Label>
-								<Flex gap={8}>
-									<Form.Control
-										value={registerFormData}
-										placeholder={
-											'Scan QR atau masukkan nickname user'
-										}
-										onChange={(e) =>
-											handleRegisterFormInputChange(
-												e.target.value
-											)
-										}
-										onKeyDown={(e) => {
-											if (e.key === 'Enter') {
-												handleRegisterFormSubmit();
-											}
-										}}
-									/>
-									<AntButton
-										type={'primary'}
-										disabled={!registerFormData}
-										onClick={handleRegisterFormSubmit}
+							{scheduleData.skill_level !== 'EVENT' &&
+							scheduleData.skill_level !== 'MAINTENANCE' ? (
+								<>
+									<Flex
+										vertical
+										gap={8}
+										style={{ marginTop: 24 }}
 									>
-										Daftarkan
-									</AntButton>
-								</Flex>
-							</Flex>
-
-							{/* Registered Drivers List */}
-							{registeredDriversList.length > 0 ? (
-								<Flex vertical gap={8}>
-									<div
-										style={{
-											color: '#FFF',
-											fontWeight: 700,
-											marginTop: 24,
-										}}
-									>
-										Driver Terdaftar
-									</div>
-									{registeredDriversList.map(
-										(driver, index) => (
-											<DriversListItemComponent
-												key={driver.id}
-												driver={driver}
-												handleDelete={
-													handleUnregisterDriver
+										<Form.Label style={{ fontWeight: 400 }}>
+											Daftarkan Driver
+										</Form.Label>
+										<Flex gap={8}>
+											<Form.Control
+												value={registerFormData}
+												placeholder={
+													'Scan QR atau masukkan nickname user'
 												}
+												onChange={(e) =>
+													handleRegisterFormInputChange(
+														e.target.value
+													)
+												}
+												onKeyDown={(e) => {
+													if (e.key === 'Enter') {
+														handleRegisterFormSubmit();
+													}
+												}}
 											/>
-										)
-									)}
-								</Flex>
+											<AntButton
+												type={'primary'}
+												disabled={!registerFormData}
+												onClick={
+													handleRegisterFormSubmit
+												}
+											>
+												Daftarkan
+											</AntButton>
+										</Flex>
+									</Flex>
+									{/* Registered Drivers List */}
+									{registeredDriversList.length > 0 ? (
+										<Flex vertical gap={8}>
+											<div
+												style={{
+													color: '#FFF',
+													fontWeight: 700,
+													marginTop: 24,
+												}}
+											>
+												Driver Terdaftar
+											</div>
+											{registeredDriversList.map(
+												(driver, index) => (
+													<DriversListItemComponent
+														key={driver.id}
+														driver={driver}
+														handleDelete={
+															handleUnregisterDriver
+														}
+													/>
+												)
+											)}
+										</Flex>
+									) : null}
+								</>
 							) : null}
 						</>
 					)}

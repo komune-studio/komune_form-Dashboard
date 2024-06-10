@@ -24,4 +24,8 @@ export default class Schedule {
     static getById = async (id) => {
         return await ApiRequest.set(`v1/schedule/${id}`, 'GET');
     }
+
+    static hardDelete = async (id) => {
+        return await ApiRequest.set(`v1/schedule/${id}`, 'DELETE');
+    }
 }

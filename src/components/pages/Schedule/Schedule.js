@@ -286,23 +286,42 @@ function ScheduleActionModal({
 			await ScheduleModel.edit({
 				...updateFormData,
 				duration_minutes: parseInt(updateFormData.duration_minutes),
-				schedule_slot_id: parseInt(updateFormData.id)
+				schedule_slot_id: parseInt(updateFormData.id),
 			});
 			swal.fire({
 				text: 'Sesi Balapan berhasil diubah!',
 				icon: 'success',
 			});
 			refreshData();
-		} catch(e) {
+		} catch (e) {
 			console.log(e);
 			swal.fireError({
 				title: `Error`,
 				text: e.error_message
 					? e.error_message
-					: 'Failed to update schedule, please try again.',
+					: 'Gagal untuk mengubah jadwal, silahkan coba lagi',
 			});
 		}
-	}
+	};
+
+	const handleScheduleDelete = async () => {
+		try {
+			await ScheduleModel.hardDelete(scheduleData?.id);
+			swal.fire({
+				text: 'Sesi Balapan berhasil dihapus!',
+				icon: 'success',
+			});
+			refreshData();
+		} catch (e) {
+			console.log(e);
+			swal.fireError({
+				title: `Error`,
+				text: e.error_message
+					? e.error_message
+					: 'Gagal untuk menghapus jadwal, silahkan coba lagi',
+			});
+		}
+	};
 
 	useEffect(() => {
 		if (scheduleData) {
@@ -446,7 +465,7 @@ function ScheduleActionModal({
 										))}
 									</Form.Select>
 								</Flex>
-								<Flex justify='end' style={{marginTop: 18}}>
+								<Flex justify="end" style={{ marginTop: 18 }}>
 									<AntButton
 										type={'primary'}
 										onClick={handleUpdateFormSubmit}
@@ -544,7 +563,17 @@ function ScheduleActionModal({
 						>
 							Buat sesi
 						</AntButton>
-					) : null}
+					) : (
+						<AntButton
+							type={'primary'}
+							onClick={() => {
+								handleScheduleDelete();
+								handleClose();
+							}}
+						>
+							Hapus Jadwal
+						</AntButton>
+					)}
 				</Flex>
 			</Modal.Body>
 		</Modal>

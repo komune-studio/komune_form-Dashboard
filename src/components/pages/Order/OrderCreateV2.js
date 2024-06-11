@@ -94,7 +94,6 @@ export default function OrderCreateV2() {
 				user_id: parseInt(user.id),
 				total_coins: parseInt(orderValue),
 			});
-			setOrderValue(0);
 			setCurrentModalContent(2);
 		} catch (e) {
 			console.log(e);
@@ -259,7 +258,8 @@ export default function OrderCreateV2() {
 				currentModalContent={currentModalContent}
 				setCurrentModalContent={setCurrentModalContent}
 				loading={loading}
-				total={orderValue}
+				orderValue={orderValue}
+				setOrderValue={setOrderValue}
 				scannedUser={scannedUser}
 				searchUserByUsernameOrEmail={searchUserByUsernameOrEmail}
 			/>
@@ -299,7 +299,8 @@ function CreateOrderModal(props) {
 		currentModalContent,
 		setCurrentModalContent,
 		loading,
-		total,
+		orderValue,
+		setOrderValue,
 		scannedUser,
 		searchUserByUsernameOrEmail
 	} = props;
@@ -473,7 +474,7 @@ function CreateOrderModal(props) {
 								marginTop: 6,
 							}}
 						>
-							Barcoins sebesar {Helper.formatNumber(total)}{' '}
+							Barcoins sebesar {Helper.formatNumber(orderValue)}{' '}
 							ditarik dari {scannedUser.username}
 						</div>
 					</>
@@ -488,6 +489,7 @@ function CreateOrderModal(props) {
 					onClick={() => {
 						handleClose();
 						setCurrentModalContent(0);
+						setOrderValue(0);
 					}}
 				>
 					Tutup

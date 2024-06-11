@@ -51,9 +51,9 @@ export default function OrderCreateV2() {
 			} else {
 				user = await UserModel.getByUsername(value);
 			}
-			
+
 			setScannedUser(user);
-			handleCreateOrder(user);
+			setCurrentModalContent(2);
 		} catch (e) {
 			console.log(e);
 			swal.fireError({
@@ -73,7 +73,7 @@ export default function OrderCreateV2() {
 				token: value,
 			});
 			setScannedUser(user);
-			handleCreateOrder(user);
+			setCurrentModalContent(2);
 		} catch (e) {
 			setLoading(false);
 			setCurrentModalContent(1);
@@ -88,14 +88,15 @@ export default function OrderCreateV2() {
 		setScanInputValue('');
 	};
 
-	const handleCreateOrder = async (user) => {
+	const handleCreateOrder = async () => {
 		try {
-			let createResult = await OrderModel.createV2({
-				user_id: parseInt(user.id),
+			await OrderModel.createV2({
+				user_id: parseInt(scannedUser.id),
 				total_coins: parseInt(orderValue),
 			});
 			setCurrentModalContent(2);
 		} catch (e) {
+			setCurrentModalContent(1);
 			console.log(e);
 			swal.fireError({
 				title: `Error`,
@@ -135,69 +136,6 @@ export default function OrderCreateV2() {
 							className="d-flex flex-column"
 							style={{ marginTop: 48, width: '60%', gap: 48 }}
 						>
-							{/* Scanned user information */}
-							{scannedUser && (
-								<div>
-									<div>
-										<div style={{ fontSize: 14 }}>
-											Username / Email Pembayar
-										</div>
-										<div
-											className="d-flex justify-content-between align-items-center"
-											style={{ gap: 8, marginTop: 8 }}
-										>
-											<div
-												style={{
-													backgroundColor: '#2F2F2F',
-													flex: 1,
-													padding: '8px 12px',
-													borderRadius: 4,
-												}}
-											>
-												{scannedUser?.username}
-											</div>
-										</div>
-									</div>
-									<div
-										className="d-flex align-items-center"
-										style={{
-											marginTop: 12,
-											backgroundColor: '#2F2F2F',
-											borderRadius: 6,
-											padding: 12,
-											gap: 12,
-										}}
-									>
-										<div>
-											<img
-												src={scannedUser.avatar_url}
-												height={32}
-												width={32}
-												style={{ borderRadius: 999 }}
-											/>
-										</div>
-										<div>
-											<div
-												style={{
-													fontWeight: 700,
-													fontSize: 14,
-												}}
-											>
-												{scannedUser.username}
-											</div>
-											<div
-												style={{
-													color: Palette.INACTIVE_GRAY,
-													fontSize: 12,
-												}}
-											>
-												{scannedUser.email}
-											</div>
-										</div>
-									</div>
-								</div>
-							)}
-
 							{/* Barcoin withdrawal form & action button */}
 							<div>
 								<div>
@@ -242,7 +180,8 @@ export default function OrderCreateV2() {
 										}}
 										disabled={orderValue <= 0}
 									>
-										Scan QR atau masukkan username/email user
+										Scan QR atau masukkan username/email
+										user
 									</AntButton>
 								</div>
 							</div>
@@ -252,16 +191,20 @@ export default function OrderCreateV2() {
 			</Container>
 			<CreateOrderModal
 				isOpen={isModalOpen}
-				handleClose={() => setIsModalOpen(false)}
+				handleClose={() => {
+					setIsModalOpen(false);
+					setScanInputValue('');
+				}}
 				scanValue={scanInputValue}
-				updateScanValue={(value) => updateScanInputValue(value)}
 				currentModalContent={currentModalContent}
-				setCurrentModalContent={setCurrentModalContent}
 				loading={loading}
 				orderValue={orderValue}
-				setOrderValue={setOrderValue}
 				scannedUser={scannedUser}
+				updateScanInputValue={(value) => updateScanInputValue(value)}
 				searchUserByUsernameOrEmail={searchUserByUsernameOrEmail}
+				handleCreateOrder={handleCreateOrder}
+				setOrderValue={setOrderValue}
+				setCurrentModalContent={setCurrentModalContent}
 			/>
 		</>
 	);
@@ -295,14 +238,15 @@ function CreateOrderModal(props) {
 		isOpen,
 		handleClose,
 		scanValue,
-		updateScanValue,
+		updateScanInputValue,
 		currentModalContent,
 		setCurrentModalContent,
 		loading,
 		orderValue,
 		setOrderValue,
 		scannedUser,
-		searchUserByUsernameOrEmail
+		searchUserByUsernameOrEmail,
+		handleCreateOrder,
 	} = props;
 
 	const FirstContent = () => (
@@ -367,7 +311,7 @@ function CreateOrderModal(props) {
 							value={scanValue}
 							autoFocus
 							onChange={(e) => {
-								updateScanValue(e.target.value);
+								updateScanInputValue(e.target.value);
 							}}
 							onKeyDown={(e) => {
 								if (e.key === 'Enter') {
@@ -419,6 +363,28 @@ function CreateOrderModal(props) {
 	);
 
 	const ThirdContent = () => (
+		<>
+			<div style={{ textAlign: 'center', fontWeight: 500 }}>
+				Apakah anda yakin ingin melakukan penarikan barcoin sebesar{' '}
+				<b>{Helper.formatNumber(orderValue)}</b> dari{' '}
+				<b>{scannedUser?.username}</b>?
+			</div>
+			<div className="d-flex justify-content-center mt-4">
+				<AntButton
+					type="primary"
+					onClick={() => {
+						setCurrentModalContent(3);
+						handleCreateOrder();
+					}}
+					autoFocus
+				>
+					Tarik Barcoins
+				</AntButton>
+			</div>
+		</>
+	);
+
+	const FourthContent = () => (
 		<div>
 			<div
 				className="d-flex flex-column align-items-center justify-content-center"
@@ -510,6 +476,7 @@ function CreateOrderModal(props) {
 				{currentModalContent === 0 && <FirstContent />}
 				{currentModalContent === 1 && <SecondContent />}
 				{currentModalContent === 2 && <ThirdContent />}
+				{currentModalContent === 3 && <FourthContent />}
 			</Modal.Body>
 		</Modal>
 	);

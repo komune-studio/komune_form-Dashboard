@@ -102,3 +102,7 @@ input.order-input {
     border: none !important;
     color: #ffffff !important;
 }
+
+.MuiTableCell-root, .MuiTypography-root {
+    font-family: 'Open Sans' !important;
+}

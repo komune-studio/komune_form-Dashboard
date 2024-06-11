@@ -581,20 +581,6 @@ function ScheduleActionModal({
 
 				{/* Close modal button */}
 				<Flex className="mt-5" justify={'end'} align={'center'} gap={8}>
-					<div
-						className={'text-white'}
-						onClick={() => {
-							resetAllForms();
-							handleClose();
-						}}
-						style={{
-							marginRight: '5px',
-							fontSize: 14,
-							cursor: 'pointer',
-						}}
-					>
-						Tutup
-					</div>
 					{isCreateMode ? (
 						<AntButton
 							type={'primary'}

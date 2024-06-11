@@ -186,7 +186,7 @@ const CustomTable = ({
         }
 
 
-        <TableContainer sx={{minWidth: 0}}>
+        <TableContainer sx={{minWidth: 0, fontFamily: 'Open Sans'}}>
             <Table>
                 <TableHead>
                     <TableRow>
@@ -275,6 +275,7 @@ const CustomTable = ({
                                     sx={{
                                         textAlign: 'center',
                                         backgroundColor: 'transparent',
+                                        fontFamily: 'Open Sans'
                                     }}
                                 >
                                     <Typography variant="h6" paragraph>

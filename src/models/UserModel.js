@@ -40,4 +40,8 @@ export default class User {
     return await ApiRequest.set(`v1/user/name/${username}`, "GET");
   }
 
+  static getByEmail = async (email) => {
+    return await ApiRequest.set(`v1/user/email/${email}`, "GET");
+  }
+
 }

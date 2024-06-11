@@ -41,6 +41,30 @@ export default function OrderCreateV2() {
 		}, 300);
 	};
 
+	const searchUserByUsernameOrEmail = async (value) => {
+		setLoading(true);
+
+		try {
+			let user = null;
+			if (Helper.isValidEmail(value)) {
+				user = await UserModel.getByEmail(value);
+			} else {
+				user = await UserModel.getByUsername(value);
+			}
+			
+			setScannedUser(user);
+			handleCreateOrder(user);
+		} catch (e) {
+			console.log(e);
+			swal.fireError({
+				title: `Error`,
+				text: e.error_message
+					? e.error_message
+					: 'Gagal untuk menemukan user, silahkan coba lagi',
+			});
+		}
+	};
+
 	const searchUserByQr = async (value) => {
 		setLoading(true);
 
@@ -67,10 +91,10 @@ export default function OrderCreateV2() {
 	const handleCreateOrder = async (user) => {
 		try {
 			let createResult = await OrderModel.createV2({
-				user_id: user.id,
-				total_coins: orderValue,
+				user_id: parseInt(user.id),
+				total_coins: parseInt(orderValue),
 			});
-			console.log(createResult)
+			setOrderValue(0);
 			setCurrentModalContent(2);
 		} catch (e) {
 			console.log(e);
@@ -132,11 +156,6 @@ export default function OrderCreateV2() {
 												}}
 											>
 												{scannedUser?.username}
-											</div>
-											<div>
-												<AntButton type={'primary'}>
-													Verifikasi
-												</AntButton>
 											</div>
 										</div>
 									</div>
@@ -222,8 +241,9 @@ export default function OrderCreateV2() {
 										onClick={() => {
 											setIsModalOpen(true);
 										}}
+										disabled={orderValue <= 0}
 									>
-										ScanQR
+										Scan QR atau masukkan username/email user
 									</AntButton>
 								</div>
 							</div>
@@ -241,6 +261,7 @@ export default function OrderCreateV2() {
 				loading={loading}
 				total={orderValue}
 				scannedUser={scannedUser}
+				searchUserByUsernameOrEmail={searchUserByUsernameOrEmail}
 			/>
 		</>
 	);
@@ -280,6 +301,7 @@ function CreateOrderModal(props) {
 		loading,
 		total,
 		scannedUser,
+		searchUserByUsernameOrEmail
 	} = props;
 
 	const FirstContent = () => (
@@ -330,11 +352,15 @@ function CreateOrderModal(props) {
 							backgroundColor: '#FFFFFF14',
 							borderRadius: 16,
 							width: 'fit-content',
+							flex: 1,
 						}}
 					>
 						<Iconify icon={'bi:qr-code'} height={60} width={60} />
 					</div>
-					<div>
+					<div
+						className="d-flex justify-content-center align-items-center"
+						style={{ gap: 8, marginTop: 12, flex: 1 }}
+					>
 						<input
 							type="text"
 							value={scanValue}
@@ -342,20 +368,37 @@ function CreateOrderModal(props) {
 							onChange={(e) => {
 								updateScanValue(e.target.value);
 							}}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									searchUserByUsernameOrEmail(e.target.value);
+								}
+							}}
 							style={{
-								backgroundColor: 'transparent',
-								borderWidth: 0,
-								borderBottom: '1px solid #FFF',
+								backgroundColor: '#2F2F2F',
+								flex: 1,
+								padding: '8px 12px',
+								borderRadius: 4,
+								border: 'none',
 								color: '#FFF',
+								width: '100%',
 							}}
 						/>
+						<AntButton
+							type={'primary'}
+							onClick={() =>
+								searchUserByUsernameOrEmail(scanValue)
+							}
+						>
+							Verifikasi
+						</AntButton>
 					</div>
 				</div>
 				<div
 					className="text-center"
 					style={{ fontWeight: 600, marginTop: 24 }}
 				>
-					Scan QR code pelanggan untuk melakukan penarikan koin
+					Scan QR code atau masukkan email/username pelanggan untuk
+					melakukan penarikan barcoin
 				</div>
 			</div>
 			<div
@@ -455,7 +498,7 @@ function CreateOrderModal(props) {
 
 	return (
 		<Modal
-			size={'sm'}
+			size={currentModalContent === 1 ? 'lg' : 'sm'}
 			show={isOpen}
 			onBackdropClick={'static'}
 			keyboard={false}

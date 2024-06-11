@@ -8,4 +8,8 @@ export default class OrderModel {
         return await ApiRequest.set("v1/barcoin/usage/create", "POST", body);
     }
 
+    static createV2 = async (body) => {
+        return await ApiRequest.set('v2/barcoin/usage/create', 'POST', body);
+    }
+
 }

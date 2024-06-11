@@ -9,7 +9,7 @@ import Helper from 'utils/Helper';
 import Iconify from '../../reusable/Iconify';
 import swal from '../../reusable/CustomSweetAlert';
 import UserModel from 'models/UserModel';
-
+import OrderModel from 'models/OrderModel';
 
 let contentTimer;
 
@@ -18,39 +18,40 @@ const ORDER_NOMINALS = [50000, 100000, 150000, 200000, 250000, 300000];
 export default function OrderCreateV2() {
 	const history = useHistory();
 
-	const [scanValue, setScanValue] = useState('');
+	const [scanInputValue, setScanInputValue] = useState('');
 	const [scannedUser, setScannedUser] = useState(null);
-	const [total, setTotal] = useState(0);
+	const [orderValue, setOrderValue] = useState(0);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentModalContent, setCurrentModalContent] = useState(0);
 	const [loading, setLoading] = useState(false);
 
 	const handleNominalClick = (value) => {
-		setTotal(value);
+		setOrderValue(value);
 	};
 
-	const updateScanValue = (value) => {
-		setScanValue(value);
+	const updateScanInputValue = (value) => {
+		setScanInputValue(value);
 
 		clearTimeout(contentTimer);
 
 		contentTimer = setTimeout(async () => {
 			if (value.length > 100) {
-				findUserByQR(value);
+				searchUserByQr(value);
 			}
 		}, 300);
 	};
 
-	const findUserByQR = async (value) => {
+	const searchUserByQr = async (value) => {
 		setLoading(true);
-		setCurrentModalContent(2);
 
 		try {
-			let qr = await UserModel.processUserQR({
+			let user = await UserModel.processUserQR({
 				token: value,
 			});
-			setScannedUser(qr);
+			setScannedUser(user);
+			handleCreateOrder(user);
 		} catch (e) {
+			setLoading(false);
 			setCurrentModalContent(1);
 			swal.fireError({
 				title: `Error`,
@@ -60,7 +61,27 @@ export default function OrderCreateV2() {
 			});
 		}
 
-		setScanValue('');
+		setScanInputValue('');
+	};
+
+	const handleCreateOrder = async (user) => {
+		try {
+			let createResult = await OrderModel.createV2({
+				user_id: user.id,
+				total_coins: orderValue,
+			});
+			console.log(createResult)
+			setCurrentModalContent(2);
+		} catch (e) {
+			console.log(e);
+			swal.fireError({
+				title: `Error`,
+				text: e.error_message
+					? e.error_message
+					: 'Gagal untuk memproses pembayaran, silahkan coba lagi',
+			});
+		}
+
 		setLoading(false);
 	};
 
@@ -165,15 +186,14 @@ export default function OrderCreateV2() {
 									<div style={{ fontSize: 14 }}>
 										Nominal penarikan Barcoin
 									</div>
-									<div
-										style={{
-											marginTop: 8,
-											borderBottom: '1px solid #616161',
-											fontSize: 16,
-										}}
-									>
-										{Helper.formatNumber(total)}
-									</div>
+									<input
+										className="order-input"
+										value={orderValue}
+										onChange={(e) =>
+											setOrderValue(e.target.value)
+										}
+										type="number"
+									/>
 								</div>
 								<div style={{ marginTop: 24 }}>
 									<div
@@ -214,12 +234,12 @@ export default function OrderCreateV2() {
 			<CreateOrderModal
 				isOpen={isModalOpen}
 				handleClose={() => setIsModalOpen(false)}
-				scanValue={scanValue}
-				updateScanValue={(value) => updateScanValue(value)}
+				scanValue={scanInputValue}
+				updateScanValue={(value) => updateScanInputValue(value)}
 				currentModalContent={currentModalContent}
 				setCurrentModalContent={setCurrentModalContent}
 				loading={loading}
-				total={total}
+				total={orderValue}
 				scannedUser={scannedUser}
 			/>
 		</>

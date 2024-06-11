@@ -32,7 +32,20 @@ option {
 }
 
 input::placeholder {
-    color: '#FFF' !important;
+    color: #FFF !important;
+}
+
+input.order-input {
+    margin-top: 8px;
+    font-size: 16px;
+    background: transparent;
+    color: #FFF !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: 1px solid #616161 !important;
+    width: 100%;
+
 }
 
 #date-popup > div {

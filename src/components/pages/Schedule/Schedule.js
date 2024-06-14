@@ -26,8 +26,8 @@ export default function Schedule() {
 		isCreateMode: true,
 	});
 	const [currentTimeRange, setCurrentTimeRange] = useState({
-		start_time: moment().subtract(6, 'days'),
-		end_time: moment(),
+		start_time: moment().day(0 + 1),
+		end_time: moment().day(0 + 1).add(6, 'days'),
 	});
 
 	const getThisWeekSchedule = async () => {

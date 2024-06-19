@@ -136,12 +136,15 @@ export default function Schedule() {
 				scheduleData={modalSetting?.scheduleData || null}
 				handleClose={() => setModalSetting({ ...modalSetting, isOpen: false })}
 				refreshData={getThisWeekSchedule}
+				todaySchedule={
+					displayedSchedule[moment().subtract(1, 'days').format(SCHEDULES_GROUPING_BY_DATE_KEY_FORMAT)]
+				}
 			/>
 		</>
 	);
 }
 
-function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, refreshData }) {
+function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, refreshData, todaySchedule }) {
 	const [createFormData, setCreateFormData] = useState({
 		start_time: new Date().setHours(10, 0, 0),
 		duration_minutes: 10,
@@ -154,8 +157,14 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 
 	const getRegisteredDriversList = async () => {
 		try {
+			const initialArray = new Array(scheduleData.available_slots || 0).fill(0);
 			let drivers = await ScheduleModel.getById(scheduleData.id);
-			setRegisteredDriversList(drivers.schedule_slot_user);
+
+			drivers.schedule_slot_user.forEach((driver, index) => {
+				initialArray[index] = driver;
+			});
+
+			setRegisteredDriversList(initialArray);
 		} catch (e) {
 			console.log(e);
 		}
@@ -219,6 +228,32 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 		}
 	};
 
+	const handleCheckboxInputChange = async (event, index) => {
+		try {
+			if (!event.target.value) {
+				const latestScheduleData = await ScheduleModel.getById(scheduleData.id);
+				const registeredDriversCount = latestScheduleData._count.schedule_slot_user;
+
+				for (let i = registeredDriversCount; i <= index; i++) {
+					const result = await ScheduleModel.registerDriver({
+						schedule_slot_id: scheduleData.id,
+						apex_nickname: (i + 1).toString(),
+						user_id: null,
+					});
+				}
+
+				getRegisteredDriversList();
+				refreshData();
+			}
+		} catch (e) {
+			console.log(e);
+			swal.fireError({
+				title: `Error`,
+				text: e.error_message ? e.error_message : 'Failed to register driver(s), please try again.',
+			});
+		}
+	};
+
 	const handleUnregisterDriver = async (driverId) => {
 		try {
 			await ScheduleModel.unregisterDriver(driverId);
@@ -238,7 +273,7 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 			await ScheduleModel.create({
 				...createFormData,
 				duration_minutes: parseInt(createFormData.duration_minutes),
-				available_slots: parseInt(createFormData.available_slots)
+				available_slots: parseInt(createFormData.available_slots),
 			});
 			swal.fire({
 				text: 'Sesi Balapan berhasil dibuat!',
@@ -282,7 +317,7 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 				...updateFormData,
 				duration_minutes: parseInt(updateFormData.duration_minutes),
 				schedule_slot_id: parseInt(updateFormData.id),
-				available_slots: parseInt(updateFormData.available_slots)
+				available_slots: parseInt(updateFormData.available_slots),
 			});
 			swal.fire({
 				text: 'Sesi Balapan berhasil diubah!',
@@ -315,12 +350,42 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 		}
 	};
 
+	const updateDefaultCreateFormData = () => {
+		for (let i = 1; i < todaySchedule.length - 1; i++) {
+			const currentStartTime = moment(todaySchedule[i].start_time);
+			const currentEndTime = moment(todaySchedule[i].start_time).add(
+				todaySchedule[i].duration_minutes,
+				'minutes'
+			);
+
+			const previousStartTime = moment(todaySchedule[i - 1].start_time);
+			const previousEndTime = moment(todaySchedule[i - 1].start_time).add(
+				todaySchedule[i - 1].duration_minutes,
+				'minutes'
+			);
+
+			if (!currentStartTime.isSame(previousEndTime, 'minute')) {
+				setCreateFormData({
+					...createFormData,
+					start_time: previousEndTime.add(1, 'minutes'),
+				});
+				break;
+			}
+		}
+	};
+
 	useEffect(() => {
 		if (scheduleData) {
 			setUpdateFormData(scheduleData);
 			getRegisteredDriversList();
 		}
 	}, [scheduleData]);
+
+	useEffect(() => {
+		if (todaySchedule) {
+			updateDefaultCreateFormData();
+		}
+	}, []);
 
 	return (
 		<Modal size={'lg'} show={isOpen} backdrop="static" keyboard={false}>
@@ -390,7 +455,7 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 										})
 									}
 								>
-									<option selected hidden></option>
+									<option hidden></option>
 									{SKILL_LEVEL.map((skill) => (
 										<option key={skill} value={skill}>
 											{skill}
@@ -528,17 +593,22 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 													marginTop: 24,
 												}}
 											>
-												Driver Terdaftar
+												List Driver
 											</div>
 											{registeredDriversList.map((driver, index) => (
 												<DriversListItemComponent
 													key={driver.id}
 													driver={driver}
 													handleDelete={handleUnregisterDriver}
+													handleCheckboxInputChange={handleCheckboxInputChange}
+													index={index}
 												/>
 											))}
 										</Flex>
 									) : null}
+									<Flex justify={'end'}>
+										<AntButton type={'primary'}>Daftarkan</AntButton>
+									</Flex>
 								</>
 							) : null}
 						</>
@@ -576,40 +646,56 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 	);
 }
 
-function DriversListItemComponent({ driver, handleDelete }) {
+function DriversListItemComponent({ driver, handleDelete, handleCheckboxInputChange, index }) {
+	const [checkboxValue, setCheckboxValue] = useState(driver ? true : false);
+
 	return (
-		<Flex
-			style={{
-				color: '#FFF',
-				backgroundColor: Palette.BACKGROUND_DARK_GRAY,
-				padding: '8px 12px',
-				borderRadius: 8,
-			}}
-			justify={'space-between'}
-			align={'center'}
-			flex={1}
-		>
-			<Flex gap={8} justify="center" align="center">
+		<Flex justify="center" align="center" gap={12}>
+			<Flex gap={12}>
 				<div>
-					<img src={driver?.avatar_url || Avatar} style={{ borderRadius: 99, height: 48, width: 48 }} />
+					<input
+						type="checkbox"
+						checked={checkboxValue || driver}
+						value={driver?.id || ''}
+						onChange={(e) => {
+							setCheckboxValue(!checkboxValue);
+							handleCheckboxInputChange(e, index, !checkboxValue);
+						}}
+					/>
 				</div>
-				<Flex vertical>
-					<div style={{ fontWeight: 700 }}>{driver.apex_nickname}</div>
-					{/* <div style={{ font: 10, color: Palette.INACTIVE_GRAY }}>
-						{driver?.email || 'E-mail tidak tersedia'}
-					</div> */}
-				</Flex>
+				<div style={{ color: '#FFF' }}>{index + 1}.</div>
 			</Flex>
-			<div
+			<Flex
 				style={{
-					color: Palette.THEME_RED,
-					fontSize: 12,
-					cursor: 'pointer',
+					color: '#FFF',
+					backgroundColor: Palette.BACKGROUND_DARK_GRAY,
+					padding: '8px 12px',
+					borderRadius: 8,
+					width: '100%',
+					height: '100%',
 				}}
-				onClick={() => handleDelete(driver.id)}
+				justify={'space-between'}
+				align={'center'}
+				flex={1}
 			>
-				Hapus
-			</div>
+				{driver ? (
+					<>
+						<div style={{ fontWeight: 700 }}>{driver.apex_nickname}</div>
+						<div
+							style={{
+								color: Palette.THEME_RED,
+								fontSize: 12,
+								cursor: 'pointer',
+							}}
+							onClick={() => handleDelete(driver.id)}
+						>
+							Hapus
+						</div>
+					</>
+				) : (
+					<Flex></Flex>
+				)}
+			</Flex>
 		</Flex>
 	);
 }

@@ -241,29 +241,21 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 						user_id: null,
 					});
 				}
-
-				getRegisteredDriversList();
-				refreshData();
+			} else {
+				registeredDriversList.forEach(async (driver, driverIndex) => {
+					if (driverIndex >= index) {
+						await handleUnregisterDriver(driver.id);
+					}
+				})
 			}
-		} catch (e) {
-			console.log(e);
-			swal.fireError({
-				title: `Error`,
-				text: e.error_message ? e.error_message : 'Failed to register driver(s), please try again.',
-			});
-		}
-	};
 
-	const handleUnregisterDriver = async (driverId) => {
-		try {
-			await ScheduleModel.unregisterDriver(driverId);
 			getRegisteredDriversList();
 			refreshData();
 		} catch (e) {
 			console.log(e);
 			swal.fireError({
 				title: `Error`,
-				text: e.error_message ? e.error_message : 'Failed to unregister driver, please try again.',
+				text: e.error_message ? e.error_message : 'Failed to register driver(s), please try again.',
 			});
 		}
 	};
@@ -311,6 +303,20 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 		}
 	};
 
+	const handleUnregisterDriver = async (driverId) => {
+		try {
+			await ScheduleModel.unregisterDriver(driverId);
+			getRegisteredDriversList();
+			refreshData();
+		} catch (e) {
+			console.log(e);
+			swal.fireError({
+				title: `Error`,
+				text: e.error_message ? e.error_message : 'Failed to unregister driver, please try again.',
+			});
+		}
+	};
+
 	const handleUpdateFormSubmit = async () => {
 		try {
 			await ScheduleModel.edit({
@@ -329,6 +335,29 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 			swal.fireError({
 				title: `Error`,
 				text: e.error_message ? e.error_message : 'Gagal untuk mengubah jadwal, silahkan coba lagi',
+			});
+		}
+	};
+
+	const hanldeUpdateDriverFormSubmit = async () => {
+		try {
+			registeredDriversList.forEach(async (driver) => {
+				if (driver.id) {
+					await ScheduleModel.editRegisteredDriver(driver);
+				}
+			});
+
+			swal.fire({
+				text: 'Informasi driver berhasil diubah!',
+				icon: 'success',
+			});
+			getRegisteredDriversList();
+			refreshData();
+		} catch (e) {
+			console.log(e);
+			swal.fireError({
+				title: `Error`,
+				text: e.error_message ? e.error_message : 'Failed to update registered driver(s), please try again.',
 			});
 		}
 	};
@@ -380,6 +409,12 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 			getRegisteredDriversList();
 		}
 	}, [scheduleData]);
+
+	useEffect(() => {
+		if (isOpen) {
+			getRegisteredDriversList();
+		}
+	}, [isOpen])
 
 	useEffect(() => {
 		if (todaySchedule) {
@@ -598,16 +633,28 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 											{registeredDriversList.map((driver, index) => (
 												<DriversListItemComponent
 													key={driver.id}
-													driver={driver}
-													handleDelete={handleUnregisterDriver}
+													driver={registeredDriversList[index]}
 													handleCheckboxInputChange={handleCheckboxInputChange}
+													handleTextInputChange={(value) => {
+														setRegisteredDriversList(
+															registeredDriversList.map((driver) => {
+																if (driver.id === value.id) {
+																	return value;
+																} else {
+																	return driver;
+																}
+															})
+														);
+													}}
 													index={index}
 												/>
 											))}
 										</Flex>
 									) : null}
 									<Flex justify={'end'}>
-										<AntButton type={'primary'}>Daftarkan</AntButton>
+										<AntButton type={'primary'} onClick={hanldeUpdateDriverFormSubmit}>
+											Perbaharui Data
+										</AntButton>
 									</Flex>
 								</>
 							) : null}
@@ -646,7 +693,7 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 	);
 }
 
-function DriversListItemComponent({ driver, handleDelete, handleCheckboxInputChange, index }) {
+function DriversListItemComponent({ driver, handleCheckboxInputChange, handleTextInputChange, index }) {
 	const [checkboxValue, setCheckboxValue] = useState(driver ? true : false);
 
 	return (
@@ -665,37 +712,11 @@ function DriversListItemComponent({ driver, handleDelete, handleCheckboxInputCha
 				</div>
 				<div style={{ color: '#FFF' }}>{index + 1}.</div>
 			</Flex>
-			<Flex
-				style={{
-					color: '#FFF',
-					backgroundColor: Palette.BACKGROUND_DARK_GRAY,
-					padding: '8px 12px',
-					borderRadius: 8,
-					width: '100%',
-					height: '100%',
-				}}
-				justify={'space-between'}
-				align={'center'}
-				flex={1}
-			>
-				{driver ? (
-					<>
-						<div style={{ fontWeight: 700 }}>{driver.apex_nickname}</div>
-						<div
-							style={{
-								color: Palette.THEME_RED,
-								fontSize: 12,
-								cursor: 'pointer',
-							}}
-							onClick={() => handleDelete(driver.id)}
-						>
-							Hapus
-						</div>
-					</>
-				) : (
-					<Flex></Flex>
-				)}
-			</Flex>
+			<Form.Control
+				value={driver?.apex_nickname || ''}
+				onChange={(e) => handleTextInputChange({ ...driver, apex_nickname: e.target.value })}
+				disabled={!checkboxValue}
+			/>
 		</Flex>
 	);
 }

@@ -17,6 +17,11 @@ export default class Schedule {
         return await ApiRequest.set(`v1/schedule/user/${scheduleSlotUserId}`, 'DELETE')
     }
 
+    // add route for updating registered driver
+    static editRegisteredDriver = async (body) => {
+        return await ApiRequest.set(`v1/schedule/user/${body.id}`, 'PUT', body);
+    }
+
     static getAllThisWeek = async () => {
         return await ApiRequest.set('v1/schedules/this-week', 'GET');
     }

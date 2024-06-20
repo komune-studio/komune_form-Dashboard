@@ -11,6 +11,7 @@ import Palette from "../../../utils/Palette";
 import UserFormModal from "./UserFormModal";
 import UserResetPasswordModal from "./UserResetPasswordModal";
 import UserHistoryModal from "./UserHistoryModal";
+import UserLinkChildrenModal from './UserLinkChildrenModal';
 
 const UserList = () => {
 
@@ -22,6 +23,7 @@ const UserList = () => {
     const [isNewRecord, setIsNewRecord] = useState(false)
     const [openUserResetModal, setOpenUserResetModal] = useState(false)
     const [openHistory, setOpenHistory] = useState(false)
+    const [openLinkChildren, setOpenLinkChildren] = useState(false)
     const columns = [
         {
             id: 'id', label: 'ID', filter: false,
@@ -57,6 +59,7 @@ const UserList = () => {
                                         setOpenHistory(true)
                                         setOpenUserModal(false)
                                         setOpenUserResetModal(false)
+                                        setOpenLinkChildren(false)
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
@@ -71,6 +74,7 @@ const UserList = () => {
                                         setOpenUserModal(true)
                                         setSelectedUser(value)
                                         setIsNewRecord(false)
+                                        setOpenLinkChildren(false)
 
 
                                     }}
@@ -79,7 +83,6 @@ const UserList = () => {
                                     icon={<Iconify icon={"material-symbols:edit"}/>}/>
                             </Tooltip>
                             <Tooltip title="Ubah kata sandi">
-                                {/* <Link to={"/admin-edit-password/" + value?.id}> */}
                                 <AntButton
                                     type={'link'}
                                     style={{color: Palette.MAIN_THEME}}
@@ -87,11 +90,26 @@ const UserList = () => {
                                         setSelectedUser(value)
                                         setOpenUserResetModal(true)
                                         setOpenUserModal(false)
+                                        setOpenLinkChildren(false)
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
                                     icon={<Iconify icon={"material-symbols:lock"}/>}/>
-                                {/* </Link> */}
+                            </Tooltip>
+                            <Tooltip title="Sambungkan akun children">
+                                <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
+                                    onClick={() => {
+                                        setSelectedUser(value)
+                                        setOpenHistory(false)
+                                        setOpenUserModal(false)
+                                        setOpenUserResetModal(false)
+                                        setOpenLinkChildren(true)
+                                    }}
+                                    className={"d-flex align-items-center justify-content-center"}
+                                    shape="circle"
+                                    icon={<Iconify icon={"material-symbols:link"}/>}/>
                             </Tooltip>
                             <Tooltip title="Hapus">
                                 <AntButton
@@ -100,7 +118,6 @@ const UserList = () => {
                                     onClick={() => {
                                         onDelete(value.id)
                                     }}
-                                    danger
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
                                     icon={<Iconify icon={"material-symbols:delete-outline"}/>}/>
@@ -228,6 +245,17 @@ const UserList = () => {
                     }
                     setOpenUserModal(false)
                     setOpenUserResetModal(false)
+                }}
+            />
+
+            <UserLinkChildrenModal 
+                isOpen={openLinkChildren}
+                userData={selectedUser}
+                handleClose={async (refresh) => {
+                    if (refresh) {
+                        await initializeData();
+                    }
+                    setOpenLinkChildren(false);
                 }}
             />
 

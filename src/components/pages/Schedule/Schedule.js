@@ -18,6 +18,8 @@ const SKILL_LEVEL = ['BEGINNER', 'ADVANCED', 'PRO', 'MAINTENANCE', 'EVENT'];
 
 const SCHEDULES_GROUPING_BY_DATE_KEY_FORMAT = 'DD/MM/YYYY';
 
+const MINUTES_PER_SESSION = 9;
+
 export default function Schedule() {
 	const [displayedSchedule, setDisplayedSchedule] = useState([]);
 	const [modalSetting, setModalSetting] = useState({
@@ -30,6 +32,7 @@ export default function Schedule() {
 			.day(0 + 1)
 			.add(6, 'days'),
 	});
+	const [todaySchedule, setTodaySchedule] = useState([]);
 
 	const getThisWeekSchedule = async () => {
 		try {
@@ -44,6 +47,29 @@ export default function Schedule() {
 			);
 
 			setDisplayedSchedule(groupedResult);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	const getTodaySchedule = async () => {
+		try {
+			let result = await ScheduleModel.getAllInTimeRange({
+				start_time: moment().set({ hour: 0, minute: 0, second: 0 }).toString(),
+				end_time: moment().set({ hour: 23, minute: 59, second: 59 }).toString(),
+			});
+
+			// Group data by date
+			result.sort((a, b) => {
+				if (moment(a.start_time).isSameOrBefore(moment(b.start_time))) {
+					return -1;
+				} else {
+					return 1;
+				}
+			});
+
+			console.log('TODAY SCHEDULE', result);
+			setTodaySchedule(result);
 		} catch (e) {
 			console.log(e);
 		}
@@ -66,6 +92,10 @@ export default function Schedule() {
 	useEffect(() => {
 		getThisWeekSchedule();
 	}, [currentTimeRange]);
+
+	useEffect(() => {
+		getTodaySchedule();
+	}, [displayedSchedule]);
 
 	return (
 		<>
@@ -135,9 +165,7 @@ export default function Schedule() {
 				scheduleData={modalSetting?.scheduleData || null}
 				handleClose={() => setModalSetting({ ...modalSetting, isOpen: false })}
 				refreshData={getThisWeekSchedule}
-				todaySchedule={
-					displayedSchedule[moment().subtract(1, 'days').format(SCHEDULES_GROUPING_BY_DATE_KEY_FORMAT)]
-				}
+				todaySchedule={todaySchedule}
 			/>
 		</>
 	);
@@ -145,7 +173,7 @@ export default function Schedule() {
 
 function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, refreshData, todaySchedule }) {
 	const [createFormData, setCreateFormData] = useState({
-		start_time: new Date().setHours(12, 0, 0),
+		start_time: new Date(),
 		duration_minutes: 10,
 		skill_level: '',
 		available_slots: 10,
@@ -179,20 +207,36 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 		return `${title} Session (${scheduleDate} / ${scheduleStartTime} - ${scheduleEndTime})`;
 	};
 
-	const resetAllForms = () => {
-		setCreateFormData({
-			start_time: new Date().setHours(10, 0, 0),
-			duration_minutes: 10,
-			skill_level: '',
-			available_slots: 10,
-		});
-		setRegisterFormData('');
-		setRegisteredDriversList([]);
-	};
-
 	const resetCreateForm = () => {
+		let startTime = moment();
+
+		for (let i = 0; i < todaySchedule.length; i++) {
+			let currentScheduleStartTime = moment(todaySchedule[i].start_time);
+			let currentScheduleEndTime = moment(todaySchedule[i].start_time).add(
+				todaySchedule[i].duration_minutes,
+				'minutes'
+			);
+
+			if (i === 0) {
+				if (moment().diff(currentScheduleStartTime, 'minutes') >= MINUTES_PER_SESSION) {
+					break;
+				}
+			}
+
+			if (i === todaySchedule.length - 1) {
+				startTime = currentScheduleEndTime.set({ second: 1 });
+				break;
+			}
+
+			let nextScheduleStartTime = moment(todaySchedule[i + 1].start_time);
+			if (currentScheduleEndTime.diff(nextScheduleStartTime, 'minutes') >= MINUTES_PER_SESSION) {
+				startTime = currentScheduleEndTime.set({ second: 1 });
+				break;
+			}
+		}
+
 		setCreateFormData({
-			start_time: new Date().setHours(10, 0, 0),
+			start_time: startTime,
 			duration_minutes: 10,
 			skill_level: '',
 			available_slots: 10,
@@ -201,6 +245,12 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 
 	const resetRegisterForm = () => {
 		setRegisterFormData('');
+	};
+
+	const resetAllForms = () => {
+		resetCreateForm();
+		resetRegisterForm();
+		setRegisteredDriversList([]);
 	};
 
 	const handleRegisterFormInputChange = async (value) => {
@@ -244,13 +294,15 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 					})
 				);
 			} else {
-				setRegisteredDriversList(registeredDriversList.map((driver, driverIndex) => {
-					if (driverIndex >= index) {
-						return 0;
-					} else {
-						return driver;
-					}
-				}));
+				setRegisteredDriversList(
+					registeredDriversList.map((driver, driverIndex) => {
+						if (driverIndex >= index) {
+							return 0;
+						} else {
+							return driver;
+						}
+					})
+				);
 			}
 		} catch (e) {
 			console.log(e);
@@ -343,7 +395,7 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 			let lastSavedData = await ScheduleModel.getById(scheduleData.id);
 
 			for (let i = 0; i < registeredDriversList.length; i++) {
-				let currentDriver = registeredDriversList[i]
+				let currentDriver = registeredDriversList[i];
 				if (!currentDriver) {
 					continue;
 				}
@@ -420,10 +472,12 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 	}, [scheduleData]);
 
 	useEffect(() => {
-		if (isOpen) {
+		resetAllForms();
+
+		if (isOpen && !isCreateMode) {
 			getRegisteredDriversList();
 		}
-	}, [isOpen]);
+	}, [isOpen, isCreateMode]);
 
 	return (
 		<Modal size={'lg'} show={isOpen} backdrop="static" keyboard={false}>
@@ -687,7 +741,6 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 }
 
 function DriversListItemComponent({ driver, handleCheckboxInputChange, handleTextInputChange, index }) {
-
 	return (
 		<Flex justify="center" align="center" gap={12}>
 			<Flex gap={12}>
@@ -695,7 +748,7 @@ function DriversListItemComponent({ driver, handleCheckboxInputChange, handleTex
 					<input
 						type="checkbox"
 						checked={driver}
-						value={driver?.apex_nickname|| ''}
+						value={driver?.apex_nickname || ''}
 						onChange={(e) => {
 							handleCheckboxInputChange(e.target.value, index);
 						}}

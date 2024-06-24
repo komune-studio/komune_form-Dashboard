@@ -209,6 +209,10 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 
 	const resetCreateForm = () => {
 		let startTime = moment();
+		if (startTime.hour() < 10) {
+			startTime.set({hour: 10, minute: 0, second: 0});
+		}
+
 
 		for (let i = 0; i < todaySchedule.length; i++) {
 			let currentScheduleStartTime = moment(todaySchedule[i].start_time);
@@ -217,21 +221,17 @@ function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, 
 				'minutes'
 			);
 
-			if (i === 0) {
-				if (moment().diff(currentScheduleStartTime, 'minutes') >= MINUTES_PER_SESSION) {
-					break;
-				}
+			if (currentScheduleEndTime.isBefore(startTime, 'minute')) {
+				continue;
 			}
 
-			if (i === todaySchedule.length - 1) {
-				startTime = currentScheduleEndTime.set({ second: 1 });
+			if (
+				currentScheduleStartTime.isAfter(startTime, 'minute') &&
+				currentScheduleStartTime.diff(startTime, 'minute') >= MINUTES_PER_SESSION
+			) {
 				break;
-			}
-
-			let nextScheduleStartTime = moment(todaySchedule[i + 1].start_time);
-			if (currentScheduleEndTime.diff(nextScheduleStartTime, 'minutes') >= MINUTES_PER_SESSION) {
-				startTime = currentScheduleEndTime.set({ second: 1 });
-				break;
+			} else {
+				startTime = currentScheduleEndTime;
 			}
 		}
 

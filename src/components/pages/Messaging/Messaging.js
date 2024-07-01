@@ -2,6 +2,7 @@ import {Col, Form, Row} from "react-bootstrap";
 import React, {useState} from "react";
 import {Card, CardBody, Container} from "reactstrap";
 import Palette from "../../../utils/Palette";
+import {Button} from "antd";
 
 export default function Messaging() {
     const [form, setForm] = useState({title: '', body: ''})
@@ -13,6 +14,10 @@ export default function Messaging() {
                 <Form.Control as={rows && 'textarea'} rows={rows} onChange={(e) => onChange(e.target.value)} type="text" placeholder="Title"/>
             </Form.Group>
         )
+    }
+
+    const onSubmit = () => {
+
     }
 
     return (
@@ -27,6 +32,11 @@ export default function Messaging() {
                     </Row>
                     <CustomField title={'Title'} onChange={(e) => setForm({...form, title: e.target.value})}/>
                     <CustomField title={'Body'} rows={4} as={'textarea'} value={form.body} onChange={(e) => setForm({...form, body: e.target.value})} type="text" placeholder="Body"/>
+                    <div style={{display: 'flex', justifyContent: 'right'}}>
+                        <Button type={'primary'} size="sm" variant="primary" onClick={onSubmit}>
+                            {'Luncurkan'}
+                        </Button>
+                    </div>
                 </CardBody>
             </Card>
         </Container>

@@ -131,7 +131,7 @@ const SIDEBAR = [
     },
     {
         path: "/messaging",
-        name: "Messaging",
+        name: "Notification",
         icon: "material-symbols:send",
         color: Palette.BARCODE_ORANGE
     },

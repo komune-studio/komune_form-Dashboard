@@ -4,7 +4,7 @@ import Iconify from "./Iconify";
 import React, {useEffect, useState} from "react";
 
 export default function UserFormModal({onClose, title, children, onSubmit, isOpen}) {
-    const [isOpenTemp, setIsOpenTemp] = useState(true)
+    const [isOpenTemp, setIsOpenTemp] = useState(false)
 
     useEffect(() => {
         setIsOpenTemp(isOpen)

@@ -2,11 +2,10 @@ import {Col, Form} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {Card, CardBody, Container, FormGroup, Row} from "reactstrap";
 import Palette from "../../../utils/Palette";
-import {Button as AntButton, Button, Space, Tooltip} from "antd";
+import {Button as AntButton, Space} from "antd";
 import CustomModal from '../../reusable/CustomModal'
 import CustomTable from "../../reusable/CustomTable";
 import moment from "moment";
-import Iconify from "../../reusable/Iconify";
 import NotificationHistoryModel from '../../../models/NotificationHistoryModel'
 
 
@@ -77,6 +76,7 @@ export default function Notification() {
     const onSubmit = async () => {
         try {
             let result = await NotificationHistoryModel.create({title, body})
+            setIsCreateModalOpen(false)
             getData()
             console.log('created row: ', result)
         } catch (e) {
@@ -108,7 +108,7 @@ export default function Notification() {
                 </FormGroup>
                 <FormGroup>
                     <Form.Label style={{ fontSize: '0.8em' }}>Body</Form.Label>
-                    <Form.Control value={body} autoComplete={"referralCode"} onChange={(e) => setBody(e.target.value)} type="text" rows={4} as='textarea' placeholder="Title"/>
+                    <Form.Control value={body} autoComplete={"referralCode"} onChange={(e) => setBody(e.target.value)} type="text" rows={4} as='textarea' placeholder="Body"/>
                 </FormGroup>
 
             </CustomModal>

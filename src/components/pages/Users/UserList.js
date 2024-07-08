@@ -31,19 +31,18 @@ const UserList = () => {
         {
             id: 'username', label: 'Username', filter: true,
         },
-        {
-            id: 'full_name', label: 'Full Name', filter: true,
-        },
+        // {
+        //     id: 'full_name', label: 'Full Name', filter: true,
+        // },
         {
             id: 'email', label: 'Email', filter: false,
         },
         {
             id: 'gender', label: 'Gender', filter: false,
         },
-
-        {
-            id: 'phone_number', label: 'Phone Number', filter: false,
-        },
+        // {
+        //     id: 'phone_number', label: 'Phone Number', filter: false,
+        // },
         {
             id: '', label: '', filter: false,
             render: ((value) => {

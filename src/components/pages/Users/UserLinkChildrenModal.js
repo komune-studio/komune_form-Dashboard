@@ -63,7 +63,7 @@ export default function UserLinkChildrenModal({ isOpen, handleClose, userData })
 	}, [isOpen]);
 
 	if (!userData) {
-		return <div>No user data!</div>
+		return null;
 	}
 
 	return (

@@ -3,14 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { ButtonGroup, Form } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import {
-	Flex,
-	Spin,
-	Button as AntButton,
-	Tooltip,
-	Switch,
-	Modal as AntModal,
-} from 'antd';
+import { Flex, Spin, Button as AntButton, Tooltip, Switch, Modal as AntModal } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import TournamentModel from 'models/TournamentModel';
@@ -54,8 +47,7 @@ export default function TournamentList() {
 			setLoading(false);
 		} catch (e) {
 			swal.fireError({
-				text:
-					e?.error_message || 'Error while fetching tournaments data',
+				text: e?.error_message || 'Error while fetching tournaments data',
 			});
 			setLoading(false);
 		}
@@ -68,9 +60,7 @@ export default function TournamentList() {
 			filter: false,
 			link: true,
 			render: (row) => {
-				return (
-					<>{moment(row.start_date).format('dddd, DD MMMM YYYY')}</>
-				);
+				return <>{moment(row.start_date).format('dddd, DD MMMM YYYY')}</>;
 			},
 		},
 		{
@@ -129,11 +119,7 @@ export default function TournamentList() {
 								<AntButton
 									type={'link'}
 									shape={'circle'}
-									icon={
-										<Iconify
-											icon={'material-symbols:edit'}
-										/>
-									}
+									icon={<Iconify icon={'material-symbols:edit'} />}
 									style={{ color: Palette.MAIN_THEME }}
 									onClick={() => {
 										setModal({
@@ -141,15 +127,20 @@ export default function TournamentList() {
 											formType: 'edit',
 											initialData: {
 												...row,
-												start_date: moment(
-													row.start_date
-												).format('YYYY-MM-DD'),
-												end_date: moment(
-													row.end_date
-												).format('YYYY-MM-DD'),
+												start_date: moment(row.start_date).format('YYYY-MM-DD'),
+												end_date: moment(row.end_date).format('YYYY-MM-DD'),
 											},
 										});
 									}}
+								/>
+							</Tooltip>
+							<Tooltip title="Leaderboard">
+								<AntButton
+									type={'link'}
+									shape={'circle'}
+									icon={<Iconify icon={'material-symbols:leaderboard'} />}
+									style={{ color: Palette.MAIN_THEME }}
+									onClick={() => history.push(`/tournament/${row.id}`)}
 								/>
 							</Tooltip>
 						</Flex>
@@ -213,16 +204,9 @@ export default function TournamentList() {
 					}}
 					className="card-stats mb-4 mb-xl-0 px-4 py-3"
 				>
-					<Flex
-						className="mb-1"
-						justify={'space-between'}
-						align={'center'}
-					>
+					<Flex className="mb-1" justify={'space-between'} align={'center'}>
 						{/* Page title */}
-						<div
-							className="mb-3"
-							style={{ fontWeight: 'bold', fontSize: '1.1em' }}
-						>
+						<div className="mb-3" style={{ fontWeight: 'bold', fontSize: '1.1em' }}>
 							List Turnamen
 						</div>
 						{/* Create new tournament button */}
@@ -245,21 +229,15 @@ export default function TournamentList() {
 						{/* Tournament category selector */}
 						<div className="mb-5">
 							<ButtonGroup aria-label="Basic example">
-								{[...Object.keys(tournaments)].map(
-									(item, index) => (
-										<button
-											key={index}
-											className={`btn ${
-												category === item
-													? 'btn-primary-tab'
-													: 'btn-default-tab'
-											}`}
-											onClick={() => setCategory(item)}
-										>
-											{Helper.toTitleCase(item)}
-										</button>
-									)
-								)}
+								{[...Object.keys(tournaments)].map((item, index) => (
+									<button
+										key={index}
+										className={`btn ${category === item ? 'btn-primary-tab' : 'btn-default-tab'}`}
+										onClick={() => setCategory(item)}
+									>
+										{Helper.toTitleCase(item)}
+									</button>
+								))}
 							</ButtonGroup>
 						</div>
 
@@ -269,20 +247,13 @@ export default function TournamentList() {
 							</Flex>
 						) : (
 							<CustomTable
-								data={
-									tournaments[category]
-										? tournaments[category]
-										: []
-								}
+								data={tournaments[category] ? tournaments[category] : []}
 								columns={tableColumnFormat}
 								showFilter={true}
 								pagination={true}
 								searchText={''}
 								rowAction={{
-									onClick: (rowData) =>
-										history.push(
-											`/tournament/${rowData.id}`
-										),
+									onClick: (rowData) => history.push(`/tournament/${rowData.id}`),
 								}}
 							/>
 						)}
@@ -382,19 +353,10 @@ function TournamentListModal(props) {
 	}, [props.tournamentData, props.formType]);
 
 	return (
-		<Modal
-			size={'lg'}
-			show={props.isOpen}
-			backdrop="static"
-			keyboard={false}
-		>
+		<Modal size={'lg'} show={props.isOpen} backdrop="static" keyboard={false}>
 			<Modal.Header>
 				<Flex justify="space-between" align="center" className="w-100">
-					<Modal.Title>
-						{props.formType === 'create'
-							? 'Buat Turnamen'
-							: 'Ubah Turnamen'}
-					</Modal.Title>
+					<Modal.Title>{props.formType === 'create' ? 'Buat Turnamen' : 'Ubah Turnamen'}</Modal.Title>
 					<div onClick={handleClose} style={{ cursor: 'pointer' }}>
 						<CloseOutlined style={{ color: '#FFF' }} />
 					</div>
@@ -408,9 +370,7 @@ function TournamentListModal(props) {
 							<Form.Control
 								placeholder={'...'}
 								value={formData.name}
-								onChange={(e) =>
-									updateFormData('name', e.target.value)
-								}
+								onChange={(e) => updateFormData('name', e.target.value)}
 							/>
 						</Flex>
 						<Flex vertical gap={8}>
@@ -418,9 +378,7 @@ function TournamentListModal(props) {
 							<Form.Control
 								placeholder={'...'}
 								value={formData.location}
-								onChange={(e) =>
-									updateFormData('location', e.target.value)
-								}
+								onChange={(e) => updateFormData('location', e.target.value)}
 							/>
 						</Flex>
 						<Flex vertical gap={8}>
@@ -428,9 +386,7 @@ function TournamentListModal(props) {
 							<Form.Control
 								placeholder={'...'}
 								value={formData.model}
-								onChange={(e) =>
-									updateFormData('model', e.target.value)
-								}
+								onChange={(e) => updateFormData('model', e.target.value)}
 							/>
 						</Flex>
 					</Flex>
@@ -440,9 +396,7 @@ function TournamentListModal(props) {
 							<Form.Control
 								placeholder={'...'}
 								value={formData.type}
-								onChange={(e) =>
-									updateFormData('type', e.target.value)
-								}
+								onChange={(e) => updateFormData('type', e.target.value)}
 							/>
 						</Flex>
 						<Flex vertical gap={8}>
@@ -451,9 +405,7 @@ function TournamentListModal(props) {
 								placeholder={'DD/MM/YYYY'}
 								type="date"
 								value={formData.start_date}
-								onChange={(e) =>
-									updateFormData('start_date', e.target.value)
-								}
+								onChange={(e) => updateFormData('start_date', e.target.value)}
 							/>
 						</Flex>
 						<Flex vertical gap={8}>
@@ -462,9 +414,7 @@ function TournamentListModal(props) {
 								placeholder={'DD/MM/YYYY'}
 								type="date"
 								value={formData.end_date}
-								onChange={(e) =>
-									updateFormData('end_date', e.target.value)
-								}
+								onChange={(e) => updateFormData('end_date', e.target.value)}
 							/>
 						</Flex>
 					</Flex>
@@ -476,9 +426,7 @@ function TournamentListModal(props) {
 						as="textarea"
 						rows={7}
 						value={formData.detail}
-						onChange={(e) =>
-							updateFormData('detail', e.target.value)
-						}
+						onChange={(e) => updateFormData('detail', e.target.value)}
 					/>
 				</Flex>
 				<Flex gap={8} justify={'end'}>
@@ -491,12 +439,7 @@ function TournamentListModal(props) {
 					>
 						Batal
 					</AntButton>
-					<AntButton
-						type={'primary'}
-						size="sm"
-						variant="primary"
-						onClick={handleSubmit}
-					>
+					<AntButton type={'primary'} size="sm" variant="primary" onClick={handleSubmit}>
 						Simpan
 					</AntButton>
 				</Flex>

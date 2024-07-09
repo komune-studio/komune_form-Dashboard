@@ -15,21 +15,15 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 
-import "assets/plugins/nucleo/css/nucleo.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "assets/scss/argon-dashboard-react.scss";
-import "./darkComponent.css"
-import AdminLayout from "layouts/Admin.js";
-import AuthLayout from "layouts/Auth.js";
-import realIndex from "./RealIndex";
-import RealIndex from "./RealIndex";
+import 'assets/plugins/nucleo/css/nucleo.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'assets/scss/argon-dashboard-react.scss';
+import './darkComponent.css';
+import RealIndex from './RealIndex';
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = createRoot(document.getElementById('root'));
 
-root.render(
-    <RealIndex/>
-);
+root.render(<RealIndex />);

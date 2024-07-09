@@ -17,17 +17,11 @@
 */
 import React, { useEffect, useState } from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
-import Dashboard from "views/Dashboard.js";
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
 import authBG from '../assets/img/auth/auth_bg.png'
 // core components
-import AuthNavbar from "components/Navbars/AuthNavbar.js";
-import AuthFooter from "components/Footers/AuthFooter.js";
-
-import routes from "routes.js";
 import Login from "../components/pages/Login";
-import Palette from "utils/Palette";
 
 
 const Auth = (props) => {

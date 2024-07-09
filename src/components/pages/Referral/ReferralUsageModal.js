@@ -1,25 +1,8 @@
 import Modal from "react-bootstrap/Modal"
-import {
-	Button,
-	DatePicker,
-	message,
-	Spin,
-	Switch,
-	Upload as AntUpload,
-	Space,
-	Tooltip
-} from "antd"
-import { Col, Form, Row } from "react-bootstrap"
+import { Button } from "antd"
 import React, { useEffect, useState } from "react"
-import UserModel from "../../../models/UserModel"
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons"
 import PropTypes from "prop-types"
-import swal from "../../reusable/CustomSweetAlert"
-import moment from "moment/moment"
-import UploadModel from "../../../models/UploadModel"
-import Referral from "../../../models/ReferralModel"
 import CustomTable from "components/reusable/CustomTable"
-import Helper from "../../../utils/Helper"
 import User from "../../../models/UserModel"
 
 ReferralUsageModal.propTypes = {
@@ -29,11 +12,6 @@ ReferralUsageModal.propTypes = {
 }
 
 export default function ReferralUsageModal({ isOpen, close, referralData }) {
-	const [code, setCode] = useState(null)
-	const [type, setType] = useState(null)
-	const [value, setValue] = useState(null)
-	const [active, setActive] = useState(false)
-	const [loadingUpload, setLoadingUpload] = useState(false)
 	const [dataSource, setDataSource] = useState([])
 	const columns = [
 		{
@@ -43,7 +21,7 @@ export default function ReferralUsageModal({ isOpen, close, referralData }) {
 		},
 		{
 			id: "full_name",
-			label: "Full name",
+			label: "Full Name",
 			filter: true
 		},
 		{
@@ -51,45 +29,34 @@ export default function ReferralUsageModal({ isOpen, close, referralData }) {
 			label: "Referral Usage",
 			filter: true,
 			render: (row) => {
-				let noun = (row.count == 1? "time" : "times")
+				let noun = row.count == 1 ? "time" : "times"
 				return row.count + " " + noun
 			}
 		}
-		/* {
-            id: 'active', label: 'Status Paket', filter: false, width: '12%',
-            render: (row => {
-                return <Switch disabled={true} defaultChecked={row.active} checked={row.active} onChange={() => {
-                    changeActive(row.id, row.active)
-                }}/>
-            })
-        }, */
 	]
+	
 	const handleClose = (refresh) => {
 		close(refresh)
 	}
 
 	const initForm = async () => {
-        let tmp = await User.getByReferralId(referralData.id)
-        setDataSource(tmp)
-        console.log(tmp)
-    }
-	useEffect(() => {
-		/* if (isNewRecord) {
-            reset()
-        } else {
-            initForm()
-        } */
-        if(isOpen) initForm()
-	}, [isOpen])
-
-	const reset = () => {
-		setType("")
-		setCode("")
-		setValue("")
+		let tmp = await User.getByReferralId(referralData.id)
+		setDataSource(tmp)
+		console.log(tmp)
 	}
 
+	useEffect(() => {
+		if (isOpen) initForm()
+	}, [isOpen])
+
 	return (
-		<Modal show={isOpen} backdrop="static" keyboard={false} onExit={handleClose} size="lg">
+		<Modal
+			show={isOpen}
+			backdrop="static"
+			keyboard={false}
+			onExit={handleClose}
+			size="lg"
+		>
 			<Modal.Header>
 				<Modal.Title>Referral {referralData?.code}</Modal.Title>
 			</Modal.Header>

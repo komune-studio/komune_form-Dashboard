@@ -10,7 +10,7 @@ export default function DashboardHeatmapWidget(props) {
 	const containerRef = useRef()
 
 	const xLabels = new Array(12).fill(0).map((_, i) => `${i+9}`)
-	const yLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri"]
+	const yLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 	const data = new Array(yLabels.length)
 		.fill(0)
 		.map(() =>
@@ -43,7 +43,6 @@ export default function DashboardHeatmapWidget(props) {
 					})}
 					yLabelsStyle={() => ({
 						fontSize: ".7rem",
-						textTransform: "uppercase",
 						color: Palette.INACTIVE_GRAY
 					})}
 					cellStyle={(_x, _y, ratio) => ({

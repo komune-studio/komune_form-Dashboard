@@ -4,6 +4,7 @@ import { Container } from 'reactstrap';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Chart, registerables } from 'chart.js';
 import moment from 'moment';
+import _ from 'lodash';
 import Palette from 'utils/Palette';
 import DashboardNumericMetricWidget from './DashboardNumericMetricWidget';
 import DashboardColumnChartWidget from './DashboardColumnChartWidget';
@@ -11,20 +12,27 @@ import DashboardStackedColumnChartWidget from './DashboardStackedColumnChartWidg
 import DashboardDoughnutChartWidget from './DashboardDoughnutChartWidget';
 import DashboardHeatmapWidget from './DashboardHeatmapWidget';
 import TopUpHistoryModel from 'models/TopUpHistoryModel';
+import OrderModel from 'models/OrderModel';
 
 Chart.register(...registerables);
 
 export default function Dashboard() {
 	const [period, setPeriod] = useState('daily');
 	const [loading, setLoading] = useState(false);
-	const [topUpHistories, setTopUpHistories] = useState([]);
-	const [income, setIncome] = useState();
+	const [topUpHistory, setTopUpHistory] = useState([]);
+	const [barcoinUsages, setBarcoinUsages] = useState([]);
+	const [topUpIncome, setTopUpIncome] = useState();
+	const [barcoinTransaction, setBarcoinTransaction] = useState();
+	const [topUpIncomeTrend, setTopUpIncomeTrend] = useState({});
+	const [barcoinTransactionTrend, setBarcoinTransactionTrend] = useState({});
 
 	const initializeData = async () => {
 		try {
 			let topUpHistories = await TopUpHistoryModel.getAll();
-			setTopUpHistories(topUpHistories);
-			console.log('Top Up Histories', topUpHistories);
+			setTopUpHistory(topUpHistories);
+
+			let barcoinUsages = await OrderModel.getAllBarcoinUsages();
+			setBarcoinUsages(barcoinUsages);
 		} catch (e) {
 			console.log(e);
 		}
@@ -34,48 +42,120 @@ export default function Dashboard() {
 		const today = moment();
 		const lastWeek = moment().set({ hour: 0, minute: 0, second: 0 }).subtract(1, 'weeks');
 		const lastMonth = moment().set({ hour: 0, minute: 0, second: 0 }).subtract(1, 'months');
-		let filteredTopUpHistories = [];
 
+		let topUpHistoryFilterResult = [];
+		let barcoinUsagesFilterResult = [];
+		let topUpIncomeTrendData = {};
+		let barcoinUsagesTrendData = {};
+
+		// Filters & groups data by selected time period
 		switch (period) {
 			case 'monthly':
-				filteredTopUpHistories = topUpHistories.filter(
+				topUpHistoryFilterResult = topUpHistory.filter(
 					(topUp) => moment(topUp.created_at).isBetween(lastMonth, today, []) && topUp.status === 'SUCCESS'
 				);
+				topUpIncomeTrendData = _.groupBy(topUpHistoryFilterResult, (topUp) => moment(topUp.created_at).week());
+
+				barcoinUsagesFilterResult = barcoinUsages.filter((usage) =>
+					moment(usage.created_at).isBetween(lastMonth, today, [])
+				);
+				barcoinUsagesTrendData = _.groupBy(barcoinUsagesFilterResult, (usage) =>
+					moment(usage.created_at).week()
+				);
+
 				break;
 			case 'weekly':
-				filteredTopUpHistories = topUpHistories.filter(
+				topUpHistoryFilterResult = topUpHistory.filter(
 					(topUp) => moment(topUp.created_at).isBetween(lastWeek, today, []) && topUp.status === 'SUCCESS'
 				);
+				topUpIncomeTrendData = _.groupBy(topUpHistoryFilterResult, (topUp) =>
+					moment(topUp.created_at).weekday()
+				);
+
+				barcoinUsagesFilterResult = barcoinUsages.filter((usage) =>
+					moment(usage.created_at).isBetween(lastWeek, today, [])
+				);
+				barcoinUsagesTrendData = _.groupBy(barcoinUsagesFilterResult, (usage) =>
+					moment(usage.created_at).weekday()
+				);
+
 				break;
 			case 'daily':
 			default:
-				filteredTopUpHistories = topUpHistories.filter(
+				topUpHistoryFilterResult = topUpHistory.filter(
 					(topUp) => today.isSame(moment(topUp.created_at), 'day') && topUp.status === 'SUCCESS'
+				);
+				topUpIncomeTrendData = _.groupBy(topUpHistoryFilterResult, (topUp) => moment(topUp.created_at).hour());
+
+				barcoinUsagesFilterResult = barcoinUsages.filter((usage) =>
+					today.isSame(moment(usage.created_at), 'day')
+				);
+				barcoinUsagesTrendData = _.groupBy(barcoinUsagesFilterResult, (usage) =>
+					moment(usage.created_at).hour()
 				);
 		}
 
-		let totalIncome = 0;
+		// Calculate total top up income & barcoin usages in filtered data
+		let totalTopUpIncome = 0;
+		let totalBarcoinTransaction = 0;
 
-		if (filteredTopUpHistories.length > 0) {
-			totalIncome = filteredTopUpHistories.reduce(
+		if (topUpHistoryFilterResult.length > 0) {
+			totalTopUpIncome = topUpHistoryFilterResult.reduce(
 				(accumulator, currentData) => accumulator + parseInt(currentData.price || 0),
-				totalIncome
+				totalTopUpIncome
 			);
 		}
 
-		console.log('TOTAL INCOME', totalIncome);
-		setIncome(totalIncome);
+		if (barcoinUsagesFilterResult.length > 0) {
+			totalBarcoinTransaction = barcoinUsagesFilterResult.reduce(
+				(accumulator, currentData) => accumulator + parseInt(currentData.total_coins || 0),
+				totalBarcoinTransaction
+			);
+		}
+
+		setTopUpIncome(totalTopUpIncome);
+		setBarcoinTransaction(totalBarcoinTransaction);
+
+		// Calculta total top up income & barcoin usages in trend data
+		let topUpIncomeTrendDataKeys = Object.keys(topUpIncomeTrendData);
+		if (topUpIncomeTrendDataKeys.length > 0) {
+			for (let keys of topUpIncomeTrendDataKeys) {
+				let totalIncome = 0;
+				totalIncome = topUpIncomeTrendData[keys].reduce(
+					(accumulator, currentData) => accumulator + parseInt(currentData.price || 0),
+					totalIncome
+				);
+
+				topUpIncomeTrendData[keys] = totalIncome;
+			}
+		}
+
+		let barcoinUsagesTrendDataKeys = Object.keys(barcoinUsagesTrendData);
+		if (barcoinUsagesTrendDataKeys.length > 0) {
+			for (let keys of barcoinUsagesTrendDataKeys) {
+				let totalTransaction = 0;
+				totalTransaction = barcoinUsagesTrendData[keys].reduce(
+					(accumulator, currentData) => accumulator + parseInt(currentData.total_coins || 0),
+					totalTransaction
+				);
+
+				barcoinUsagesTrendData[keys] = totalTransaction;
+			}
+		}
+
+		setTopUpIncomeTrend(topUpIncomeTrendData);
+		setBarcoinTransactionTrend(barcoinUsagesTrendData);
 	};
 
 	useEffect(() => {
 		setLoading(true);
 		initializeData();
-	}, []);
+	}, [period]);
 
 	useEffect(() => {
 		filterDataByPeriod();
 		setLoading(false);
-	}, [topUpHistories, period]);
+	}, [topUpHistory, barcoinUsages, period]);
 
 	if (loading) {
 		return (
@@ -123,15 +203,21 @@ export default function Dashboard() {
 				<Row gutter={24}>
 					<Col span={4}>
 						<Flex gap={24} vertical style={{ height: '100%' }}>
-							<DashboardNumericMetricWidget title={'Today Income'} mainNumber={income} />
-							<DashboardNumericMetricWidget title={'Today Transaction'} />
+							<DashboardNumericMetricWidget title={'Top Up Income'} mainNumber={topUpIncome} />
+							<DashboardNumericMetricWidget
+								title={'Barcoins Transaction'}
+								mainNumber={barcoinTransaction}
+							/>
 						</Flex>
 					</Col>
 					<Col span={10}>
-						<DashboardColumnChartWidget title={'Income Trends'} />
+						<DashboardColumnChartWidget title={'Top Up Income Trends'} data={topUpIncomeTrend} />
 					</Col>
 					<Col span={10}>
-						<DashboardColumnChartWidget title={'Transaction Trends'} />
+						<DashboardColumnChartWidget
+							title={'Barcoin Transaction Trends'}
+							data={barcoinTransactionTrend}
+						/>
 					</Col>
 				</Row>
 				<Row gutter={24} style={{ marginTop: 24 }}>

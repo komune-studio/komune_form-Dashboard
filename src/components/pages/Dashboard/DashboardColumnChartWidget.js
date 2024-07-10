@@ -9,12 +9,12 @@ export default function DashboardColumnChartWidget(props) {
 	const containerRef = useRef();
 
 	const chartData = {
-		labels: ['January', 'January', 'January', 'January', 'January', 'January', 'January'],
+		labels: Object.keys(props.data),
 		datasets: [
 			{
 				label: 'My First Dataset',
-				data: [65, 59, 80, 81, 56, 55, 40],
-				backgroundColor: new Array(7).fill(Palette.BARCODE_ORANGE),
+				data: Object.values(props.data),
+				backgroundColor: new Array(props.data.length).fill(Palette.BARCODE_ORANGE),
 				borderRadius: 4,
 			},
 		],

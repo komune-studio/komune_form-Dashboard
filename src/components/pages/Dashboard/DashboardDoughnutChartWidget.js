@@ -26,7 +26,7 @@ export default function DashboardDoughnutChartWidget(props) {
 		rotation: 90,
 		plugins: {
 			legend: {
-				dosplay: true,
+				display: true,
 				position: "bottom",
 				labels: {
 					usePointStyle: true,
@@ -35,7 +35,7 @@ export default function DashboardDoughnutChartWidget(props) {
 					boxHeight: 15
 				}
 			},
-		}
+		},
 	}
 
 	const textCenter = {

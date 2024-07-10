@@ -8,7 +8,7 @@ export default function DashboardHeatmapWidget(props) {
 	const [chartSize, setChartSize] = useState({ height: 325 })
 	const containerRef = useRef()
 
-	const xLabels = new Array(12).fill(0).map((_, i) => `${i+9}`)
+	const xLabels = new Array(12).fill(0).map((_, i) => `${i+10}`)
 	const yLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 	const data = new Array(yLabels.length)
 		.fill(0)

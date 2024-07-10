@@ -1,13 +1,14 @@
 import { Flex } from 'antd';
 import Iconify from 'components/reusable/Iconify';
 import Palette from 'utils/Palette';
+import Helper from 'utils/Helper';
 import DashboardWidgetContainer from './DashboardWidgetContainer';
 
 export default function DashboardNumericMetricWidget(props) {
 	return (
 		<DashboardWidgetContainer title={props.title}>
-			<Flex flex={1} gap={12} justify={'center'} vertical style={{height: '100%'}}>
-				<div style={{ fontSize: 20, fontWeight: 700 }}>IDR ##.###.###</div>
+			<Flex flex={1} gap={12} justify={'center'} vertical style={{ height: '100%' }}>
+				<div style={{ fontSize: 20, fontWeight: 700 }}>IDR {Helper.formatNumber(props.mainNumber || 0)}</div>
 				<Flex gap={8} align={'center'}>
 					<Flex
 						justify={'center'}

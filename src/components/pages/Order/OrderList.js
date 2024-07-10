@@ -68,6 +68,14 @@ export default function OrderList() {
 			},
 		},
 		{
+			id: 'currency',
+			label: 'Jenis',
+			filter: true,
+			render: (row) => {
+				return row.currency ? row.currency.replace('_', ' ') : '-';
+			},
+		},
+		{
 			id: 'total_rides',
 			label: 'Rides Digunakan',
 			filter: true,

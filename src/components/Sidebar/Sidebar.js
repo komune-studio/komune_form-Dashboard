@@ -101,7 +101,7 @@ const SIDEBAR = [
     },
     {
         path: "/top-up-history",
-        name: "Top Up History",
+        name: "Top Up",
         icon: "fluent-mdl2:money",
         color: Palette.BARCODE_ORANGE
     },

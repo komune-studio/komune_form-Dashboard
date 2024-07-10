@@ -53,6 +53,9 @@ export default function (props) {
                     Table: {
                         headerBg: '#00000',
                         borderColor: '#FFF'
+                    },
+                    Form: {
+                        labelColor: '#FFF'
                     }
                 }
             }}

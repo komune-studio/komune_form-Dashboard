@@ -171,7 +171,7 @@ export default function OrderCreateV2() {
 									{CURRENCIES.map((currency) => (
 										<OrderValueOptions
 											options={currency === 'BARCOIN' ? ORDER_BARCOINS_VALUE : ORDER_RIDES_VALUE}
-											currency={currency.replace('_', ' ')}
+											currency={currency}
 											handleValueClick={handleValueClick}
 										/>
 									))}
@@ -217,7 +217,7 @@ export default function OrderCreateV2() {
 function OrderValueOptions({ options, currency, handleValueClick }) {
 	return (
 		<div style={{ gap: 8 }} className="d-flex flex-column">
-			<div>{Helper.toTitleCase(currency)}</div>
+			<div>{Helper.toTitleCase(currency.replace('_', ' '))}</div>
 			<div
 				style={{
 					display: 'grid',

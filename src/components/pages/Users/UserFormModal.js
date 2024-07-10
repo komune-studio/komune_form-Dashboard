@@ -1,9 +1,9 @@
 import Modal from 'react-bootstrap/Modal';
-import {Button, DatePicker, message, Spin, Upload as AntUpload} from "antd";
+import {Button, DatePicker, message, Spin, Upload as AntUpload, Flex} from "antd";
 import {Form} from 'react-bootstrap';
 import {useEffect, useState} from "react";
 import UserModel from "../../../models/UserModel";
-import {CloseOutlined, LoadingOutlined, PlusOutlined} from '@ant-design/icons';
+import {CloseOutlined, PlusOutlined} from '@ant-design/icons';
 import PropTypes from "prop-types";
 import swal from "../../reusable/CustomSweetAlert";
 import moment from "moment/moment";
@@ -175,8 +175,7 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
             </div>
         </Modal.Header>
         <Modal.Body>
-
-            <Form.Group>
+            <Flex vertical gap={8} >
                 <Form.Label style={{fontSize: "0.8em"}}>Image</Form.Label>
                 <AntUpload
                     rootClassName={'upload-background'}
@@ -224,38 +223,37 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
                         </button>
                     )}
                 </AntUpload>
-            </Form.Group>
-            {/* Admin username */}
-            <Form.Group className="mb-3">
+            </Flex>
+            <Flex vertical gap={8}  className="mb-3">
                 <Form.Label style={{fontSize: "0.8em"}}>Username</Form.Label>
                 <Form.Control
                     value={username}
                     autoComplete={"username"}
                     onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Username"/>
-            </Form.Group>
-            <Form.Group className="mb-3">
+            </Flex>
+            <Flex vertical gap={8}  className="mb-3">
                 <Form.Label style={{fontSize: "0.8em"}}>Full Name</Form.Label>
                 <Form.Control
                     value={fullName}
                     autoComplete={"fullname"}
                     onChange={(e) => setFullName(e.target.value)} type="text" placeholder="Fullname"/>
-            </Form.Group>
+            </Flex>
 
-            <Form.Group className="mb-3">
+            <Flex vertical gap={8}  className="mb-3">
                 <Form.Label style={{fontSize: "0.8em"}}>Email</Form.Label>
                 <Form.Control
                     value={email}
                     autoComplete={"email"}
                     onChange={(e) => setEmail(e.target.value)} type="text" placeholder="Email"/>
-            </Form.Group>
-            <Form.Group className="mb-3">
+            </Flex>
+            <Flex vertical gap={8}  className="mb-3">
                 <Form.Label style={{fontSize: "0.8em"}}>Phone Number</Form.Label>
                 <Form.Control
                     value={phoneNumber}
                     autoComplete={"email"}
                     onChange={(e) => setPhoneNumber(e.target.value)} type="text" placeholder="Phone Number"/>
-            </Form.Group>
-            <Form.Group className="mb-3">
+            </Flex>
+            <Flex vertical gap={8}  className="mb-3">
                 <Form.Label style={{fontSize: "0.8em"}}>Gender</Form.Label>
                 <Form.Check
                     value={'M'}
@@ -277,9 +275,9 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
                     }}
                     checked={gender === "F"}
                 />
-            </Form.Group>
+            </Flex>
 
-            <Form.Group className="mb-3">
+            <Flex vertical gap={8}  className="mb-3">
                 <Form.Label style={{fontSize: "0.8em"}}>Tanggal Lahir</Form.Label>
                 <DatePicker
                     getPopupContainer={(triggerNode) => {
@@ -291,25 +289,25 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
                         setBirthDate(value)
                     }}
                 />
-            </Form.Group>
+            </Flex>
 
             {
                 isNewRecord &&
                 <>
-                    <Form.Group className="mb-3">
+                    <Flex vertical gap={8}  className="mb-3">
                         <Form.Label style={{fontSize: "0.8em"}}>Password</Form.Label>
                         <Form.Control
                             autoComplete={"password"}
                             onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password"/>
-                    </Form.Group>
+                    </Flex>
 
-                    <Form.Group className="mb-3">
+                    <Flex vertical gap={8}  className="mb-3">
                         <Form.Label style={{fontSize: "0.8em"}}>Confirm Password</Form.Label>
                         <Form.Control
                             autoComplete={"confirm-password"}
                             onChange={(e) => setConfirmPassword(e.target.value)} type="password"
                             placeholder="Password"/>
-                    </Form.Group>
+                    </Flex>
                 </>
             }
 

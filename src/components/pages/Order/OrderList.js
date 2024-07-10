@@ -123,7 +123,7 @@ export default function OrderList() {
 							className="card-stats mb-4 mb-xl-0"
 						>
 							<CardHeader style={{ background: Palette.BACKGROUND_DARK_GRAY, fontWeight: 700 }}>
-								Barcoins Order History
+								Riwayat Order Barcoins
 							</CardHeader>
 							<CardBody>
 								<CustomTable
@@ -140,7 +140,7 @@ export default function OrderList() {
 							className="card-stats mb-4 mb-xl-0"
 						>
 							<CardHeader style={{ background: Palette.BACKGROUND_DARK_GRAY, fontWeight: 700 }}>
-								Rides Order History
+								Riwayat Order Rides
 							</CardHeader>
 							<CardBody>
 								<CustomTable

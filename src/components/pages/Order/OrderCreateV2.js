@@ -93,10 +93,6 @@ export default function OrderCreateV2() {
 
 	const handleCreateOrder = async () => {
 		try {
-			console.log('USER ID', scannedUser.id);
-			console.log('CURRENCY', orderCurrency);
-			console.log('ORDER VALUE', orderValue);
-
 			if (orderCurrency === 'BARCOIN') {
 				await OrderModel.createBarcoinUsageV2({
 					user_id: parseInt(scannedUser.id),
@@ -138,7 +134,7 @@ export default function OrderCreateV2() {
 						<div onClick={() => history.push('/orders')} style={{ cursor: 'pointer' }}>
 							<Iconify icon={'material-symbols:arrow-back'}></Iconify>
 						</div>
-						<div style={{ flex: 1 }}>&nbsp;Pembayaran Baru</div>
+						<div style={{ flex: 1 }}>&nbsp;Buat Order</div>
 					</Col>
 
 					{/* Page content */}

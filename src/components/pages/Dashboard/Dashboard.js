@@ -24,60 +24,28 @@ export default function Dashboard() {
 	const [topUpHistory, setTopUpHistory] = useState([]);
 	const [barcoinUsages, setBarcoinUsages] = useState([]);
 	const [schedules, setSchedules] = useState([]);
+	const [slots, setSlots] = useState({});
 	const [topUpIncome, setTopUpIncome] = useState();
 	const [barcoinTransaction, setBarcoinTransaction] = useState();
 	const [topUpIncomeTrend, setTopUpIncomeTrend] = useState({});
 	const [barcoinTransactionTrend, setBarcoinTransactionTrend] = useState({});
 
-	const initializeData = async () => {
+	const getTopUpHistoryAndBarcoinUsagesData = async () => {
 		try {
 			let topUpHistories = await TopUpHistoryModel.getAll();
 			setTopUpHistory(topUpHistories);
 
 			let barcoinUsages = await OrderModel.getAllBarcoinUsages();
 			setBarcoinUsages(barcoinUsages);
-
-			let scheduleData = null,
-				start = null,
-				end = null;
-
-			switch (period) {
-				case 'monthly':
-					start = moment().startOf('month');
-					end = moment().endOf('month');
-					scheduleData = await ScheduleModel.getAllInTimeRange({
-						start_time: start,
-						end_time: end,
-					});
-					break;
-				case 'weekly':
-					start = moment().startOf('week');
-					end = moment().endOf('week');
-					scheduleData = await ScheduleModel.getAllInTimeRange({
-						start_time: start,
-						end_time: end,
-					});
-					break;
-				case 'daily':
-				default:
-					start = moment().startOf('day');
-					end = moment().endOf('day');
-					scheduleData = await ScheduleModel.getAllInTimeRange({
-						start_time: start,
-						end_time: end,
-					});
-					break;
-			}
-
-			console.log('Schedule', scheduleData);
-			setSchedules(scheduleData);
 		} catch (e) {
 			console.log(e);
 		}
 	};
 
-	const filterDataByPeriod = () => {
+	const filterDataByPeriod = async () => {
 		const today = moment();
+		const startOfDay = moment().startOf('day');
+		const endOfDay = moment().endOf('day');
 		const startOfWeek = moment().startOf('week');
 		const endOfWeek = moment().endOf('week');
 		const startOfMonth = moment().startOf('month');
@@ -85,6 +53,7 @@ export default function Dashboard() {
 
 		let topUpHistoryFilterResult = [];
 		let barcoinUsagesFilterResult = [];
+		let scheduleData = [];
 
 		// NOTE: Read note in line 17 of DashboardStatisticUtils.js
 		let groupingKeyExtractor = () => null;
@@ -101,16 +70,27 @@ export default function Dashboard() {
 					moment(usage.created_at).isBetween(startOfMonth, endOfMonth, [])
 				);
 
+				scheduleData = await ScheduleModel.getAllInTimeRange({
+					start_time: startOfMonth,
+					end_time: endOfMonth,
+				});
+
 				groupingKeyExtractor = (item) => moment(item.created_at).week();
 				break;
 			case 'weekly':
 				topUpHistoryFilterResult = topUpHistory.filter(
-					(topUp) => moment(topUp.created_at).isBetween(startOfWeek, endOfWeek, []) && topUp.status === 'SUCCESS'
+					(topUp) =>
+						moment(topUp.created_at).isBetween(startOfWeek, endOfWeek, []) && topUp.status === 'SUCCESS'
 				);
 
 				barcoinUsagesFilterResult = barcoinUsages.filter((usage) =>
 					moment(usage.created_at).isBetween(startOfWeek, endOfWeek, [])
 				);
+
+				scheduleData = await ScheduleModel.getAllInTimeRange({
+					start_time: startOfWeek,
+					end_time: endOfWeek,
+				});
 
 				groupingKeyExtractor = (item) => moment(item.created_at).format('dddd');
 				break;
@@ -123,6 +103,11 @@ export default function Dashboard() {
 				barcoinUsagesFilterResult = barcoinUsages.filter((usage) =>
 					today.isSame(moment(usage.created_at), 'day')
 				);
+
+				scheduleData = await ScheduleModel.getAllInTimeRange({
+					start_time: startOfDay,
+					end_time: endOfDay,
+				});
 
 				groupingKeyExtractor = (item) => moment(item.created_at).format('HH');
 		}
@@ -154,19 +139,25 @@ export default function Dashboard() {
 		});
 
 		// Calculate slots data
+		let totalSlots = 0;
+		let bookedSlots = 0;
 
+		for (let schedule of scheduleData) {
+			totalSlots += schedule.available_slots - schedule._count.schedule_slot_user;
+			bookedSlots += schedule._count.schedule_slot_user;
+		}
+
+		setSchedules(scheduleData);
+		setSlots({ total_slots: totalSlots, booked_slots: bookedSlots });
 		setTopUpIncome(totalTopUpIncome);
 		setBarcoinTransaction(totalBarcoinTransaction);
 		setTopUpIncomeTrend(topUpIncomeTrendResult);
 		setBarcoinTransactionTrend(barcoinTransactionTrendResult);
-
-		console.log('Top Up Trend', topUpIncomeTrendResult);
-		console.log('Barcoin Transaction', barcoinTransactionTrendResult);
 	};
 
 	useEffect(() => {
 		setLoading(true);
-		initializeData();
+		getTopUpHistoryAndBarcoinUsagesData();
 	}, [period]);
 
 	useEffect(() => {
@@ -242,7 +233,7 @@ export default function Dashboard() {
 						<DashboardStackedColumnChartWidget title="Customer Purchasing Behaviour" />
 					</Col>
 					<Col span={6}>
-						<DashboardDoughnutChartWidget title="Slots Available" />
+						<DashboardDoughnutChartWidget title="Slots Available" data={slots} />
 					</Col>
 				</Row>
 				<Row gutter={24} style={{ marginTop: 24 }}>

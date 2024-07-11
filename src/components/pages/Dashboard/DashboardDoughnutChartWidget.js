@@ -9,13 +9,13 @@ export default function DashboardDoughnutChartWidget(props) {
 	const containerRef = useRef()
 
 	const chartData = {
-		labels: ["Available", "Booked"],
+		labels: Object.keys(props.data),
 		datasets: [
 			{
-				label: "Active customer",
-				data: [90, 90],
+				label: "value: ",
+				data: Object.values(props.data),
 				backgroundColor: [Palette.BARCODE_ORANGE, Palette.LIGHT_GRAY],
-				borderRadius: [100, 0],
+				borderRadius: [0, 0],
 				borderColor: [Palette.BARCODE_ORANGE, Palette.LIGHT_GRAY]
 			}
 		]

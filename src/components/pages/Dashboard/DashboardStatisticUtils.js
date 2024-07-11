@@ -14,7 +14,7 @@ export function arraySum(data, accumulatorFunction) {
 
 export function calculateTrends({ filteredData, groupingKeyExtractor, accumulatorFunction, period }) {
 	/*
-        NOTE: key format from groupingKeyExtractor MUST match with key format that used in this function
+        NOTE: key format used in groupingKeyExtractor MUST match with key format that used in this function
         -> period === 'daily' ? 'HH', e.g.: '10'
         -> period === 'weekly' ? 'dddd', e.g.: 'Sunday'
         -> period === 'monthly' ? Week Number, e.g: 20
@@ -42,4 +42,45 @@ export function calculateTrends({ filteredData, groupingKeyExtractor, accumulato
 	}
 
 	return result;
+}
+
+export function calculateHeatMap({
+	filteredData,
+	outerGroupingKeyExtractor,
+	innerGroupingKeyExtractor,
+	accumulatorFunction,
+	period,
+}) {
+	let result = [];
+	let innerKeys = [];
+	let outerKeys = [];
+
+	if (period === 'monthly') {
+		outerKeys = Helper.getWeeksOfCurrentMonth();
+		innerKeys = Helper.getDaysOfWeek();
+	} else {
+		outerKeys = Helper.getDaysOfWeek();
+		innerKeys = Helper.getOperationalHours();
+	}
+
+	let outerGroup = _.groupBy(filteredData, outerGroupingKeyExtractor);
+	for (let outerKey of outerKeys) {
+		if (!outerGroup[outerKey]) {
+			result.push(new Array(outerKeys.length).fill(0));
+			continue;
+		}
+
+		let innerArray = [];
+		let innerGroup = _.groupBy(outerGroup[outerKey], innerGroupingKeyExtractor);
+		for (let innerKey of innerKeys) {
+			if (!innerGroup[innerKey]) {
+				innerArray.push(0);
+				continue;
+			}
+			innerArray.push(arraySum(innerGroup[innerKey], accumulatorFunction));
+		}
+		result.push(innerArray);
+	}
+
+	return {outerKeys, innerKeys, result};
 }

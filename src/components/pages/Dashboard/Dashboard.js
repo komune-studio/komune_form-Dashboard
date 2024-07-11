@@ -6,12 +6,13 @@ import { Chart, registerables } from 'chart.js';
 import moment from 'moment';
 import _ from 'lodash';
 import Palette from 'utils/Palette';
+import Helper from 'utils/Helper';
 import DashboardNumericMetricWidget from './DashboardNumericMetricWidget';
 import DashboardColumnChartWidget from './DashboardColumnChartWidget';
 import DashboardStackedColumnChartWidget from './DashboardStackedColumnChartWidget';
 import DashboardDoughnutChartWidget from './DashboardDoughnutChartWidget';
 import DashboardHeatmapWidget from './DashboardHeatmapWidget';
-import { arraySum, calculateTrends } from './DashboardStatisticUtils';
+import { arraySum, calculateHeatMap, calculateTrends } from './DashboardStatisticUtils';
 import TopUpHistoryModel from 'models/TopUpHistoryModel';
 import OrderModel from 'models/OrderModel';
 import ScheduleModel from 'models/ScheduleModel';
@@ -25,6 +26,7 @@ export default function Dashboard() {
 	const [barcoinUsages, setBarcoinUsages] = useState([]);
 	const [schedules, setSchedules] = useState([]);
 	const [slots, setSlots] = useState({});
+	const [heatMap, setHeatMap] = useState([]);
 	const [topUpIncome, setTopUpIncome] = useState();
 	const [barcoinTransaction, setBarcoinTransaction] = useState();
 	const [topUpIncomeTrend, setTopUpIncomeTrend] = useState({});
@@ -51,14 +53,16 @@ export default function Dashboard() {
 		const startOfMonth = moment().startOf('month');
 		const endOfMonth = moment().endOf('month');
 
+		let keys = [];
 		let topUpHistoryFilterResult = [];
 		let barcoinUsagesFilterResult = [];
 		let scheduleData = [];
 
 		// NOTE: Read note in line 17 of DashboardStatisticUtils.js
-		let groupingKeyExtractor = () => null;
+		let trendGroupingKeyExtractor = (item) => moment(item.created_at).format('HH');
+		let heatMapOuterGroupingKeyExtractor = (item) => moment(item.start_time).format('dddd');
+		let heatMapInnerGroupingKeyExtractor = (item) => moment(item.start_time).format('HH');
 
-		// Filters & groups data by selected time period
 		switch (period) {
 			case 'monthly':
 				topUpHistoryFilterResult = topUpHistory.filter(
@@ -75,7 +79,9 @@ export default function Dashboard() {
 					end_time: endOfMonth,
 				});
 
-				groupingKeyExtractor = (item) => moment(item.created_at).week();
+				trendGroupingKeyExtractor = (item) => moment(item.created_at).week();
+				heatMapOuterGroupingKeyExtractor = (item) => moment(item.start_time).week();
+				heatMapInnerGroupingKeyExtractor = (item) => moment(item.start_time).format('dddd');
 				break;
 			case 'weekly':
 				topUpHistoryFilterResult = topUpHistory.filter(
@@ -92,7 +98,7 @@ export default function Dashboard() {
 					end_time: endOfWeek,
 				});
 
-				groupingKeyExtractor = (item) => moment(item.created_at).format('dddd');
+				trendGroupingKeyExtractor = (item) => moment(item.created_at).format('dddd');
 				break;
 			case 'daily':
 			default:
@@ -108,8 +114,6 @@ export default function Dashboard() {
 					start_time: startOfDay,
 					end_time: endOfDay,
 				});
-
-				groupingKeyExtractor = (item) => moment(item.created_at).format('HH');
 		}
 
 		// Calculate total top up income & barcoin transaction
@@ -126,14 +130,14 @@ export default function Dashboard() {
 		// Calculate top up income & barcoin transaction trends data
 		let topUpIncomeTrendResult = calculateTrends({
 			filteredData: topUpHistoryFilterResult,
-			groupingKeyExtractor: groupingKeyExtractor,
+			groupingKeyExtractor: trendGroupingKeyExtractor,
 			accumulatorFunction: (accumulator, currentData) => accumulator + parseInt(currentData.price || 0),
 			period: period,
 		});
 
 		let barcoinTransactionTrendResult = calculateTrends({
 			filteredData: barcoinUsagesFilterResult,
-			groupingKeyExtractor: groupingKeyExtractor,
+			groupingKeyExtractor: trendGroupingKeyExtractor,
 			accumulatorFunction: (accumulator, currentData) => accumulator + parseInt(currentData.total_coins || 0),
 			period: period,
 		});
@@ -147,8 +151,20 @@ export default function Dashboard() {
 			bookedSlots += schedule._count.schedule_slot_user;
 		}
 
+		// Calculate heat map data
+		let heatMap = calculateHeatMap({
+			filteredData: scheduleData,
+			outerGroupingKeyExtractor: heatMapOuterGroupingKeyExtractor,
+			innerGroupingKeyExtractor: heatMapInnerGroupingKeyExtractor,
+			accumulatorFunction: (accumulator, currentData) => accumulator + currentData._count.schedule_slot_user || 0,
+			period: period,
+		});
+
+		console.log('Heat Map', heatMap);
+
 		setSchedules(scheduleData);
 		setSlots({ total_slots: totalSlots, booked_slots: bookedSlots });
+		setHeatMap(heatMap);
 		setTopUpIncome(totalTopUpIncome);
 		setBarcoinTransaction(totalBarcoinTransaction);
 		setTopUpIncomeTrend(topUpIncomeTrendResult);
@@ -238,7 +254,7 @@ export default function Dashboard() {
 				</Row>
 				<Row gutter={24} style={{ marginTop: 24 }}>
 					<Col span={24}>
-						<DashboardHeatmapWidget title="Peak Hours" />
+						{heatMap.result && <DashboardHeatmapWidget title="Peak Hours" data={heatMap} />}
 					</Col>
 				</Row>
 			</div>

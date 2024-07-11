@@ -8,16 +8,6 @@ export default function DashboardHeatmapWidget(props) {
 	const [chartSize, setChartSize] = useState({ height: 325 })
 	const containerRef = useRef()
 
-	const xLabels = new Array(12).fill(0).map((_, i) => `${i+10}`)
-	const yLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-	const data = new Array(yLabels.length)
-		.fill(0)
-		.map(() =>
-			new Array(xLabels.length)
-				.fill(0)
-				.map(() => Math.floor(Math.random() * 50 + 50))
-		)
-
 	useEffect(() => {
 		setChartSize({
 			height: containerRef.current.clientHeight - 40,
@@ -29,21 +19,19 @@ export default function DashboardHeatmapWidget(props) {
 		<DashboardWidgetContainer title={props.title}>
 			<Flex flex={1} ref={containerRef}>
 				<HeatMapGrid
-					data={data}
-					xLabels={xLabels}
-					yLabels={yLabels}
+					data={props.data.result}
+					xLabels={props.data.innerKeys}
+					yLabels={props.data.outerKeys}
 					cellRender={(x, y, value) => (
 						<div title={`Pos(${x}, ${y}) = ${value}`}>&nbsp;</div>
 					)}
 					xLabelsStyle={(index) => ({
 						color: Palette.INACTIVE_GRAY,
 						fontSize: ".8rem",
-						paddingTop: '10px'
 					})}
 					yLabelsStyle={() => ({
 						fontSize: ".7rem",
 						color: Palette.INACTIVE_GRAY,
-						paddingRight: '10px'
 					})}
 					cellStyle={(_x, _y, ratio) => ({
 						background: `rgb(139, 15, 6, ${ratio})`,

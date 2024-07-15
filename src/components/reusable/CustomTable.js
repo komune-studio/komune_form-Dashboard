@@ -121,7 +121,7 @@ const CustomTable = ({
     useEffect(() => {
         if (columns && columns.length > 0) {
             if (defaultOrder) {
-                setOrderBy(columns[0][defaultOrder])
+                setOrderBy(defaultOrder)
             } else {
                 setOrderBy(columns[0].id)
             }

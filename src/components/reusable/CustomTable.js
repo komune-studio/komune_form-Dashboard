@@ -135,7 +135,6 @@ const CustomTable = ({
     };
 
     const filteredData = applySortFilter(data, getComparator(order, orderBy), filterName, columns);
-    console.log('value of filteredData', filteredData)
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');

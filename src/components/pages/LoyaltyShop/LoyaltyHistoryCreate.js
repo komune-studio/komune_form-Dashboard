@@ -27,16 +27,8 @@ export default function LoyaltyHistoryCreate() {
 			filter: true,
 			render: (row) => {
 				return (
-					<div
-						className="d-flex justify-content-start align-items-center"
-						style={{ gap: 12 }}
-					>
-						<Image
-							height={40}
-							width={48}
-							src={row.image_url}
-							style={{ borderRadius: 6 }}
-						></Image>
+					<div className="d-flex justify-content-start align-items-center" style={{ gap: 12 }}>
+						<Image height={40} width={48} src={row.image_url} style={{ borderRadius: 6 }}></Image>
 						<div>
 							<div>{row.name}</div>
 							<div>{Helper.formatNumber(row.price)} points</div>
@@ -56,10 +48,7 @@ export default function LoyaltyHistoryCreate() {
 							<Form.Control
 								value={quantity[row.id]}
 								onChange={(e) => {
-									handleQuantityInputChange(
-										row,
-										parseInt(e.target.value)
-									);
+									handleQuantityInputChange(row, parseInt(e.target.value));
 								}}
 								placeholder="Qty"
 								type="number"
@@ -74,11 +63,7 @@ export default function LoyaltyHistoryCreate() {
 			label: 'Total',
 			filter: false,
 			render: (row) => {
-				return (
-					<div>
-						{Helper.formatNumber(row.price * quantity[row.id])}
-					</div>
-				);
+				return <div>{Helper.formatNumber(row.price * quantity[row.id])}</div>;
 			},
 		},
 	];
@@ -105,17 +90,13 @@ export default function LoyaltyHistoryCreate() {
 			setScannedUser(result);
 		} catch (e) {
 			swal.fireError({
-				text: e.error_message
-					? e.error_message
-					: 'Invalid QR, please try again.',
+				text: e.error_message ? e.error_message : 'Invalid QR, please try again.',
 			});
 		}
 	};
 
 	const handleUserSearch = (value) => {
-		value.length < 100
-			? findUser({ username: value })
-			: findUser({ token: value });
+		value.length < 100 ? findUser({ username: value }) : findUser({ token: value });
 	};
 
 	const handleScanTextInputChange = (value) => {
@@ -148,18 +129,23 @@ export default function LoyaltyHistoryCreate() {
 	};
 
 	const handleSubmit = async () => {
-		if (total === 0) return swal.fireError({text: 'Belum ada barang yang dimasukkan!'})
-		
+		if (total === 0) return swal.fireError({ text: 'Belum ada barang yang dimasukkan!' });
+
 		try {
 			const details = [];
 			for (let item of loyaltyItems) {
 				if (quantity[item.id] > 0) {
-					details.push({ id: item.id, quantity: quantity[item.id] });
+					details.push({
+						id: item.id,
+						quantity: quantity[item.id],
+						total_price: item.price * quantity[item.id],
+					});
 				}
 			}
 
 			await LoyaltyHistoryModel.create({
 				user_id: scannedUser.id,
+				total_points: total,
 				details: details,
 			});
 			swal.fire({ text: 'Loyalty Usage Success!', icon: 'success' });
@@ -220,9 +206,7 @@ export default function LoyaltyHistoryCreate() {
 							borderRadius: 8,
 						}}
 					>
-						<div style={{ fontWeight: 'bold', marginBottom: 16 }}>
-							Produk
-						</div>
+						<div style={{ fontWeight: 'bold', marginBottom: 16 }}>Produk</div>
 						<CustomTable
 							showFilter={true}
 							pagination={true}
@@ -282,9 +266,7 @@ export default function LoyaltyHistoryCreate() {
 							borderRadius: 8,
 						}}
 					>
-						<div style={{ fontWeight: 'bold', marginBottom: 16 }}>
-							Customer
-						</div>
+						<div style={{ fontWeight: 'bold', marginBottom: 16 }}>Customer</div>
 						{scannedUser ? (
 							<div
 								style={{
@@ -309,8 +291,7 @@ export default function LoyaltyHistoryCreate() {
 										fontSize: '0.85em',
 									}}
 								>
-									{Helper.formatNumber(scannedUser.loyalty)}{' '}
-									points
+									{Helper.formatNumber(scannedUser.loyalty)} points
 								</div>
 							</div>
 						) : (
@@ -325,11 +306,7 @@ export default function LoyaltyHistoryCreate() {
 									<Form.Group className="mb-3">
 										<Form.Control
 											value={scanTextInput}
-											onChange={(e) =>
-												handleScanTextInputChange(
-													e.target.value
-												)
-											}
+											onChange={(e) => handleScanTextInputChange(e.target.value)}
 											placeholder="Scan QR atau ketik username user"
 										/>
 									</Form.Group>

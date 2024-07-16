@@ -23,7 +23,9 @@ const ReferralList = () => {
     const [selectedReferral, setSelectedReferral] = useState(null)
     const [selectedReferralUsage, setSelectedReferralUsage] = useState(null)
     const columns = [
-
+        {
+            id: 'id', label: 'ID', filter: true,
+        },
         {
             id: 'code', label: 'Kode referral', filter: true,
         },
@@ -241,7 +243,7 @@ const ReferralList = () => {
                             pagination={true}
                             searchText={''}
                             data={dataSource}
-                            defaultOrder={'created_at'}
+                            defaultOrder={'id'}
                             columns={columns}
                         />
                     </CardBody>

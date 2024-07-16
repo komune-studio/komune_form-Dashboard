@@ -45,7 +45,7 @@ export default function OrderCreateV2() {
 			if (value.length > 100) {
 				searchUserByQr(value);
 			}
-		}, 300);
+		}, 1000);
 	};
 
 	const searchUserByUsernameOrEmail = async (value) => {
@@ -314,7 +314,7 @@ function CreateOrderModal({
 								updateScanInputValue(e.target.value);
 							}}
 							onKeyDown={(e) => {
-								if (e.key === 'Enter') {
+								if (e.key === 'Tab') {
 									searchUserByUsernameOrEmail(e.target.value);
 								}
 							}}

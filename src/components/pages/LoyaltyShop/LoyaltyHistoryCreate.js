@@ -12,6 +12,8 @@ import Helper from 'utils/Helper';
 import Palette from 'utils/Palette';
 import LoyaltyHistoryModel from 'models/LoyaltyHistoryModel';
 
+let timer;
+
 export default function LoyaltyHistoryCreate() {
 	const history = useHistory();
 	const [loyaltyItems, setLoyaltyItems] = useState([]);
@@ -101,12 +103,11 @@ export default function LoyaltyHistoryCreate() {
 
 	const handleScanTextInputChange = (value) => {
 		setScanTextInput(value);
-		let timer;
 		clearTimeout(timer);
 
 		timer = setTimeout(() => {
 			if (value.length > 100) findUser({ token: value });
-		}, 300);
+		}, 1500);
 	};
 
 	const handleQuantityInputChange = (row, newValue) => {

@@ -14,7 +14,7 @@ import ScheduleModel from 'models/ScheduleModel';
 import ScheduleTable from './ScheduleTable';
 import Helper from 'utils/Helper';
 
-const SKILL_LEVEL = ['BEGINNER', 'ADVANCED', 'PRO', 'MAINTENANCE', 'EVENT'];
+const SKILL_LEVEL = ['BEGINNER', 'ADVANCED', 'PRO', 'MAINTENANCE', 'EVENT', 'FULL'];
 
 const SCHEDULES_GROUPING_BY_DATE_KEY_FORMAT = 'DD/MM/YYYY';
 

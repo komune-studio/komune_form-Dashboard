@@ -19,6 +19,7 @@ import Palette from 'utils/Palette';
 import Helper from 'utils/Helper';
 import CustomTable from 'components/reusable/CustomTable';
 import Avatar from 'assets/img/brand/avatar.png';
+import CustomTableSortable from 'components/reusable/CustomTableSortable';
 
 export default function TournamentDetail() {
 	const [detail, setDetail] = useState({});
@@ -256,7 +257,7 @@ export default function TournamentDetail() {
 								<div className="mb-2">Hasil Turnamen</div>
 								{detail?.drivers?.length > 0 ? (
 									<div>
-										<CustomTable
+										<CustomTableSortable
 											data={detail?.drivers || []}
 											columns={columns}
 										/>

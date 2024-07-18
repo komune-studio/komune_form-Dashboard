@@ -154,6 +154,10 @@ function ScheduleItem({ data, currentDateMoment, setModalSetting }) {
 			backgroundColor = '#9bf6ff';
 			color = '#056676';
 			break;
+		case data.skill_level === 'FULL':
+			backgroundColor = '#121212';
+			color = Palette.WHITE_GRAY;
+			break;
 		default:
 			backgroundColor = '#121212';
 			color = Palette.WHITE_GRAY;

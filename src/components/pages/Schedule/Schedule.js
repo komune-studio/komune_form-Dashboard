@@ -14,7 +14,7 @@ import ScheduleModel from 'models/ScheduleModel';
 import ScheduleTable from './ScheduleTable';
 import Helper from 'utils/Helper';
 
-const SKILL_LEVEL = ['BEGINNER', 'ADVANCED', 'PRO', 'MAINTENANCE', 'EVENT'];
+const SKILL_LEVEL = ['BEGINNER', 'ADVANCED', 'PRO', 'MAINTENANCE', 'EVENT', 'FULL'];
 
 const SCHEDULES_GROUPING_BY_DATE_KEY_FORMAT = 'DD/MM/YYYY';
 
@@ -652,7 +652,7 @@ function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, r
                             </Flex>
 
                             {/* Driver Regisration Form */}
-                            {scheduleData.skill_level !== 'EVENT' && scheduleData.skill_level !== 'MAINTENANCE' ? (
+                            {scheduleData.skill_level !== 'EVENT' && scheduleData.skill_level !== 'MAINTENANCE' && scheduleData.skill_level !== 'FULL' ? (
                                 <>
                                     <Flex vertical gap={8} style={{marginTop: 24}}>
                                         <Form.Label style={{fontWeight: 400}}>Daftarkan Driver</Form.Label>

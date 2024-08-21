@@ -1,8 +1,8 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import moment from 'moment';
-import {Button as AntButton, Flex} from 'antd';
-import {CloseOutlined} from '@ant-design/icons';
-import {Form} from 'react-bootstrap';
+import { Button as AntButton, Flex } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import { Form } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Datetime from 'react-datetime';
 import _ from 'lodash';
@@ -37,8 +37,8 @@ export default function Schedule() {
     const getThisWeekSchedule = async () => {
         try {
             let result = await ScheduleModel.getAllInTimeRange({
-                start_time: currentTimeRange.start_time.set({hour: 0, minute: 0, second: 0}).toString(),
-                end_time: currentTimeRange.end_time.set({hour: 23, minute: 59, second: 59}).toString(),
+                start_time: currentTimeRange.start_time.set({ hour: 0, minute: 0, second: 0 }).toString(),
+                end_time: currentTimeRange.end_time.set({ hour: 23, minute: 59, second: 59 }).toString(),
             });
 
             // Group data by date
@@ -55,8 +55,8 @@ export default function Schedule() {
     const getTodaySchedule = async () => {
         try {
             let result = await ScheduleModel.getAllInTimeRange({
-                start_time: moment().set({hour: 0, minute: 0, second: 0}).toString(),
-                end_time: moment().set({hour: 23, minute: 59, second: 59}).toString(),
+                start_time: moment().set({ hour: 0, minute: 0, second: 0 }).toString(),
+                end_time: moment().set({ hour: 23, minute: 59, second: 59 }).toString(),
             });
 
             // Group data by date
@@ -101,16 +101,16 @@ export default function Schedule() {
         <>
             <div
                 className="container-fluid d-flex flex-column h-100"
-                style={{color: '#FFF', fontFamily: 'Helixa', flex: 1}}
+                style={{ color: '#FFF', fontFamily: 'Helixa', flex: 1 }}
             >
                 {/* Schedule title & pagination */}
                 <div className="d-flex justify-content-between align-items-center">
                     {/* Schedule title */}
-                    <div style={{fontSize: 20, fontWeight: 'bold'}}>Schedule</div>
+                    <div style={{ fontSize: 20, fontWeight: 'bold' }}>Schedule</div>
                     {/* Schedule pagination & create button */}
                     <div
                         className="d-flex font-weight-bold align-items-center justify-content-center"
-                        style={{fontSize: 12, gap: 8}}
+                        style={{ fontSize: 12, gap: 8 }}
                     >
                         <div>
                             <AntButton
@@ -135,23 +135,23 @@ export default function Schedule() {
                             }}
                         >
                             <div>{currentTimeRange.end_time.format('MMMM YY')}</div>
-                            <div className="border" style={{borderRadius: 4, padding: '2px 8px'}}>
+                            <div className="border" style={{ borderRadius: 4, padding: '2px 8px' }}>
                                 Week {currentTimeRange.end_time.weeks()} of {currentTimeRange.start_time.year()}
                             </div>
                         </div>
-                        <div className="d-flex align-items-center justify-content-center" style={{gap: 12}}>
+                        <div className="d-flex align-items-center justify-content-center" style={{ gap: 12 }}>
                             <button className="btn p-0" onClick={changeToPreviousWeek}>
-                                <Iconify icon="mdi:chevron-left" size={16} color="#FFF"/>
+                                <Iconify icon="mdi:chevron-left" size={16} color="#FFF" />
                             </button>
                             <button className="btn p-0" onClick={changeToNextWeek}>
-                                <Iconify icon="mdi:chevron-right" size={16} color="#FFF"/>
+                                <Iconify icon="mdi:chevron-right" size={16} color="#FFF" />
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Schedule table */}
-                <div className="d-flex" style={{marginTop: 34, flex: 1}}>
+                <div className="d-flex" style={{ marginTop: 34, flex: 1 }}>
                     <ScheduleTable
                         schedule={displayedSchedule}
                         currentTimeRange={currentTimeRange}
@@ -163,7 +163,7 @@ export default function Schedule() {
                 isOpen={modalSetting.isOpen}
                 isCreateMode={modalSetting.isCreateMode}
                 scheduleData={modalSetting?.scheduleData || null}
-                handleClose={() => setModalSetting({...modalSetting, isOpen: false})}
+                handleClose={() => setModalSetting({ ...modalSetting, isOpen: false })}
                 refreshData={getThisWeekSchedule}
                 todaySchedule={todaySchedule}
             />
@@ -171,7 +171,7 @@ export default function Schedule() {
     );
 }
 
-function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, refreshData, todaySchedule}) {
+function ScheduleActionModal({ isOpen, isCreateMode, scheduleData, handleClose, refreshData, todaySchedule }) {
     const [createFormData, setCreateFormData] = useState({
         start_time: new Date(),
         duration_minutes: 10,
@@ -210,7 +210,7 @@ function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, r
     const resetCreateForm = () => {
         let startTime = moment();
         if (startTime.hour() < 10) {
-            startTime.set({hour: 10, minute: 0, second: 0});
+            startTime.set({ hour: 10, minute: 0, second: 0 });
         }
 
 
@@ -498,7 +498,7 @@ function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, r
                         }}
                         type="link"
                         shape="circle"
-                        icon={<CloseOutlined/>}
+                        icon={<CloseOutlined />}
                     />
                 </div>
             </Modal.Header>
@@ -518,7 +518,7 @@ function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, r
                                         })
                                     }
                                     timeConstraints={{
-                                        hours: {min: 10, max: 22},
+                                        hours: { min: 10, max: 22 },
                                     }}
                                 />
                             </Flex>
@@ -556,20 +556,27 @@ function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, r
                                     ))}
                                 </Form.Select>
                             </Flex>
-                            <Flex vertical gap={8}>
-                                <Form.Label>Slot Tersedia</Form.Label>
-                                <Form.Control
-                                    placeholder={10}
-                                    type="number"
-                                    value={createFormData.available_slots}
-                                    onChange={(e) =>
-                                        setCreateFormData({
-                                            ...createFormData,
-                                            available_slots: e.target.value,
-                                        })
-                                    }
-                                />
-                            </Flex>
+                            {
+                                (
+                                    createFormData.skill_level === "BEGINNER" ||
+                                    createFormData.skill_level === "ADVANCED" ||
+                                    createFormData.skill_level === "PRO"
+                                ) && <Flex vertical gap={8}>
+                                    <Form.Label>Slot Tersedia</Form.Label>
+                                    <Form.Control
+                                        placeholder={10}
+                                        type="number"
+                                        value={createFormData.available_slots}
+                                        onChange={(e) =>
+                                            setCreateFormData({
+                                                ...createFormData,
+                                                available_slots: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </Flex>
+                            }
+
                         </>
                     ) : (
                         // Driver Registration & Race Session Editing Form
@@ -587,7 +594,7 @@ function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, r
                                             })
                                         }
                                         timeConstraints={{
-                                            hours: {min: 10, max: 22},
+                                            hours: { min: 10, max: 22 },
                                         }}
                                     />
                                 </Flex>
@@ -625,20 +632,29 @@ function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, r
                                     </Form.Select>
                                 </Flex>
                                 <Flex vertical gap={8}>
-                                    <Form.Label>Slot Tersedia</Form.Label>
-                                    <Form.Control
-                                        placeholder={10}
-                                        type="number"
-                                        value={updateFormData?.available_slots}
-                                        onChange={(e) =>
-                                            setUpdateFormData({
-                                                ...updateFormData,
-                                                available_slots: e.target.value,
-                                            })
-                                        }
-                                    />
+                                    {
+                                        (
+                                            updateFormData.skill_level === "BEGINNER" ||
+                                            updateFormData.skill_level === "ADVANCED" ||
+                                            updateFormData.skill_level === "PRO"
+                                        ) && <>
+                                            <Form.Label>Slot Tersedia</Form.Label>
+                                            <Form.Control
+                                                placeholder={10}
+                                                type="number"
+                                                value={updateFormData?.available_slots}
+                                                onChange={(e) =>
+                                                    setUpdateFormData({
+                                                        ...updateFormData,
+                                                        available_slots: e.target.value,
+                                                    })
+                                                }
+                                            />
+                                        </>
+                                    }
+
                                 </Flex>
-                                <Flex justify="end" style={{marginTop: 18}}>
+                                <Flex justify="end" style={{ marginTop: 18 }}>
                                     <AntButton
                                         type={'primary'}
                                         onClick={() => {
@@ -654,8 +670,8 @@ function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, r
                             {/* Driver Regisration Form */}
                             {scheduleData.skill_level !== 'EVENT' && scheduleData.skill_level !== 'MAINTENANCE' && scheduleData.skill_level !== 'FULL' ? (
                                 <>
-                                    <Flex vertical gap={8} style={{marginTop: 24}}>
-                                        <Form.Label style={{fontWeight: 400}}>Daftarkan Driver</Form.Label>
+                                    <Flex vertical gap={8} style={{ marginTop: 24 }}>
+                                        <Form.Label style={{ fontWeight: 400 }}>Daftarkan Driver</Form.Label>
                                         <Flex gap={8}>
                                             <Form.Control
                                                 value={registerFormData}
@@ -741,7 +757,7 @@ function ScheduleActionModal({isOpen, isCreateMode, scheduleData, handleClose, r
     );
 }
 
-function DriversListItemComponent({driver, handleCheckboxInputChange, handleTextInputChange, index}) {
+function DriversListItemComponent({ driver, handleCheckboxInputChange, handleTextInputChange, index }) {
     return (
         <Flex justify="center" align="center" gap={12}>
             <Flex gap={12}>
@@ -755,11 +771,11 @@ function DriversListItemComponent({driver, handleCheckboxInputChange, handleText
                         }}
                     />
                 </div>
-                <div style={{color: '#FFF'}}>{index + 1}.</div>
+                <div style={{ color: '#FFF' }}>{index + 1}.</div>
             </Flex>
             <Form.Control
                 value={driver?.apex_nickname || ''}
-                onChange={(e) => handleTextInputChange({...driver, apex_nickname: e.target.value}, index)}
+                onChange={(e) => handleTextInputChange({ ...driver, apex_nickname: e.target.value }, index)}
                 disabled={!driver}
             />
         </Flex>

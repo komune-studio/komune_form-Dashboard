@@ -192,7 +192,7 @@ function ScheduleItem({ data, currentDateMoment, setModalSetting }) {
 				<div className="font-weight-bold text-left" style={{ flex: 1 }}>
 					{data.skill_level}
 				</div>
-				{data.skill_level !== 'EVENT' && data.skill_level !== 'MAINTENANCE' ? (
+				{data.skill_level !== 'EVENT' && data.skill_level !== 'MAINTENANCE' && data.skill_level !== 'FULL' ? (
 					<div className="font-weight-bold text-right" style={{ flex: 1 }}>
 						{data.available_slots - data._count.schedule_slot_user} slot(s) available
 					</div>

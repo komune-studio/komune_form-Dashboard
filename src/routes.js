@@ -98,7 +98,7 @@ var routes = [
     },
     {
         path: "/loyalty-shop-catalog",
-        name: "Loyalty Shop",
+        name: "Loyalty",
         component: LoyaltyShopList,
         layout: "/admin",
     },

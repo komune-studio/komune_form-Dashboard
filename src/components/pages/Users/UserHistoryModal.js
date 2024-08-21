@@ -121,7 +121,7 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
             key: '1',
             label: 'TopUp History',
             children: <CustomTable
-                mode={'light'}
+                mode={'dark'}
                 pagination={false}
                 searchText={''}
                 data={dataHistoryTopUp}
@@ -132,7 +132,7 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
             key: '2',
             label: 'Purchase History',
             children: <CustomTable
-                mode={'light'}
+                mode={'dark'}
                 pagination={false}
                 searchText={''}
                 data={dataHistoryTransaction}
@@ -158,10 +158,18 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
                     <Modal.Title>Riwayat Transaksi</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className={'py-3'}>
-                    <div className={'d-flex mb-4'}>
+                    {/* <div className={'d-flex mb-4'}>
                         <p>Balance : <strong>10.999</strong></p>
-                    </div>
-                    <Tabs defaultActiveKey="1" items={items} onChange={() => {
+                    </div> */}
+                    <Tabs
+                        // tabBarStyle={{
+                        //     color : "green !i",
+                        //     background : "blue"
+                        // }}
+                        style={{
+                            color  :"white"
+                        }} 
+                        defaultActiveKey="1" items={items} onChange={() => {
                     }}/>
 
                     <div className={"d-flex mt-5 flex-row justify-content-end"}>

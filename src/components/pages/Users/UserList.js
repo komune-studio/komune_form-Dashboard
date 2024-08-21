@@ -12,6 +12,7 @@ import UserFormModal from "./UserFormModal";
 import UserResetPasswordModal from "./UserResetPasswordModal";
 import UserHistoryModal from "./UserHistoryModal";
 import UserLinkChildrenModal from './UserLinkChildrenModal';
+import UserAddPointsModal from './UserAddPointsModal';
 
 const UserList = () => {
 
@@ -24,6 +25,9 @@ const UserList = () => {
     const [openUserResetModal, setOpenUserResetModal] = useState(false)
     const [openHistory, setOpenHistory] = useState(false)
     const [openLinkChildren, setOpenLinkChildren] = useState(false)
+
+    const [selectedForAddLoyaltyPoints, setSelectedForAddLoyaltyPoints] = useState(null)
+
     const columns = [
         {
             id: 'id', label: 'ID', filter: false,
@@ -80,6 +84,17 @@ const UserList = () => {
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
                                     icon={<Iconify icon={"material-symbols:edit"}/>}/>
+                            </Tooltip>
+                            <Tooltip title="Tambah Loyalty">
+                                <AntButton
+                                    type={'link'}
+                                    style={{color: Palette.MAIN_THEME}}
+                                    onClick={() => {
+                                        setSelectedForAddLoyaltyPoints(value)
+                                    }}
+                                    className={"d-flex align-items-center justify-content-center"}
+                                    shape="circle"
+                                    icon={<Iconify icon={"mdi:coins-plus-outline"}/>}/>
                             </Tooltip>
                             <Tooltip title="Ubah kata sandi">
                                 <AntButton
@@ -255,6 +270,14 @@ const UserList = () => {
                         await initializeData();
                     }
                     setOpenLinkChildren(false);
+                }}
+            />
+
+            <UserAddPointsModal 
+                isOpen={!!selectedForAddLoyaltyPoints}
+                userData={selectedForAddLoyaltyPoints}
+                handleClose={async () => {
+                    setSelectedForAddLoyaltyPoints(null)
                 }}
             />
 

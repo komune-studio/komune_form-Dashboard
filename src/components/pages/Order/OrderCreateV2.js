@@ -357,6 +357,24 @@ function CreateOrderModal({
 				<b>{Helper.formatNumber(orderValue)}</b> dari <b>{scannedUser?.username}</b>?
 			</div>
 			<div className="d-flex justify-content-center mt-4">
+				{/* <div
+					onClick={() => {
+						handleClose();
+						setCurrentModalContent(0);
+					}}
+				>
+					
+				</div> */}
+				<AntButton
+					style={{marginRight : 10, color :"white"}}
+					type="text"
+					onClick={() => {
+						handleClose();
+						setCurrentModalContent(0);
+					}}
+				>
+					Batal
+				</AntButton>
 				<AntButton
 					type="primary"
 					onClick={() => {

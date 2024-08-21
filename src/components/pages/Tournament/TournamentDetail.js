@@ -95,7 +95,7 @@ export default function TournamentDetail() {
 		{
 			id: "time_in_millisecond",
 			label: "WAKTU",
-			render: (row) => <>{`${row.time_in_millisecond} ms`}</>
+			render: (row) => <>{`${row.time_in_millisecond} s`}</>
 		},
 		{
 			id: "championship_points",
@@ -405,11 +405,11 @@ function TournamentDetailModalForm({
 							/>
 						</Flex>
 						<Flex vertical gap={8}>
-							<Form.Label>Waktu (ms)</Form.Label>
+							<Form.Label>Waktu (s)</Form.Label>
 							<Form.Control
 								placeholder={"..."}
 								type={"number"}
-								step={0.01}
+								step={0.001}
 								value={formData.time_in_millisecond}
 								onChange={(e) =>
 									updateFormData("time_in_millisecond", e.target.value)

@@ -4,117 +4,290 @@ import { Tabs } from 'antd';
 import {DatePicker, Spin, Upload as AntUpload} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import CustomTable from "../../reusable/CustomTable";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import LoyaltyShopModel from "../../../models/LoyaltyShopModel";
+import OrderModel from "../../../models/OrderModel";
+import TopUpHistoryModel from "../../../models/TopUpHistoryModel";
+import topUpHistory from "../TopUp/TopUpHistory";
+import User from "../../../models/UserModel";
+import Helper from "../../../utils/Helper";
+import moment from "moment";
+import Iconify from "../../reusable/Iconify";
+import Palette from "../../../utils/Palette";
 
 export default function UserHistoryModal({isOpen, userData, onClose}){
 
-    const dataHistoryTopUp = [
+    const [transactionHistory, setTransactionHistory] = useState([]);
+    const [orderHistory, setOrderHistory] = useState([]);
+    const [rideHistory, setRideHistory] = useState([]);
+
+    const [userBalance, setUserBalance] = useState(0)
+    const [rideBalance, setRideBalance] = useState(null)
+
+    const [loading, setLoading] = useState(false)
+
+    const columnsTopUp = [
         {
-            id : 1,
-            name : 'Paket A',
-            price : '10.000.000',
-            description : '',
-            top_up_method:'VA',
-            top_up_at : '10/03/2024 11:20',
-            top_up_status : 'SUCCESS'
+            id: "created_at",
+            label: "Tanggal & jam",
+            filter: true,
+            render: (row) => {
+                return row?.created_at
+                    ? moment(row?.created_at).format("DD MMM YYYY, HH:mm")
+                    : "-"
+            }
         },
         {
-            id : 2,
-            name : 'Paket B',
-            price : '10.000.000',
-            top_up_method:'VA',
-            description : '',
-            top_up_at : '10/03/2024 13:32',
-            top_up_status : 'PENDING'
+            id: "transaction_id",
+            label: "ID Transaksi",
+            filter: true,
+            render: (row) => {
+                return row?.transactions?.order_id
+            }
+        },
+        // {
+        //     id: 'currency', label: 'Tipe Paket', filter: true,
+        // },
+        // {
+        //     id: 'price', label: 'Jumlah top up', filter: true,
+        //     render: (row => {
+        //         return row?.price ? 'Rp.' + Helper.formatNumber(row.price) : 0
+        //     })
+        // },
+        {
+            id: "payment_method",
+            label: "Tipe pembayaran",
+            filter: true,
+            render: (row) => {
+                return row?.transactions?.payment_method
+            }
         },
         {
-            id : 3,
-            name : 'Paket C',
-            price : '12.000.000',
-            top_up_method:'GOPAY',
-            description : '',
-            top_up_at : '10/03/2024 10:12',
-            top_up_status : 'PENDING'
+            id: "package_name",
+            dataIndex: "package_name",
+            label: "Nama Paket",
+            filter: true
+        },
+        {
+            id: "price",
+            label: "Nilai (Rp)",
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        Rp{Helper.formatNumber(row.price || 0)}
+                    </>
+                )
+            }
+        },
+        {
+            id: "amount",
+            label: "Jumlah top up",
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        {row?.currency === "COIN" ? (
+                            <div>
+                                <Iconify icon={"fluent-emoji-flat:coin"}></Iconify>
+                                {Helper.formatNumber(row.amount || 0)}
+                            </div>
+                        ) : (
+                            <div>
+                                <Iconify icon={"maki:racetrack"}></Iconify>
+                                {Helper.formatNumber(row.amount || 0)}
+                            </div>
+                        )}
+                    </>
+                )
+            }
+        },
+
+        {
+            id: "status",
+            label: "Status",
+            filter: true,
+            render: (row) => {
+                return row?.transactions?.paid_status === "SETTLEMENT" ||
+                row?.transactions?.paid_status === "CAPTURE" ||
+                row?.transactions?.paid_status === "APPROVED" ? (
+                    <span style={{ color: Palette.THEME_GREEN }}>
+						<Iconify icon={"lets-icons:check-fill"}></Iconify>{" "}
+                        {row?.transactions?.paid_status}
+					</span>
+                ) : (
+                    <span style={{ color: Palette.THEME_RED }}>
+						<Iconify icon={"carbon:close-filled"}></Iconify>{" "}
+                        {row?.transactions?.paid_status}
+					</span>
+                )
+            }
         }
     ]
 
-
-    const columnsTopUp = [
-
-        {
-            id: 'name', label: 'Nama Paket', filter: true,
-        },
-        {
-            id: 'price', label: 'Harga Paket', filter: false,
-        },
-        {
-            id: 'description', label: 'Deskripsi', filter: false,
-        },
-        {
-            id: 'top_up_at', label: 'Tanggal Top Up', filter: false,
-        },
-        {
-            id: 'top_up_method', label: 'Top Up Method', filter: false,
-        },
-        {
-            id: 'top_up_status', label: 'Status', filter: false,
-        },
-    ]
-
     const columnsOrder = [
+        {
+            id: 'created_at',
+            label: 'Tanggal & jam',
+            filter: true,
+            render: (row) => {
+                return row?.created_at ? moment(row?.created_at).format('DD MMM YYYY, HH:mm') : '-';
+            },
+        },
+        {
+            id: 'total_coins',
+            label: 'Koin Dipakai',
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        <Iconify icon={'fluent-emoji-flat:coin'}></Iconify>
+                        {Helper.formatNumber(row.total_coins || 0)}
+                    </>
+                );
+            },
+        },
+        {
+            id: 'notes',
+            label: 'Catatan',
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        {row.notes}
+                    </>
+                );
+            },
+        },
+    ];
 
+    const columnsRides = [
         {
-            id: 'date', label: 'Tanggal', filter: true,
+            id: 'created_at',
+            label: 'Tanggal & jam',
+            filter: true,
+            render: (row) => {
+                return row?.created_at ? moment(row?.created_at).format('DD MMM YYYY, HH:mm') : '-';
+            },
         },
         {
-            id: 'transaction_code', label: 'ID Transaksi', filter: false,
+            id: 'total_rides',
+            label: 'Rides Dipakai',
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        <Iconify icon={'maki:racetrack'}></Iconify>
+                        {Helper.formatNumber(row.total_rides || 0)}
+                    </>
+                );
+            },
         },
         {
-            id: 'qty', label: 'Jumlah Tiket', filter: false,
+            id: 'currency',
+            label: 'Jenis',
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        {row.currency}
+                    </>
+                );
+            },
         },
         {
-            id: 'coin', label: 'Pendapatan', filter: false,
+            id: 'notes',
+            label: 'Catatan',
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        {row.notes}
+                    </>
+                );
+            },
         },
-        {
-            id: 'status', label: 'Status', filter: false,
-        },
-    ]
+    ];
 
+    const handleClose = (refresh) => {
+        onClose(refresh)
+    }
 
-    const dataHistoryTransaction = [
-        {
-            id : 1,
-            date : '10/03/2024 10:12',
-            transaction_code : 'BC-120102102',
-            qty : 10,
-            coin : '500.0000',
-            status : 'SETTLEMENT',
-        },
-        {
-            id : 1,
-            date : '10/03/2024 10:12',
-            transaction_code : 'BC-120102103',
-            qty : 10,
-            coin : '500.0000',
-            status : 'SETTLEMENT',
-        },
-        {
-            id : 1,
-            date : '10/03/2024 10:12',
-            transaction_code : 'BC-120102104',
-            qty : 10,
-            coin : '500.0000',
-            status : 'SETTLEMENT',
-        },
-        {
-            id : 1,
-            date : '10/03/2024 10:12',
-            transaction_code : 'BC-120102105',
-            qty : 10,
-            coin : '500.0000',
-            status : 'SETTLEMENT',
-        },
-    ]
+    const fetchOrderHistory = async () => {
+        setLoading(true);
+        try {
+            let result = await OrderModel.getUserBarcoinUsage(userData.id);
+            console.log("value of", result);
+            setOrderHistory(result);
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+        }
+    };
+
+    const fetchTransactionHistory = async () => {
+        setLoading(true);
+        try {
+            let result = await TopUpHistoryModel.getByUserId(userData.id);
+            setTransactionHistory(result)
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+        }
+    };
+
+    const fetchUserBalance = async () => {
+        setLoading(true);
+        try {
+            let result = await User.getUserBalance(userData.id);
+            setUserBalance(result.balance)
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+        }
+    };
+
+    const fetchRideBalance = async () => {
+        setLoading(true);
+        try {
+            let result = await User.getUserRideBalance(userData.id);
+            setRideBalance(result)
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+        }
+    };
+
+    const fetchRideHistory = async () => {
+        setLoading(true);
+        try {
+            let result = await OrderModel.getUserRideHistory(userData.id);
+            setRideHistory(result)
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+        }
+    };
+
+    const initializeData=()=>{
+        fetchTransactionHistory()
+        fetchOrderHistory()
+        fetchUserBalance()
+        fetchRideHistory()
+        fetchRideBalance()
+    }
+
+    useEffect(() => {
+        if(userData){
+            initializeData()
+        }else{
+            setOrderHistory([])
+            setTransactionHistory([])
+            setRideHistory([])
+            setUserBalance(0)
+            setRideBalance(null)
+        }
+    }, [userData]);
 
     const items = [
         {
@@ -122,34 +295,40 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
             label: 'TopUp History',
             children: <CustomTable
                 mode={'dark'}
-                pagination={false}
+                pagination={true}
                 searchText={''}
-                data={dataHistoryTopUp}
+                data={transactionHistory}
                 columns={columnsTopUp}
             />,
         },
         {
             key: '2',
-            label: 'Purchase History',
+            label: 'Barcoins History',
             children: <CustomTable
                 mode={'dark'}
-                pagination={false}
+                pagination={true}
                 searchText={''}
-                data={dataHistoryTransaction}
+                data={orderHistory}
                 columns={columnsOrder}
             />,
         },
+        {
+            key: '3',
+            label: 'Rides History',
+            children: <CustomTable
+                mode={'dark'}
+                pagination={true}
+                searchText={''}
+                data={rideHistory}
+                columns={columnsRides}
+            />,
+        },
     ];
-    const handleClose = (refresh) => {
-        onClose(refresh)
-    }
-
-
 
     return (
         <>
             <Modal
-                size={'lg'}
+                size={'xl'}
                 show={isOpen}
                 backdrop="static"
                 keyboard={false}
@@ -158,9 +337,14 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
                     <Modal.Title>Riwayat Transaksi</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className={'py-3'}>
+                    Saldo : {Helper.formatNumber(userBalance)}
+                    <br/>Beginner Rides : {Helper.formatNumber(rideBalance?.BEGINNER_RIDES ?? 0)}
+                    <br/>Advanced Rides : {Helper.formatNumber(rideBalance?.ADVANCED_RIDES ?? 0)}
+                    <br/>Pro Rides : {Helper.formatNumber(rideBalance?.PRO_RIDES ?? 0)}
                     {/* <div className={'d-flex mb-4'}>
                         <p>Balance : <strong>10.999</strong></p>
                     </div> */}
+
                     <Tabs
                         // tabBarStyle={{
                         //     color : "green !i",
@@ -168,7 +352,7 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
                         // }}
                         style={{
                             color  :"white"
-                        }} 
+                        }}
                         defaultActiveKey="1" items={items} onChange={() => {
                     }}/>
 

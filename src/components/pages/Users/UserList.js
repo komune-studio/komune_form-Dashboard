@@ -272,6 +272,7 @@ const UserList = () => {
                 userData={selectedUser}
                 onClose={async (refresh) => {
                     setOpenHistory(false)
+                    setSelectedUser(null)
                     if (refresh) {
                         await initializeData()
                     }

@@ -31,6 +31,8 @@ export default function OrderCreateV2() {
 	const [currentModalContent, setCurrentModalContent] = useState(0);
 	const [loading, setLoading] = useState(false);
 
+	const [note, setNote] = useState("")
+
 	const handleValueClick = (value, currency) => {
 		setOrderValue(value);
 		setOrderCurrency(currency);
@@ -97,15 +99,18 @@ export default function OrderCreateV2() {
 				await OrderModel.createBarcoinUsageV2({
 					user_id: parseInt(scannedUser.id),
 					total_coins: parseInt(orderValue),
+					notes : note,
 				});
 			} else {
 				await OrderModel.createRidesUsage({
 					user_id: parseInt(scannedUser.id),
 					currency: orderCurrency,
 					total_rides: parseInt(orderValue),
+					notes : note,
 				});
 			}
 			setCurrentModalContent(3);
+			setNote("")
 		} catch (e) {
 			setCurrentModalContent(1);
 			console.log(e);
@@ -176,10 +181,21 @@ export default function OrderCreateV2() {
 										/>
 									))}
 								</div>
-								<div style={{ marginTop: 48 }}>
+
+								<div style={{marginTop: 48}}>
+									Catatan
+									<input
+										className="order-input"
+										value={note}
+										onChange={(e) => setNote(e.target.value)}
+										style={{flex: 3}}
+									/>
+								</div>
+
+								<div style={{marginTop: 48}}>
 									<AntButton
 										type={'primary'}
-										style={{ width: '100%' }}
+										style={{width: '100%'}}
 										onClick={() => {
 											setIsModalOpen(true);
 										}}

@@ -11,7 +11,7 @@ import {
 } from "reactstrap"
 import { useHistory } from "react-router-dom"
 import Iconify from "../../reusable/Iconify"
-import { Col, Dropdown } from "react-bootstrap"
+import {Col, Dropdown, Form} from "react-bootstrap"
 import CustomTable from "../../reusable/CustomTable"
 import Palette from "../../../utils/Palette"
 import TopUp from "../../../models/TopUpModel"
@@ -22,6 +22,8 @@ import TopUpTitleBar from "./TopUpTitleBar"
 import TopUpHistoryModel from "../../../models/TopUpHistoryModel"
 import moment from "moment/moment"
 import { CSVLink } from "react-csv"
+import {Flex} from "antd";
+import dayjs from "dayjs";
 
 const TopUpHistory = () => {
 	const history = useHistory()
@@ -30,6 +32,17 @@ const TopUpHistory = () => {
 	const [openTopUpModal, setOpenTopUpModal] = useState(false)
 	const [isNewRecord, setIsNewRecord] = useState(false)
 	const [selectedTopUp, setSelectedTopUp] = useState(null)
+
+	const [filterDateStart, setFilterDateStart] = useState(null)
+	const [filterDateEnd, setFilterDateEnd] = useState(null)
+
+	useEffect(()=>{
+		let d = new Date()
+		let dLastWeek = new Date()
+		dLastWeek.setDate(d.getDate() - 7);
+		setFilterDateStart(dayjs(dLastWeek).format("YYYY-MM-DD"))
+		setFilterDateEnd(dayjs(d).format("YYYY-MM-DD"))
+	},[])
 
 	const headers = [
 		{
@@ -47,6 +60,10 @@ const TopUpHistory = () => {
 		{
 			label: "Nama Paket",
 			key: "package_name"
+		},
+		{
+			label: "Jumlah Rupiah",
+			key: "price"
 		},
 		{
 			label: "Jumlah Top Up",
@@ -116,6 +133,18 @@ const TopUpHistory = () => {
 			filter: true
 		},
 		{
+			id: "price",
+			label: "Nilai (Rp)",
+			filter: true,
+			render: (row) => {
+				return (
+					<>
+						Rp{Helper.formatNumber(row.price || 0)}
+					</>
+				)
+			}
+		},
+		{
 			id: "amount",
 			label: "Jumlah top up",
 			filter: true,
@@ -163,7 +192,7 @@ const TopUpHistory = () => {
 	const initializeData = async () => {
 		setLoading(true)
 		try {
-			let result = await TopUpHistoryModel.getAll()
+			let result = await TopUpHistoryModel.getAll(filterDateStart, filterDateEnd)
 			console.log("isi res", result)
 			setDataSource(result.map(obj=>{
 				return {
@@ -179,8 +208,10 @@ const TopUpHistory = () => {
 	}
 
 	useEffect(() => {
-		initializeData()
-	}, [])
+		if(filterDateStart && filterDateEnd){
+			initializeData()
+		}
+	}, [filterDateEnd, filterDateStart])
 
 	return (
 		<>
@@ -192,22 +223,31 @@ const TopUpHistory = () => {
 					<CardBody>
 						<TopUpTitleBar />
 
-						<div style={{ float: "right" }}>
-							<Dropdown>
-								<Dropdown.Toggle
-									style={{ zIndex: 1000 }}
-									variant="outline-secondary"
-									id="dropdown-basic"
-								>
-									<span style={{ color: "#fff" }}> Minggu Ini</span>
-								</Dropdown.Toggle>
 
-								<Dropdown.Menu style={{ color: "#fff" }}>
-									<Dropdown.Item href="#/action-1">Hari Ini</Dropdown.Item>
-									<Dropdown.Item href="#/action-2">Kemarin</Dropdown.Item>
-									<Dropdown.Item href="#/action-3">Minggu Ini</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown>
+						<div style={{float: "right", display: "flex", flexDirection: "row", alignItems: "center"}}>
+							<small style={{marginRight : 10}}>
+								Filter Tanggal
+							</small>
+							<Flex>
+								{/*<Form.Label><small>Filter Mulai</small></Form.Label>*/}
+								<Form.Control
+									placeholder={'DD/MM/YYYY'}
+									type="date"
+									value={filterDateStart}
+									onChange={(e) => setFilterDateStart(e.target.value)}
+								/>
+							</Flex>
+
+							<Flex>
+								{/*<Form.Label><small>Filter Selesai</small></Form.Label>*/}
+								<Form.Control
+									placeholder={'DD/MM/YYYY'}
+									type="date"
+									value={filterDateEnd}
+									onChange={(e) => setFilterDateEnd(e.target.value)}
+								/>
+							</Flex>
+
 							{/* <Button className={'ml-3 bg-transparent text-white'}><Iconify
                                 icon={'mdi:filter'}></Iconify> Export</Button> */}
 							<CSVLink
@@ -217,11 +257,11 @@ const TopUpHistory = () => {
 									new moment().format("dddd, MMMM Do YYYY, HH:mm") +
 									".csv"
 								}
-								data={dataSource.map(obj=>{
+								data={dataSource.map(obj => {
 									// console.log("DDSS", dataSource)
 									return {
 										...obj,
-										"Waktu Transaksi" : new moment(obj.created_at).format("dddd, MMMM Do YYYY, HH:mm")
+										"Waktu Transaksi": new moment(obj.created_at).format("dddd, MMMM Do YYYY, HH:mm")
 									}
 								})}
 							>

@@ -175,55 +175,6 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
             </div>
         </Modal.Header>
         <Modal.Body>
-            <Flex vertical gap={8} >
-                <Form.Label style={{fontSize: "0.8em"}}>Image</Form.Label>
-                <AntUpload
-                    rootClassName={'upload-background'}
-                    name="avatar"
-                    listType="picture-card"
-                    fileList={[]}
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    onChange={(file) => {
-                        handleUpload(file)
-                    }}
-                >
-                    {avatarImage ? (
-                        <>
-                            {
-                                !loadingUpload ? <img
-                                    src={avatarImage}
-                                    alt="avatar"
-                                    style={{
-                                        width: '80%',
-                                        height: '80%',
-                                        objectFit: 'cover'
-                                    }}
-                                /> : <Spin style={{zIndex: 100000}} size="large"/>
-                            }
-
-                        </>
-
-                    ) : (
-                        <button
-                            style={{
-                                border: 0,
-                                background: 'none',
-                            }}
-                            type="button"
-                        >
-                            {loadingUpload ? <Spin style={{zIndex: 100000}} size="large"/> : <PlusOutlined/>}
-                            <div
-                                style={{
-                                    marginTop: 8,
-                                }}
-                            >
-                                Upload
-                            </div>
-                        </button>
-                    )}
-                </AntUpload>
-            </Flex>
             <Flex vertical gap={8}  className="mb-3">
                 <Form.Label style={{fontSize: "0.8em"}}>Username</Form.Label>
                 <Form.Control

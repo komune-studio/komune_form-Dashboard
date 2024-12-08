@@ -53,4 +53,12 @@ export default class User {
     return await ApiRequest.set(`v1/user/${id}/removeVIP`, "DELETE");
   }
 
+  static getUserBalance = async (id) => {
+    return await ApiRequest.set(`v1/user/balance/${id}`, "GET");
+  }
+
+  static getUserRideBalance = async (id) => {
+    return await ApiRequest.set(`v1/rides/balance/${id}`, "GET");
+  }
+
 }

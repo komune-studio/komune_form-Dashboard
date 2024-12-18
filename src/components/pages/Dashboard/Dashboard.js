@@ -89,7 +89,7 @@ export default function Dashboard() {
 					end_time: endOfMonth,
 				});
 
-				trendGroupingKeyExtractor = (item) => moment(item.created_at).week();
+				trendGroupingKeyExtractor = (item) => `${moment(item.created_at).startOf("isoWeek").format("DD MMM")}`;
 				heatMapOuterGroupingKeyExtractor = (item) => moment(item.start_time).week();
 				heatMapInnerGroupingKeyExtractor = (item) => moment(item.start_time).format('dddd');
 				break;

@@ -54,8 +54,8 @@ export default class Helper {
 	}
 
 	static getDaysOfWeek() {
-		const start = moment().startOf('week');
-		const end = moment().endOf('week');
+		const start = moment().startOf('isoWeek');
+		const end = moment().endOf('isoWeek');
 		const daysOfWeek = []
 
 		while (start.isSameOrBefore(end)) {
@@ -68,11 +68,15 @@ export default class Helper {
 
 	static getWeeksOfCurrentMonth() {
 		const currentMonth = moment().month();
+		const currentYear= moment().year()
 		const start = moment().startOf('month');
+		console.log(start.startOf('isoWeek').format("DD MMM YYYY"))
 		const weeksOfCurrentMonth = [];
 
-		while (start.month() === currentMonth) {
-			weeksOfCurrentMonth.push(start.week())
+		while (start.month() <= currentMonth && start.year() <= currentYear ) {
+			console.log("CHECKING " + start.month())
+			console.log(weeksOfCurrentMonth)
+			weeksOfCurrentMonth.push(`${start.format("DD MMM")}`)
 			start.add(1, 'weeks');
 		}
 

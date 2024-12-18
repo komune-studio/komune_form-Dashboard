@@ -9,7 +9,7 @@ export default class User {
   }
 
   static getAll = async () => {
-    return await ApiRequest.set("v1/users", "GET");
+    return await ApiRequest.set("v1/users/complete", "GET");
   }
 
   static create = async (body) => {

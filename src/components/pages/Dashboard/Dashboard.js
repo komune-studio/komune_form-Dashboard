@@ -16,6 +16,7 @@ import { arraySum, calculateHeatMap, calculateTrends } from './DashboardStatisti
 import TopUpHistoryModel from 'models/TopUpHistoryModel';
 import OrderModel from 'models/OrderModel';
 import ScheduleModel from 'models/ScheduleModel';
+import dayjs from "dayjs";
 
 Chart.register(...registerables);
 
@@ -34,10 +35,19 @@ export default function Dashboard() {
 
 	const getTopUpHistoryAndBarcoinUsagesData = async () => {
 		try {
-			let topUpHistories = await TopUpHistoryModel.getAll();
+			let endDate = dayjs().format("YYYY-MM-DD")
+			let startDate;
+			if(period === "daily"){
+				startDate = dayjs().subtract(1,"day").format("YYYY-MM-DD")
+			}else if(period === "weekly"){
+				startDate = dayjs().subtract(7,"day").format("YYYY-MM-DD")
+			}else{
+				startDate = dayjs().subtract(1,"month").format("YYYY-MM-DD")
+			}
+			let topUpHistories = await TopUpHistoryModel.getAll(startDate, endDate);
 			setTopUpHistory(topUpHistories);
 
-			let barcoinUsages = await OrderModel.getAllBarcoinUsages();
+			let barcoinUsages = await OrderModel.getAllBarcoinUsages(startDate, endDate);
 			setBarcoinUsages(barcoinUsages);
 		} catch (e) {
 			console.log(e);

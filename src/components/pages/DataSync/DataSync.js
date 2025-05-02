@@ -30,9 +30,13 @@ const DataSync = () => {
 			setFileToUpload(null)
 			// onOpenMessage({ type: 'success', message: 'Upload success!' });
 			// onClose(true);
+			message.success('Berhasil mesinkronisasi data')
+			setFileToUpload(null)
+
 		} catch (error) {
 			// onOpenMessage({ type: 'error', message: error.error_message ?? error });
 			console.log(error)
+			message.error('Gagal mesinkronisasi data. '+error.error_message)
 		}
 		setUploading(false)
 	}

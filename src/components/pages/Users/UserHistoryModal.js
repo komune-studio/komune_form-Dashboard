@@ -1,19 +1,17 @@
-import Modal from "react-bootstrap/Modal";
-import {Button, Form, Row} from "react-bootstrap";
+import { Box, Stack } from "@mui/material";
 import { Tabs } from 'antd';
-import {DatePicker, Spin, Upload as AntUpload} from "antd";
-import {PlusOutlined} from "@ant-design/icons";
-import CustomTable from "../../reusable/CustomTable";
-import React, {useEffect, useState} from "react";
-import LoyaltyShopModel from "../../../models/LoyaltyShopModel";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
 import OrderModel from "../../../models/OrderModel";
 import TopUpHistoryModel from "../../../models/TopUpHistoryModel";
-import topUpHistory from "../TopUp/TopUpHistory";
 import User from "../../../models/UserModel";
 import Helper from "../../../utils/Helper";
-import moment from "moment";
-import Iconify from "../../reusable/Iconify";
 import Palette from "../../../utils/Palette";
+import CustomTable from "../../reusable/CustomTable";
+import Iconify from "../../reusable/Iconify";
+import { CSVLink } from "react-csv";
 
 export default function UserHistoryModal({isOpen, userData, onClose}){
 
@@ -25,6 +23,8 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
     const [rideBalance, setRideBalance] = useState(null)
 
     const [loading, setLoading] = useState(false)
+    const [selectedTab, setSelectedTab] = useState('0');
+    const [exportData, setExportData] = useState({data: [], headers: []});
 
     const columnsTopUp = [
         {
@@ -278,6 +278,46 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
     }
 
     useEffect(() => {
+        switch(selectedTab) {
+            case '0':
+                setExportData({
+                    data: transactionHistory,
+                    headers: [
+                        {label: 'Tanggal', key: 'created_at'},
+                        {label: 'ID Transaksi', key: 'transactions.order_id'},
+                        {label: 'Payment Method', key: 'transactions.payment_method'},
+                        {label: 'Nama Paket', key: 'package_name'},
+                        {label: 'Harga Paket', key: 'price'},
+                        {label: 'Jumlah Top Up', key: 'amount'},
+                        {label: 'Status', key: 'status'}
+                    ]
+                });
+                break;
+            case '1':
+                setExportData({
+                    data: orderHistory,
+                    headers: [
+                        {label: 'Tanggal', key: 'created_at'},
+                        {label: 'Koin Dipakai', key: 'total_coins'},
+                        {label: 'Catatan', key: 'notes'},
+                    ]
+                });
+                break;
+            case '2':
+                setExportData({
+                    data: rideHistory,
+                    headers: [
+                        {label: 'Tanggal', key: 'created_at'},
+                        {label: 'Rides Dipakai', key: 'total_rides'},
+                        {label: 'Jenis', key: 'currency'},
+                        {label: 'Catatan', key: 'notes'},
+                    ]
+                });
+                break;
+        }
+    }, [selectedTab])
+
+    useEffect(() => {
         if(userData){
             initializeData()
         }else{
@@ -291,7 +331,7 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
 
     const items = [
         {
-            key: '1',
+            key: '0',
             label: 'TopUp History',
             children: <CustomTable
                 mode={'dark'}
@@ -302,7 +342,7 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
             />,
         },
         {
-            key: '2',
+            key: '1',
             label: 'Barcoins History',
             children: <CustomTable
                 mode={'dark'}
@@ -313,7 +353,7 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
             />,
         },
         {
-            key: '3',
+            key: '2',
             label: 'Rides History',
             children: <CustomTable
                 mode={'dark'}
@@ -337,28 +377,46 @@ export default function UserHistoryModal({isOpen, userData, onClose}){
                     <Modal.Title>Riwayat Transaksi</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className={'py-3'}>
-                    Saldo : {Helper.formatNumber(userBalance)}
-                    <br/>Beginner Rides : {Helper.formatNumber(rideBalance?.BEGINNER_RIDES ?? 0)}
-                    <br/>Advanced Rides : {Helper.formatNumber(rideBalance?.ADVANCED_RIDES ?? 0)}
-                    <br/>Pro Rides : {Helper.formatNumber(rideBalance?.PRO_RIDES ?? 0)}
-                    {/* <div className={'d-flex mb-4'}>
-                        <p>Balance : <strong>10.999</strong></p>
-                    </div> */}
-
+                    <Box>                    
+                        Saldo : {Helper.formatNumber(userBalance)}
+                        <br/>Beginner Rides : {Helper.formatNumber(rideBalance?.BEGINNER_RIDES ?? 0)}
+                        <br/>Advanced Rides : {Helper.formatNumber(rideBalance?.ADVANCED_RIDES ?? 0)}
+                        <br/>Pro Rides : {Helper.formatNumber(rideBalance?.PRO_RIDES ?? 0)}
+                    </Box>
                     <Tabs
-                        // tabBarStyle={{
-                        //     color : "green !i",
-                        //     background : "blue"
-                        // }}
                         style={{
                             color  :"white"
                         }}
-                        defaultActiveKey="1" items={items} onChange={() => {
-                    }}/>
+                        activeKey={selectedTab} 
+                        items={items} 
+                        onChange={(activeKey) => {
+                            setSelectedTab(activeKey)
+                        }}
+                    />
 
                     <div className={"d-flex mt-5 flex-row justify-content-end"}>
+                        <CSVLink
+                            headers={exportData.headers}
+                            filename={
+                                `export_${userData?.full_name}_` +
+                                new moment().format("dddd, MMMM Do YYYY, HH:mm") +
+                                ".csv"
+                            }
+                            data={exportData.data}
+                        >
+                            <Button>
+                                Export{''}
+                                {selectedTab === '0' 
+                                ? 'Top Up History' 
+                                : selectedTab === '1' 
+                                ? 'Barcoins History' 
+                                : selectedTab === '2' 
+                                ? 'Rides History' 
+                                : 'Data'}
+                            </Button>
+                        </CSVLink>
                         <Button size="sm" variant="outline-danger" onClick={() => handleClose()}
-                                style={{marginRight: '5px'}}>
+                                style={{marginLeft: '12px'}}>
                             Tutup
                         </Button>
                     </div>

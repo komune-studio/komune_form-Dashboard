@@ -9,8 +9,8 @@ import Palette from 'utils/Palette';
 import {InputGroup, Form, Col,} from "react-bootstrap";
 import CustomTable from "../../reusable/CustomTable";
 import swal from "../../reusable/CustomSweetAlert";
-import EditTranslatorModal from './EditModal';
-import CreateTranslatorModal from './CreateModal';
+import EditTranslatorModal from './EditTranslatorModal';
+import CreateTranslatorModal from './CreateTranslatorModal';
 
 const TranslatorList = () => {
 

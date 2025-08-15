@@ -8,9 +8,9 @@ import Iconify from "../../reusable/Iconify";
 import Palette from 'utils/Palette';
 import {InputGroup, Form, Col,} from "react-bootstrap";
 import CustomTable from "../../reusable/CustomTable";
-import CreateModal from "./CreateModal";
-import EditModal from "./EditModal";
 import swal from "../../reusable/CustomSweetAlert";
+import CreateIlustratorModal from './CreateIlustratorModal';
+import EditIlustratorModal from './EditIlustratorModal';
 
 const IlustratorList = () => {
 
@@ -213,9 +213,9 @@ const IlustratorList = () => {
                 </Card>
 
             </Container>
-            <CreateModal
+            <CreateIlustratorModal
                 isOpen={isCreateOpen}
-                list={dataSource}
+                ilustratorList={dataSource}
                 close={async (refresh) => {
                     if (refresh) {
                         await initializeData()
@@ -223,9 +223,9 @@ const IlustratorList = () => {
                     setIsCreateOpen(false)
                 }}
             />
-            {isEditModalOpen ? <EditModal
+            {isEditModalOpen ? <EditIlustratorModal
                 isOpen={isEditModalOpen}
-                admin_data={selectedAdmin}
+                ilustratorData={selectedAdmin}
                 close={(refresh) => {
                     if (refresh) {
                         initializeData()

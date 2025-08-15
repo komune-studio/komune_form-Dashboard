@@ -16,7 +16,7 @@ import LoadingButton from "../../reusable/LoadingButton";
 CreateTranslatorModal.propTypes = {
     close: PropTypes.func,
     isOpen: PropTypes.bool,
-    translatorList: PropTypes.object
+    translator_List: PropTypes.object
 };
 
 

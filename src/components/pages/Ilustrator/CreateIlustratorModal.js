@@ -13,14 +13,14 @@ import Iconify from "../../reusable/Iconify";
 import swal from "../../reusable/CustomSweetAlert";
 import LoadingButton from "../../reusable/LoadingButton";
 
-CreateModal.propTypes = {
+CreateIlustratorModal.propTypes = {
     close: PropTypes.func,
     isOpen: PropTypes.bool,
-    list: PropTypes.object
+    ilustratorList: PropTypes.object
 };
 
 
-export default function CreateModal({ isOpen, itemId, close, list }) {
+export default function CreateIlustratorModal({ isOpen, itemId, close, ilustratorList }) {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     // const [email, setEmail] = useState("")

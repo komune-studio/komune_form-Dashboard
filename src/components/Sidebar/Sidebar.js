@@ -82,6 +82,12 @@ const SIDEBAR = [
         color : Palette.BARCODE_ORANGE
     }, */
     {
+        path: "/dashboard",
+        name: "Dashboard",
+        icon: "material-symbols:dashboard",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
         path: "/admins",
         name: "Admin",
         icon: "material-symbols:person",
@@ -95,7 +101,7 @@ const SIDEBAR = [
     },
     {
         path: "/top-up-history",
-        name: "Top Up History",
+        name: "Top Up",
         icon: "fluent-mdl2:money",
         color: Palette.BARCODE_ORANGE
     },
@@ -130,9 +136,21 @@ const SIDEBAR = [
         color: Palette.BARCODE_ORANGE
     },
     {
+        path: "/messaging",
+        name: "Notification",
+        icon: "material-symbols:send",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
         path: "/tournament",
         name: "Tournament",
         icon: "mdi:tournament",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
+        path: "/datasync",
+        name: "DataSync",
+        icon: "mdi:database",
         color: Palette.BARCODE_ORANGE
     }
     // {

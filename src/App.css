@@ -60,6 +60,10 @@ input.order-input {
     border: none;
 }
 
+.ant-tabs-tab-btn[aria-selected="false"]{
+    color: white !important;
+}
+
 .main-tabs .nav-item button {
     background: none !important;
     color: #000 !important;

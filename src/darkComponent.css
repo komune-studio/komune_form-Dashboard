@@ -26,6 +26,10 @@ textarea.form-control:focus, select.form-control:focus, select.form-select:focus
     color: #fff !important;
 }
 
+input.form-control::placeholder, textarea.form-control::placeholder {
+    color: #757575 !important;
+}
+
 .ant-picker, ant-picker-input {
     color: #fff;
     background: #FFFFFF14;

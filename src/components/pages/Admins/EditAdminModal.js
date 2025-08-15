@@ -1,11 +1,7 @@
 import Modal from 'react-bootstrap/Modal';
 import { Button, Form } from "react-bootstrap";
-import FileUpload from "../../reusable/FileUpload";
-import Swal from "sweetalert2";
-import {  message } from "antd";
+import { message, Flex } from "antd";
 import { useEffect, useMemo, useState } from "react";
-
-import UploadModel from "../../../models/UploadModel";
 import AdminModel from "../../../models/AdminModel";
 
 import PropTypes from "prop-types";
@@ -82,24 +78,12 @@ export default function EditAdminModal({ isOpen, itemId, close, admin_data }) {
         </Modal.Header>
         <Modal.Body>
         <Form onSubmit={onSubmit}>
-            {/* <Form.Group className="mb-3">
-                <Form.Label style={{ fontSize: "0.8em" }}>Email</Form.Label>
-                <Form.Control
-                    value={email} autoComplete={"email"}
-                    onChange={(e) => setEmail(e.target.value)} type="text" placeholder="Email" />
-            </Form.Group> */}
-            {/* <Form.Group className="mb-3">
-                <Form.Label style={{ fontSize: "0.8em" }}>Password</Form.Label>
-                <Form.Control
-                    value={password} autoComplete={"new-password"}
-                    onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" />
-            </Form.Group> */}
-            <Form.Group className="mb-3">
+            <Flex className="mb-3" vertical gap={8}>
                 <Form.Label style={{ fontSize: "0.8em" }}>Nama admin</Form.Label>
                 <Form.Control
                     value={username ? username : ''}
                     onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Nama admin" style={{color: '#000000'}}/>
-            </Form.Group>
+            </Flex>
             {/* <Form.Group className="mb-3">
                 <Form.Label style={{ fontSize: "0.8em" }}>Active</Form.Label>
                 <Form.Check // prettier-ignore

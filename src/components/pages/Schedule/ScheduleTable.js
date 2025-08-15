@@ -154,6 +154,10 @@ function ScheduleItem({ data, currentDateMoment, setModalSetting }) {
 			backgroundColor = '#9bf6ff';
 			color = '#056676';
 			break;
+		case data.skill_level === 'FULL':
+			backgroundColor = '#121212';
+			color = Palette.WHITE_GRAY;
+			break;
 		default:
 			backgroundColor = '#121212';
 			color = Palette.WHITE_GRAY;
@@ -188,7 +192,7 @@ function ScheduleItem({ data, currentDateMoment, setModalSetting }) {
 				<div className="font-weight-bold text-left" style={{ flex: 1 }}>
 					{data.skill_level}
 				</div>
-				{data.skill_level !== 'EVENT' && data.skill_level !== 'MAINTENANCE' ? (
+				{data.skill_level !== 'EVENT' && data.skill_level !== 'MAINTENANCE' && data.skill_level !== 'FULL' ? (
 					<div className="font-weight-bold text-right" style={{ flex: 1 }}>
 						{data.available_slots - data._count.schedule_slot_user} slot(s) available
 					</div>

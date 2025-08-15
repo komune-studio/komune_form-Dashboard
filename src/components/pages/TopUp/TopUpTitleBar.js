@@ -17,12 +17,12 @@ export default function TopUpTitleBar() {
                         <Link
                             className={`btn ${location.pathname === '/top-up-history' ? 'btn-primary-tab' : 'btn-default-tab'}`}
                             to={'/top-up-history'}>
-                            History
+                            Riwayat
                         </Link>
                         <Link
                             className={`btn ${location.pathname === '/top-up-list' ? 'btn-primary-tab' : 'btn-default-tab'}`}
                             to={'/top-up-list'}>
-                            Pengaturan
+                            Pengaturan Paket
                         </Link>
                     </ButtonGroup>
                 </Col>

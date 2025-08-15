@@ -192,8 +192,19 @@ const AdminList = () => {
                     <CardBody>
 
                         <Row>
-                            <Col className='mb-3' md={12}>
+                            <Col className='mb-3' md={6}>
                                 <div style={{fontWeight: "bold", fontSize: "1.1em"}}>Admin</div>
+                            </Col>
+                            <Col className='mb-3 text-right' md={6}>
+                                <AntButton 
+                                    onClick={() => {
+                                        setIsCreateAdminOpen(true)
+                                    }} 
+                                    size={'middle'} 
+                                    type={'primary'}
+                                >
+                                    Tambah Admin
+                                </AntButton>
                             </Col>
                         </Row>
 

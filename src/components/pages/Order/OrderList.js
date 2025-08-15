@@ -1,144 +1,288 @@
-import { Button, Card, CardBody, Container, Row, Col } from "reactstrap";
-import Palette from "../../../utils/Palette";
-import TopUpTitleBar from "../TopUp/TopUpTitleBar";
-import { Dropdown } from "react-bootstrap";
-import Iconify from "../../reusable/Iconify";
-import CustomTable from "../../reusable/CustomTable";
-import React, { useEffect, useState } from "react";
-import moment from "moment";
-import Helper from "../../../utils/Helper";
-import TopUpHistoryModel from "../../../models/TopUpHistoryModel";
-import { Space, Button as AntButton, } from "antd";
-import OrderModel from "models/OrderModel";
-import { Link } from "react-router-dom";
+import { Button as AntButton, Flex } from 'antd';
+import dayjs from "dayjs";
+import OrderModel from 'models/OrderModel';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import { CSVLink } from "react-csv";
+import { Link } from 'react-router-dom';
+import { Button, Card, CardBody, CardHeader, Col, Container, Row } from 'reactstrap';
+import Helper from '../../../utils/Helper';
+import Palette from '../../../utils/Palette';
+import CustomTable from '../../reusable/CustomTable';
+import Iconify from '../../reusable/Iconify';
 
 export default function OrderList() {
-    const [dataSource, setDataSource] = useState([]);
-    const [openTopUpModal, setOpenTopUpModal] = useState(false)
-    const [isNewRecord, setIsNewRecord] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [selectedTopUp, setSelectedTopUp] = useState(null)
+    const [barcoinUsages, setBarcoinUsages] = useState([]);
+    const [ridesUsages, setRidesUsages] = useState([]);
+    const [openTopUpModal, setOpenTopUpModal] = useState(false);
+    const [isNewRecord, setIsNewRecord] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [selectedTopUp, setSelectedTopUp] = useState(null);
 
-    const columns = [
+    const barcoinUsagesTableColumns = [
         {
-            id: 'created_at', label: 'Tanggal & jam', filter: true,
-            render: (row => {
-                return row?.created_at ? moment(row?.created_at).format('DD MMM YYYY, HH:mm') : '-'
-            })
+            id: 'created_at',
+            label: 'Tanggal & jam',
+            filter: true,
+            render: (row) => {
+                return row?.created_at ? moment(row?.created_at).format('DD MMM YYYY, HH:mm') : '-';
+            },
         },
         {
-            id: 'user_id', label: 'User', filter: true,
-            render: (row => {
-                return row?.users?.username
-            })
+            id: 'user_id',
+            label: 'User',
+            filter: true,
+            render: (row) => {
+                return row?.users?.username;
+            },
         },
         {
-            id: 'quantity', label: 'Jumlah tiket dibeli', filter: true,
-            render: (row => {
-                let total = 0
-                for(let bd of row.barcoins_usage_detail){
-                    total+=bd.quantity
-                }
-                return total
-            })
-        },
-        {
-            id: 'total_coins', label: 'Koin Dipakai', filter: true,
-            render: (row => {
-                return <>
-                    <Iconify icon={'fluent-emoji-flat:coin'}></Iconify>
-                    {Helper.formatNumber(row.total_coins || 0)}
-                </>
-            })
-        },
-        {
-            id: 'action', label: '',
-            render: (row => {
+            id: 'total_coins',
+            label: 'Koin Dipakai',
+            filter: true,
+            render: (row) => {
                 return (
-                    <Dropdown
-                        menu={{
-                            items,
-                        }}
-                        trigger={['click']}
-                    >
-                        <a onClick={(e) => e.preventDefault()}>
-                            <Space>
-                                ...
-                            </Space>
-                        </a>
-                    </Dropdown>
-                )
-            })
-        }
-    ]
-
-    const initializeData = async () => {
-        setLoading(true)
-        try {
-            console.log('masuk sinih')
-            let result = await OrderModel.getAll()
-            console.log('isi res', result)
-            setDataSource(result)
-            setLoading(false)
-        } catch (e) {
-            console.log('masuk sinih', e)
-            setLoading(false)
-        }
-    }
-
-    useEffect(() => {
-        initializeData()
-    }, [])
-
-    const items = [
-        {
-            label: <a href="https://www.antgroup.com">1st menu item</a>,
-            key: '0',
+                    <>
+                        <Iconify icon={'fluent-emoji-flat:coin'}></Iconify>
+                        {Helper.formatNumber(row.total_coins || 0)}
+                    </>
+                );
+            },
         },
         {
-            label: <a href="https://www.aliyun.com">2nd menu item</a>,
-            key: '1',
-        },
-        {
-            type: 'divider',
-        },
-        {
-            label: '3rd menu item',
-            key: '3',
+            id: 'notes',
+            label: 'Catatan',
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        {row.notes}
+                    </>
+                );
+            },
         },
     ];
+
+    const [filterDateStart, setFilterDateStart] = useState(null)
+    const [filterDateEnd, setFilterDateEnd] = useState(null)
+
+    useEffect(() => {
+        let d = new Date()
+        let dLastWeek = new Date()
+        dLastWeek.setDate(d.getDate() - 7);
+        setFilterDateStart(dayjs(dLastWeek).format("YYYY-MM-DD"))
+        setFilterDateEnd(dayjs(d).format("YYYY-MM-DD"))
+    }, [])
+
+    const ridesUsagesTableColumns = [
+        {
+            id: 'created_at',
+            label: 'Tanggal & jam',
+            filter: true,
+            render: (row) => {
+                return row?.created_at ? moment(row?.created_at).format('DD MMM YYYY, HH:mm') : '-';
+            },
+        },
+        {
+            id: 'user_id',
+            label: 'User',
+            filter: true,
+            render: (row) => {
+                return row?.users?.username;
+            },
+        },
+        {
+            id: 'currency',
+            label: 'Jenis',
+            filter: true,
+            render: (row) => {
+                return row.currency ? row.currency.replace('_', ' ') : '-';
+            },
+        },
+        {
+            id: 'total_rides',
+            label: 'Rides Digunakan',
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        {row.total_rides}
+                    </>
+                );
+            },
+        },
+        {
+            id: 'notes',
+            label: 'Catatan',
+            filter: true,
+            render: (row) => {
+                return (
+                    <>
+                        {row.notes}
+                    </>
+                );
+            },
+        },
+    ];
+
+    const initializeData = async () => {
+        setLoading(true);
+        try {
+            let barcoinUsagesData = await OrderModel.getAllBarcoinUsages(filterDateStart, filterDateEnd);
+            let ridesUsagesData = await OrderModel.getAllRidesUsages(filterDateStart, filterDateEnd);
+
+            setRidesUsages(ridesUsagesData);
+            setBarcoinUsages(barcoinUsagesData);
+        } catch (e) {
+            console.log(e);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        if (filterDateStart && filterDateEnd) {
+            initializeData()
+        }
+    }, [filterDateEnd, filterDateStart])
 
     return (
         <>
             <Container fluid>
                 <Row>
-                    <Col md={12} style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                        <Link to="/orders/create">
-                            <AntButton style={{
-                                top: '10px', width: 200, marginBottom: 20
-                            }} onClick={() => {
+                    <Col md={12} style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end'}}>
 
-                            }} size={'middle'} type={'primary'}>Tambah Order</AntButton>
-                        </Link>
+                        <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+                            <small style={{marginRight: 10}}>
+                                Filter Tanggal
+                            </small>
+                            <Flex>
+                                {/*<Form.Label><small>Filter Mulai</small></Form.Label>*/}
+                                <Form.Control
+                                    placeholder={'DD/MM/YYYY'}
+                                    type="date"
+                                    value={filterDateStart}
+                                    onChange={(e) => setFilterDateStart(e.target.value)}
+                                />
+                            </Flex>
 
-                        <Card style={{ background: Palette.BACKGROUND_DARK_GRAY, color: "white", width: "100%" }}
-                            className="card-stats mb-4 mb-xl-0">
+                            <Flex>
+                                {/*<Form.Label><small>Filter Selesai</small></Form.Label>*/}
+                                <Form.Control
+                                    placeholder={'DD/MM/YYYY'}
+                                    type="date"
+                                    value={filterDateEnd}
+                                    onChange={(e) => setFilterDateEnd(e.target.value)}
+                                />
+                            </Flex>
+                            <Link to="/orders/create">
+                                <AntButton
+                                    style={{
+                                        top: '10px',
+                                        width: 200,
+                                        marginBottom: 20,
+                                    }}
+                                    onClick={() => {
+                                    }}
+                                    size={'middle'}
+                                    type={'primary'}
+                                >
+                                    Tambah Order
+                                </AntButton>
+                            </Link>
+                            {/* <Button className={'ml-3 bg-transparent text-white'}><Iconify
+                                icon={'mdi:filter'}></Iconify> Export</Button> */}
+                        </div>
 
+                        <Card
+                            style={{background: Palette.BACKGROUND_DARK_GRAY, color: 'white', width: '100%'}}
+                            className="card-stats mb-4 mb-xl-0"
+                        >
+                            <CardHeader style={{display : "flex", paddingBottom : 0, flexDirection : "row", background: Palette.BACKGROUND_DARK_GRAY, fontWeight: 700}}>
+                                <div style={{marginRight : "auto"}}>Riwayat Order Barcoins</div>
+                                <CSVLink
+                                    headers={[
+                                        {label : "Tanggal Transaksi", key : "created_at"},
+                                        {label : "Nama", key : "name"},
+                                        {label : "Jumlah", key : "total_coins"},
+                                        {label : "Catatan", key : "notes"},
+                                    ]}
+                                    filename={
+                                        "Order History - " +
+                                        new moment().format("dddd, MMMM Do YYYY, HH:mm") +
+                                        ".csv"
+                                    }
+                                    data={barcoinUsages.map(obj => {
+                                        // console.log("DDSS", dataSource)
+                                        return {
+                                            ...obj,
+                                            name : obj?.users?.username,
+                                            "Waktu Transaksi": new moment(obj.created_at).format("dddd, MMMM Do YYYY, HH:mm")
+                                        }
+                                    })}
+                                >
+                                    <Button className={"ml-1 bg-transparent text-white"}>
+                                        <Iconify icon={"mdi:download"}></Iconify> Export
+                                    </Button>
+                                </CSVLink>
+                            </CardHeader>
+                            <CardBody>
+
+                                <CustomTable
+                                    showFilter={true}
+                                    pagination={true}
+                                    searchText={''}
+                                    data={barcoinUsages}
+                                    columns={barcoinUsagesTableColumns}
+                                />
+                            </CardBody>
+                        </Card>
+                        <Card
+                            style={{background: Palette.BACKGROUND_DARK_GRAY, color: 'white', width: '100%'}}
+                            className="card-stats mb-4 mb-xl-0"
+                        >
+                            <CardHeader style={{display : "flex", paddingBottom : 0,flexDirection : "row", background: Palette.BACKGROUND_DARK_GRAY, fontWeight: 700}}>
+                                <div style={{marginRight : "auto"}}>Riwayat Order Rides</div>
+                                <CSVLink
+                                    headers={[
+                                        {label : "Tanggal Transaksi", key : "created_at"},
+                                        {label : "Nama", key : "name"},
+                                        {label : "Jumlah", key : "total_rides"},
+                                        {label : "Jenis", key : "currency"},
+                                        {label : "Catatan", key : "notes"},
+                                    ]}
+                                    filename={
+                                        "Rides History - " +
+                                        new moment().format("dddd, MMMM Do YYYY, HH:mm") +
+                                        ".csv"
+                                    }
+                                    data={ridesUsages.map(obj => {
+                                        // console.log("DDSS", dataSource)
+                                        return {
+                                            ...obj,
+                                            name : obj?.users?.username,
+                                            "Waktu Transaksi": new moment(obj.created_at).format("dddd, MMMM Do YYYY, HH:mm")
+                                        }
+                                    })}
+                                >
+                                    <Button className={"ml-1 bg-transparent text-white"}>
+                                        <Iconify icon={"mdi:download"}></Iconify> Export
+                                    </Button>
+                                </CSVLink>
+                            </CardHeader>
                             <CardBody>
                                 <CustomTable
                                     showFilter={true}
                                     pagination={true}
                                     searchText={''}
-                                    data={dataSource}
-                                    columns={columns}
+                                    data={ridesUsages}
+                                    columns={ridesUsagesTableColumns}
                                 />
                             </CardBody>
                         </Card>
-
                     </Col>
                 </Row>
-
             </Container>
         </>
-    )
+    );
 }

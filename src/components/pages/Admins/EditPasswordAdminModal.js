@@ -1,15 +1,8 @@
 import Modal from 'react-bootstrap/Modal';
 import { Button, Form } from "react-bootstrap";
-import FileUpload from "../../reusable/FileUpload";
-import Swal from "sweetalert2";
-import { Upload, message } from "antd";
-import { useEffect, useMemo, useState } from "react";
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import UploadModel from "../../../models/UploadModel";
+import { Flex, message } from "antd";
+import { useState } from "react";
 import Admin from "../../../models/AdminModel";
-
-import PropTypes from "prop-types";
-import Iconify from "../../reusable/Iconify";
 import swal from "../../reusable/CustomSweetAlert";
 import LoadingButton from "../../reusable/LoadingButton";
 
@@ -68,21 +61,21 @@ export default function EditPasswordAdminPage({ isOpen, itemId, close, admin_dat
             <Modal.Title>Edit Admin</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form.Group className="mb-3">
+            <Flex className="mb-3" vertical gap={8}>
                 <Form.Label style={{ fontSize: "0.8em" }}>New Password</Form.Label>
                 <Form.Control
                     autoComplete={"new-password"}
                     onChange={(e) => setNewPassword(e.target.value)} type="password" placeholder="Password" />
-            </Form.Group>
-            <Form.Group className="mb-3">
+            </Flex>
+            <Flex className="mb-3" vertical gap={8}>
                 <Form.Label style={{ fontSize: "0.8em" }}>Confirm Password</Form.Label>
                 <Form.Control
                     autoComplete={"confirm-new-password"}
                     onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="Password" />
-            </Form.Group>
+            </Flex>
 
             <div className={"d-flex flex-row justify-content-end"}>
-                <Button size="sm" onClick={() => handleClose(false)} variant="outlined">
+                <Button size="sm" onClick={() => handleClose(false)} variant="outlined" style={{color: '#FFF'}}>
                     Cancel
                 </Button>
                 <LoadingButton size="sm" onClick={onSubmit} variant="primary">

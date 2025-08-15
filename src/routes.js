@@ -27,13 +27,22 @@ import PromotionList from "./components/pages/Promotion/PromotionList";
 import LoyaltyShopList from "./components/pages/LoyaltyShop/LoyaltyShopList.";
 import OrderList from "./components/pages/Order/OrderList";
 import OrderCreate from "components/pages/Order/OrderCreate";
+import Notification from './components/pages/Messaging/Notification'
 import OrderCreateV2 from "./components/pages/Order/OrderCreateV2";
 import LoyaltyHistory from "components/pages/LoyaltyShop/LoyaltyHistory";
 import LoyaltyHistoryCreate from "components/pages/LoyaltyShop/LoyaltyHistoryCreate";
 import TournamentList from "components/pages/Tournament/TournamentList";
 import TournamentDetail from "components/pages/Tournament/TournamentDetail";
+import Dashboard from "components/pages/Dashboard/Dashboard";
+import DataSync from "components/pages/DataSync/DataSync";
 
 var routes = [
+    {
+        path: "/dashboard",
+        name: "Dashboard",
+        component: Dashboard,
+        layout: "/admin"
+    },
     {
         path: "/admins",
         name: "Admins",
@@ -83,8 +92,14 @@ var routes = [
         layout: "/admin",
     },
     {
+        path: "/messaging",
+        name: "Notification",
+        component: Notification,
+        layout: "/admin",
+    },
+    {
         path: "/loyalty-shop-catalog",
-        name: "Loyalty Shop",
+        name: "Loyalty",
         component: LoyaltyShopList,
         layout: "/admin",
     },
@@ -130,6 +145,12 @@ var routes = [
         layout: "/admin",
         component: TournamentList,
     },
+    {
+        path: "/datasync",
+        name: "DataSync",
+        layout: "/admin",
+        component: DataSync,
+    }
 
 ];
 export default routes;

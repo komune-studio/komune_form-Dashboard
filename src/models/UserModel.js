@@ -9,7 +9,7 @@ export default class User {
   }
 
   static getAll = async () => {
-    return await ApiRequest.set("v1/users", "GET");
+    return await ApiRequest.set("v1/users/complete", "GET");
   }
 
   static create = async (body) => {
@@ -17,6 +17,7 @@ export default class User {
   }
 
   static edit = async (id, body) => {
+    console.log("BODYZ", body)
     return await ApiRequest.set(`v1/user/${id}`, "PUT", body);
   }
 
@@ -42,6 +43,22 @@ export default class User {
 
   static getByEmail = async (email) => {
     return await ApiRequest.set(`v1/user/email/${email}`, "GET");
+  }
+
+  static getByReferralId = async (id) => {
+    return await ApiRequest.set(`v1/user/referral/${id}`, "GET");
+  }
+
+  static removeVIP = async (id) => {
+    return await ApiRequest.set(`v1/user/${id}/removeVIP`, "DELETE");
+  }
+
+  static getUserBalance = async (id) => {
+    return await ApiRequest.set(`v1/user/balance/${id}`, "GET");
+  }
+
+  static getUserRideBalance = async (id) => {
+    return await ApiRequest.set(`v1/rides/balance/${id}`, "GET");
   }
 
 }

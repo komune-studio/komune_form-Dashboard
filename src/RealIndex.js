@@ -17,7 +17,6 @@
 
 */
 import React, {useEffect, useState} from "react";
-import ReactDOM from "react-dom/client";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
 
 import "assets/plugins/nucleo/css/nucleo.css";
@@ -54,6 +53,9 @@ export default function (props) {
                     Table: {
                         headerBg: '#00000',
                         borderColor: '#FFF'
+                    },
+                    Form: {
+                        labelColor: '#FFF'
                     }
                 }
             }}

@@ -32,6 +32,7 @@ import OrderCreateV2 from "./components/pages/Order/OrderCreateV2";
 import LoyaltyHistory from "components/pages/LoyaltyShop/LoyaltyHistory";
 import LoyaltyHistoryCreate from "components/pages/LoyaltyShop/LoyaltyHistoryCreate";
 import TournamentList from "components/pages/Tournament/TournamentList";
+import Translator from "components/pages/Translator/TranslatorList";
 import TournamentDetail from "components/pages/Tournament/TournamentDetail";
 import Dashboard from "components/pages/Dashboard/Dashboard";
 import DataSync from "components/pages/DataSync/DataSync";
@@ -65,6 +66,12 @@ var routes = [
         path: "/top-up-list",
         name: "Top Up",
         component: TopUpList,
+        layout: "/admin",
+    },
+    {
+        path: "/translator",
+        name: "Translator",
+        component: Translator,
         layout: "/admin",
     },
     {

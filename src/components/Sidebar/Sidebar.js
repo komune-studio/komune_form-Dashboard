@@ -118,6 +118,12 @@ const SIDEBAR = [
         color: Palette.BARCODE_ORANGE
     },
     {
+        path: "/translator",
+        name: "Translator",
+        icon: "ic:round-translate",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
         path: "/promotion",
         name: "Promotion",
         icon: "mdi:announcement",
@@ -266,7 +272,6 @@ const Sidebar = (props) => {
                             style={{height : 30, objectFit : "contain"}}
                             src={logo}/>
                     </div>
-                    
                     {/* Navigation */}
                     <Nav navbar>{createLinks(routes)}</Nav>
                     {/* Divider */}

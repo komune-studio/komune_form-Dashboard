@@ -68,7 +68,25 @@ const SIDEBAR = [
         name: "User",
         icon: "mdi:user-group",
         color: Palette.BARCODE_ORANGE
-    }, 
+    },
+    {
+        path: "/publishers",
+        name: "Publisher",
+        icon: "mdi:public",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
+        path: "/books",
+        name: "Book",
+        icon: "mdi:book",
+        color: Palette.BARCODE_ORANGE
+    },
+    {
+        path: "/categories",
+        name: "Category",
+        icon: "mdi:category",
+        color: Palette.BARCODE_ORANGE
+    },
     {
         path: "/translator",
         name: "Translator",

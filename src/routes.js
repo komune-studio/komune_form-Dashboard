@@ -22,6 +22,11 @@ import UserList from "./components/pages/Users/UserList";
 import IlustratorList from "components/pages/Ilustrator/IlustratorList";
 import LiteraryAgencyList from "components/pages/LiteraryAgency/LiteraryAgencyList";
 import TranslatorList from "components/pages/Translator/TranslatorList";
+import PublisherList from "components/pages/Publisher/PublisherList";
+import BookList from "components/pages/Book/BookList";
+import BookCreate from "components/pages/Book/BookCreate";
+import BookEdit from "components/pages/Book/BookEdit";
+import CategoryList from "components/pages/Category/CategoryList";
 
 var routes = [
     {
@@ -34,6 +39,36 @@ var routes = [
         path: "/users",
         name: "Users",
         component: UserList,
+        layout: "/admin",
+    },
+    {
+        path: "/publishers",
+        name: "Publisher",
+        component: PublisherList,
+        layout: "/admin",
+    },
+    {
+        path: "/books/create",
+        name: "Book Create",
+        component: BookCreate,
+        layout: "/admin",
+    },
+    {
+        path: "/books/:id/edit",
+        name: "Book",
+        component: BookEdit,
+        layout: "/admin",
+    },
+    {
+        path: "/books",
+        name: "Book",
+        component: BookList,
+        layout: "/admin",
+    },
+    {
+        path: "/categories",
+        name: "Category",
+        component: CategoryList,
         layout: "/admin",
     },
     {

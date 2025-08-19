@@ -12,8 +12,6 @@ import UserFormModal from "./UserFormModal";
 import UserResetPasswordModal from "./UserResetPasswordModal";
 import UserHistoryModal from "./UserHistoryModal";
 import UserLinkChildrenModal from './UserLinkChildrenModal';
-import UserAddPointsModal from './UserAddPointsModal';
-import UserVIPModal from './UserVIPModal';
 import moment from "moment"
 import {CSVLink} from "react-csv";
 
@@ -335,25 +333,6 @@ const UserList = () => {
             await initializeData();
           }
           setOpenLinkChildren(false);
-        }}
-      />
-
-      <UserAddPointsModal
-        isOpen={!!selectedForAddLoyaltyPoints}
-        userData={selectedForAddLoyaltyPoints}
-        handleClose={async () => {
-          setSelectedForAddLoyaltyPoints(null)
-        }}
-      />
-
-      <UserVIPModal
-        isOpen={!!selectedForVIP}
-        userData={selectedForVIP}
-        handleClose={async (refresh) => {
-          if (refresh) {
-            await initializeData();
-          }
-          setSelectedForVIP(null)
         }}
       />
 

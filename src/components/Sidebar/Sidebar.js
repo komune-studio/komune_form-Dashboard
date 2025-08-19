@@ -57,36 +57,6 @@ import Iconify from "../reusable/Iconify";
 import Palette from "../../utils/Palette";
 
 const SIDEBAR = [
-    // {
-    //     path: "/dashboard",
-    //     name: "Dashboard",
-    //     icon: "material-symbols:bar-chart-rounded",
-    //     color : Palette.THEME_YELLOW
-    // },
-    /* {
-        path: "/books",
-        name: "Dashboard",
-        icon: "bxs:book",
-        color : Palette.BARCODE_ORANGE
-    },    
-    {
-        path: "/publishers",
-        name: "Penerbit",
-        icon: "mdi:user-group",
-        color: Palette.BARCODE_ORANGE
-    },
-    {
-        path: "/categories",
-        name: "Kategori",
-        icon: "material-symbols:view-list-rounded",
-        color : Palette.BARCODE_ORANGE
-    }, */
-    {
-        path: "/dashboard",
-        name: "Dashboard",
-        icon: "material-symbols:dashboard",
-        color: Palette.BARCODE_ORANGE
-    },
     {
         path: "/admins",
         name: "Admin",
@@ -98,25 +68,7 @@ const SIDEBAR = [
         name: "User",
         icon: "mdi:user-group",
         color: Palette.BARCODE_ORANGE
-    },
-    {
-        path: "/top-up-history",
-        name: "Top Up",
-        icon: "fluent-mdl2:money",
-        color: Palette.BARCODE_ORANGE
-    },
-    {
-        path: "/schedule",
-        name: "Schedule",
-        icon: "uiw:date",
-        color: Palette.BARCODE_ORANGE
-    },
-    {
-        path: "/loyalty-shop-catalog",
-        name: "Loyalty Shop",
-        icon: "lets-icons:shop",
-        color: Palette.BARCODE_ORANGE
-    },
+    }, 
     {
         path: "/translator",
         name: "Translator",
@@ -135,48 +87,6 @@ const SIDEBAR = [
         icon: "famicons:people",
         color: Palette.BARCODE_ORANGE
     },
-    {
-        path: "/promotion",
-        name: "Promotion",
-        icon: "mdi:announcement",
-        color: Palette.BARCODE_ORANGE
-    },
-    {
-        path: "/orders",
-        name: "Orders",
-        icon: "fluent-mdl2:activate-orders",
-        color: Palette.BARCODE_ORANGE
-    },
-    {
-        path: "/referral",
-        name: "Referral",
-        icon: "material-symbols:partner-exchange-outline-rounded",
-        color: Palette.BARCODE_ORANGE
-    },
-    {
-        path: "/messaging",
-        name: "Notification",
-        icon: "material-symbols:send",
-        color: Palette.BARCODE_ORANGE
-    },
-    {
-        path: "/tournament",
-        name: "Tournament",
-        icon: "mdi:tournament",
-        color: Palette.BARCODE_ORANGE
-    },
-    {
-        path: "/datasync",
-        name: "DataSync",
-        icon: "mdi:database",
-        color: Palette.BARCODE_ORANGE
-    }
-    // {
-    //     path: "/banners",
-    //     name: "Banners",
-    //     icon: "mdi:image-multiple-outline",
-    //     color : Palette.THEME_ORANGE
-    // },
 ]
 
 const Sidebar = (props) => {

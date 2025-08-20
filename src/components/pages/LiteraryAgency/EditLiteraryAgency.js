@@ -1,24 +1,23 @@
 import Modal from 'react-bootstrap/Modal';
 import { Button, Form, Input, message } from "antd";
 import { CloseOutlined } from '@ant-design/icons';
-import { useEffect, useState } from "react";
-import AdminModel from "../../../models/AdminModel";
+import { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import swal from "../../reusable/CustomSweetAlert";
-
-CreateLiteraryAgencyModal.propTypes = {
+EditliteraryAgencyModal.propTypes = {
     close: PropTypes.func,
     isOpen: PropTypes.bool,
+    literaryAgencyData: PropTypes.object
 };
 
 
-export default function CreateLiteraryAgencyModal({ isOpen, close }) {
+export default function EditliteraryAgencyModal({ isOpen, close, literaryAgencyData }) {
     const [form] = Form.useForm();
     const onSubmit = async (values) => {
+        
         try {
             // Still using Admin Model, need to be changed later
-            // let result2 = await AdminModel.create({
-            //     password,
+            // let result2 = await AdminModel.edit(literaryAgencyData?.id, {
             //     username: username,
             // })
             let body = {
@@ -27,29 +26,39 @@ export default function CreateLiteraryAgencyModal({ isOpen, close }) {
                 phone: values.phoneNumber,
                 website: values.website,
             }
-            // console.log("Body's body: ", body)
-            message.success('Berhasil menambahkan Admin')
+            // console.log("body: ", body)
+            message.success('Berhasil menyimpan')
             handleClose(true)
-
-
         } catch (e) {
             console.log(e)
             let errorMessage = "An Error Occured"
             await swal.fire({
                 title: 'Error',
-                text: e.error_message ? e.error_message : "An Error Occured",
+                text: e.error_message ? e.error_message : errorMessage,
                 icon: 'error',
                 confirmButtonText: 'Okay'
             })
         }
-
     }
-
     const handleClose = (refresh) => {
-        form.resetFields();
         close(refresh)
     }
+    
+    const initializeData = () => {
+        if (literaryAgencyData) {
+            form.setFieldsValue({
+                id: literaryAgencyData?.id,
+                name: literaryAgencyData?.name,
+                email: literaryAgencyData?.email,
+                phoneNumber: literaryAgencyData?.phone,
+                website: literaryAgencyData?.website,
+            })
+        }
+    }
 
+    useEffect(() => {
+            initializeData()
+        }, [isOpen])
 
     return <Modal
         show={isOpen}
@@ -57,9 +66,11 @@ export default function CreateLiteraryAgencyModal({ isOpen, close }) {
         keyboard={false}
     >
         <Modal.Header>
-            <Modal.Title>Create Literary Agency</Modal.Title>
+            <Modal.Title>Update Literary Agency</Modal.Title>
             <Button 
-                onClick={handleClose} 
+                onClick={() => {
+                    close()
+                }} 
                 style={{ position: 'relative', top: -5, color: '#fff', fontWeight: 800 }} type="link" shape="circle"
                 icon={<CloseOutlined />} 
             />
@@ -131,7 +142,7 @@ export default function CreateLiteraryAgencyModal({ isOpen, close }) {
                             Cancel
                         </Button>
                         <Button  htmlType="submit" type="primary">
-                            Add
+                            Save
                         </Button>
                     </div>
                 </Form.Item>

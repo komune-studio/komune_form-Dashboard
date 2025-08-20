@@ -1,5 +1,4 @@
 import {Table, Image, Space, Button as AntButton, Tooltip, Modal, message, Input} from 'antd';
-import HeaderNav from "components/Headers/HeaderNav.js";
 import React, {useState, useEffect} from 'react';
 import {Card, Row, CardBody, Container, Button} from "reactstrap";
 import Admin from '../../../models/AdminModel'
@@ -8,8 +7,7 @@ import Iconify from "../../reusable/Iconify";
 import Palette from 'utils/Palette';
 import {InputGroup, Form, Col,} from "react-bootstrap";
 import CustomTable from "../../reusable/CustomTable";
-import swal from "../../reusable/CustomSweetAlert";
-import EditliteraryAgencyModal from './EditTranslatorModal';
+import EditliteraryAgencyModal from './EditLiteraryAgency';
 import CreateLiteraryAgencyModal from './CreateLiteraryAgencyModal';
 
 const LiteraryAgencyList = () => {
@@ -19,76 +17,24 @@ const LiteraryAgencyList = () => {
     const [dataSource, setDataSource] = useState([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [isCreateOpen, setIsCreateOpen] = useState(false)
-    const [selectedAdmin, setSelectedAdmin] = useState(null)
-
-    /* const columns = [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            filter: true,
-            sorter: (a, b) => a.id.length - b.id.length,
-        },
-        {
-            title: 'Nama admin',
-            dataIndex: 'username',
-            filter: true,
-            sorter: (a, b) => a.username.length - b.username.length,
-        },
-        {
-            title: '',
-            key: 'operation',
-            fixed: 'right',
-            width: 100,
-            render: (value) => (
-                <Space size="small">
-                    <Tooltip title="Detail">
-                        <AntButton
-                            onClick={() => {
-                                setSelectedAdmin(value)
-                                setIsEditModalOpen(true)
-
-                            }}
-                            className={"d-flex align-items-center justify-content-center"}
-                            shape="circle"
-                            icon={<Iconify icon={"material-symbols:edit"} />} />
-                    </Tooltip>
-                    <Tooltip title="Ubah kata sandi">
-                        <Link to={"/admin-edit-password/" + value?.id}>
-                        <AntButton
-                            onClick={() => {
-                                setSelectedAdmin(value)
-                                setIsEditPasswordModalOpen(true)
-                            }}
-                            className={"d-flex align-items-center justify-content-center"}
-                            shape="circle"
-                            icon={<Iconify icon={"material-symbols:lock"} />} />
-                        </Link>
-                    </Tooltip>
-                    <Tooltip title="Hapus">
-                        <AntButton
-                            onClick={() => {
-                                onDelete(value.id)
-                            }}
-                            danger
-                            className={"d-flex align-items-center justify-content-center"}
-                            shape="circle"
-                            icon={<Iconify icon={"material-symbols:delete-outline"} />} />
-                    </Tooltip>
-                </Space>
-            ),
-        },
-    ] */
+    const [selectedLiteraryAgency, setselectedLiteraryAgency] = useState(null)
 
     const columns = [
         {
             id: 'id', label: 'ID', filter: false,
         },
         {
-            id: 'username', label: 'Username', filter: true,
+            id: 'name', label: 'Name', filter: true,
         },
-        // {
-        //   id: 'created_at', label: 'Created At', filter: false,
-        // },
+        {
+            id: 'email', label: 'Email', filter: false,
+        },
+        {
+            id: 'phone', label: 'Phone No.', filter: false,
+        },
+        {
+            id: 'website', label: 'Website Link', filter: false,
+        },
         {
             id: '', label: '', filter: false,
             render: ((value) => {
@@ -98,7 +44,7 @@ const LiteraryAgencyList = () => {
                             <Tooltip title="Detail">
                                 <AntButton
                                     onClick={() => {
-                                        setSelectedAdmin(value)
+                                        setselectedLiteraryAgency(value)
                                         setIsEditModalOpen(true)
 
                                     }}
@@ -106,7 +52,8 @@ const LiteraryAgencyList = () => {
                                     style={{color: Palette.MAIN_THEME}}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:edit"}/>}>Ubah</AntButton>
+                                    icon={<Iconify icon={"material-symbols:edit"}/>}>
+                                    </AntButton>
 
                             </Tooltip>
                             <Tooltip title="Hapus">
@@ -118,13 +65,12 @@ const LiteraryAgencyList = () => {
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:delete-outline"}/>}>Hapus</AntButton>
-
+                                    icon={<Iconify icon={"material-symbols:delete-outline"}/>}>
+                                    </AntButton>
                             </Tooltip>
                         </Space>
                     </>
                 )
-
             })
         },
     ]
@@ -154,7 +100,23 @@ const LiteraryAgencyList = () => {
     const initializeData = async () => {
         setLoading(true)
         try {
-            let result = await Admin.getAll()
+            // let result = await Admin.getAll()
+            let result = [
+                {
+                "id": 1,
+                "name": "Budi & Co.",
+                "email": "budicompany@gmail.com",
+                "phone": "0811112222",
+                "website": "budi-and-co.com",
+                },
+                {
+                "id": 2,
+                "name": "Lorex",
+                "email": "lorexcenter@gmail.com",
+                "phone": "0211112222",
+                "website": "Rolex.com",
+                },
+            ]
             console.log(result)
             setDataSource(result)
             setLoading(false)
@@ -186,36 +148,22 @@ const LiteraryAgencyList = () => {
                                     size={'middle'} 
                                     type={'primary'}
                                 >
-                                    Tambah Admin
+                                    Add Literary Agency
                                 </AntButton>
                             </Col>
                         </Row>
-
-
-                        {/* <CustomTableOld
-                            toolBar={<Button size={'sm'} onClick={() => {
-                                setIsCreateAdminOpen(true)
-                            }} color="primary" style={{ float: 'right' }}>Buat baru</Button>}
-                            loading={loading} columns={columns}
-                            dataSource={dataSource}
-                        /> */}
-
                         <CustomTable
-
                             pagination={false}
                             searchText={''}
                             data={dataSource}
                             columns={columns}
                         />
-
-
                     </CardBody>
                 </Card>
 
             </Container>
             <CreateLiteraryAgencyModal
                 isOpen={isCreateOpen}
-                literaryAgencyList={dataSource}
                 close={async (refresh) => {
                     if (refresh) {
                         await initializeData()
@@ -225,13 +173,13 @@ const LiteraryAgencyList = () => {
             />
             {isEditModalOpen ? <EditliteraryAgencyModal
                 isOpen={isEditModalOpen}
-                literaryAgencyData={selectedAdmin}
+                literaryAgencyData={selectedLiteraryAgency}
                 close={(refresh) => {
                     if (refresh) {
                         initializeData()
                     }
                     setIsEditModalOpen(false)
-                    setSelectedAdmin(null)
+                    setselectedLiteraryAgency(null)
                 }}
             /> : ''}
         </>

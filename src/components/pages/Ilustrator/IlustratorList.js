@@ -18,7 +18,7 @@ const IlustratorList = () => {
     const [dataSource, setDataSource] = useState([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [isCreateOpen, setIsCreateOpen] = useState(false)
-    const [selectedAdmin, setSelectedAdmin] = useState(null)
+    const [selectedIlustrator, setSelectedIlustrator] = useState(null)
 
     const columns = [
         {
@@ -48,7 +48,7 @@ const IlustratorList = () => {
                             <Tooltip title="Detail">
                                 <AntButton
                                     onClick={() => {
-                                        setSelectedAdmin(value)
+                                        setSelectedIlustrator(value)
                                         setIsEditModalOpen(true)
                                     }}
                                     type={'link'}
@@ -57,7 +57,6 @@ const IlustratorList = () => {
                                     shape="circle"
                                     icon={<Iconify icon={"material-symbols:edit"}/>}
                                 >
-                                    Ubah
                                 </AntButton>
                             </Tooltip>
                             <Tooltip title="Hapus">
@@ -71,7 +70,6 @@ const IlustratorList = () => {
                                     shape="circle"
                                     icon={<Iconify icon={"material-symbols:delete-outline"}/>}
                                 >
-                                    Hapus
                                 </AntButton>
                             </Tooltip>
                         </Space>
@@ -113,7 +111,7 @@ const IlustratorList = () => {
                 "id": 1,
                 "name": "Budi kreatfi",
                 "email": "budikreatfi@gmail.com",
-                "phone_number": "321 Pine Rd, Ogdenville",
+                "phone_number": "0811112222",
                 "created_at": "today",
                 "modified_at": "today",
                 },
@@ -121,7 +119,7 @@ const IlustratorList = () => {
                 "id": 2,
                 "name": "Susi kreatfi",
                 "email": "susikreatfi@gmail.com",
-                "phone_number": "123 Pine Rd, Ogdenville",
+                "phone_number": "0822221111",
                 "created_at": "today",
                 "modified_at": "today",
                 },
@@ -156,7 +154,7 @@ const IlustratorList = () => {
                                     size={'middle'} 
                                     type={'primary'}
                                 >
-                                    Tambah Admin
+                                    Add Ilustrator
                                 </AntButton>
                             </Col>
                         </Row>
@@ -172,7 +170,6 @@ const IlustratorList = () => {
             </Container>
             <CreateIlustratorModal
                 isOpen={isCreateOpen}
-                ilustratorList={dataSource}
                 close={async (refresh) => {
                     if (refresh) {
                         await initializeData()
@@ -182,13 +179,13 @@ const IlustratorList = () => {
             />
             {isEditModalOpen ? <EditIlustratorModal
                 isOpen={isEditModalOpen}
-                ilustratorData={selectedAdmin}
+                ilustratorData={selectedIlustrator}
                 close={(refresh) => {
                     if (refresh) {
                         initializeData()
                     }
                     setIsEditModalOpen(false)
-                    setSelectedAdmin(null)
+                    setSelectedIlustrator(null)
                 }}
             /> : ''}
         </>

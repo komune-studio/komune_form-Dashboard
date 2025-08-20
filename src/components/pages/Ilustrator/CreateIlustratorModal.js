@@ -1,25 +1,18 @@
 import Modal from 'react-bootstrap/Modal';
 import { Button, Form, Input, message } from "antd";
-import FileUpload from "../../reusable/FileUpload";
-import Swal from "sweetalert2";
+import { CloseOutlined } from '@ant-design/icons';
 import { useEffect, useState } from "react";
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import UploadModel from "../../../models/UploadModel";
-import AdminModel from "../../../models/AdminModel";
-
 import PropTypes from "prop-types";
-import Iconify from "../../reusable/Iconify";
 import swal from "../../reusable/CustomSweetAlert";
-import LoadingButton from "../../reusable/LoadingButton";
+
 
 CreateIlustratorModal.propTypes = {
     close: PropTypes.func,
     isOpen: PropTypes.bool,
-    ilustratorList: PropTypes.object
 };
 
 
-export default function CreateIlustratorModal({ isOpen, itemId, close, ilustratorList }) {
+export default function CreateIlustratorModal({ isOpen, itemId, close }) {
     const [form] = Form.useForm();
 
     const onSubmit = async (values) => {
@@ -52,8 +45,8 @@ export default function CreateIlustratorModal({ isOpen, itemId, close, ilustrato
         }
     }
 
-    const handleClose = () => {
-        close();
+    const handleClose = (refresh) => {
+        close(refresh);
         form.resetFields();
     }
 
@@ -64,6 +57,11 @@ export default function CreateIlustratorModal({ isOpen, itemId, close, ilustrato
     >
         <Modal.Header>
             <Modal.Title>Buat Translator</Modal.Title>
+            <Button 
+                onClick={handleClose} 
+                style={{ position: 'relative', top: -5, color: '#fff', fontWeight: 800 }} type="link" shape="circle"
+                icon={<CloseOutlined />} 
+            />
         </Modal.Header>
         <Modal.Body>
             <Form
@@ -121,10 +119,10 @@ export default function CreateIlustratorModal({ isOpen, itemId, close, ilustrato
                 <Form.Item>
                     <div className={"d-flex flex-row justify-content-end"}>
                         <Button  variant="outline-danger" onClick={handleClose} style={{ marginRight: '5px' }}>
-                            Batal
+                            Cancel
                         </Button>
                         <Button  htmlType="submit" type="primary">
-                            Buat
+                            Add
                         </Button>
                     </div>
                 </Form.Item>

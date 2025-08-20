@@ -24,7 +24,7 @@ export default function EditIlustratorModal({ isOpen, itemId, close, ilustratorD
             //     username: username,
             // })
             console.log("Body's body: ", body)
-            message.success('Berhasil menyimpan data.')
+            message.success('Successfully updated Illustrator')
             handleClose(true)
         } catch (e) {
             console.log(e)
@@ -87,7 +87,7 @@ export default function EditIlustratorModal({ isOpen, itemId, close, ilustratorD
                 rules={[
                     {
                         required: true,
-                        message: 'Mohon memasukkan nama!',
+                        // message: 'Mohon memasukkan nama!',
                     },
                 ]}
             >
@@ -99,11 +99,11 @@ export default function EditIlustratorModal({ isOpen, itemId, close, ilustratorD
                 rules={[
                     {
                         required: true,
-                        message: 'Mohon memasukkan email!',
+                        // message: 'Mohon memasukkan email!',
                     },
                     {
                         type: 'email',
-                        message: 'Email tidak valid.',
+                        message: 'Please enter a valid email.',
                     },
                 ]}
             >
@@ -115,11 +115,11 @@ export default function EditIlustratorModal({ isOpen, itemId, close, ilustratorD
                 rules={[
                     {
                         required: true,
-                        message: 'Mohon memasukkan Nomor HP!',
+                        // message: 'Mohon memasukkan Nomor HP!',
                     },
                     {
                         pattern: /^[0-9]+$/,
-                        message: 'Nomor HP hanya bisa angka.',
+                        message: 'Phone Number can only include numbers',
                     },
                 ]}
             >

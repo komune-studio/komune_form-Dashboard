@@ -97,6 +97,7 @@ export default function PublisherFormModal({ isOpen, close, isNewRecord, publish
                 form={form}
                 onFinish={onSubmit}
                 validateTrigger="onSubmit"
+                autoComplete="off"
             >
                 <Form.Item
                     label={"Name"}
@@ -105,44 +106,44 @@ export default function PublisherFormModal({ isOpen, close, isNewRecord, publish
                         required: true,
                     }]}
                 >
-                    <Input />
+                    <Input variant='filled' />
                 </Form.Item>
                 <Form.Item
                     label={"Address"}
                     name={"address"}
                 >
-                    <Input />
+                    <Input variant='filled' />
                 </Form.Item>
                 <Form.Item
-                    label={"Phone"}
+                    label={"Phone Number"}
                     name={"phone"}
                     rules={[
                         {
                             pattern: /^[0-9]+$/g,
-                            message: "Invalid phone format"
+                            message: "Phone Number can only include numbers"
                         }
                     ]}
                 >
-                    <Input />
+                    <Input variant='filled' />
                 </Form.Item>
                 <Form.Item
                     label={"Email"}
                     name={"email"}
                     rules={[
                         {
-                            pattern: /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/g,
-                            message: "Invalid email format"
+                            type: "email",
+                            message: "Please enter a valid email"
                         }
                     ]}
                 >
-                    <Input/>
+                    <Input variant='filled' />
                 </Form.Item>
 
                 <div className={"d-flex flex-row justify-content-end"}>
                     <Form.Item>
                         <Button className={'text-white'} type={'link'} size="sm" variant="outline-danger"
                             onClick={() => handleClose()} style={{ marginRight: '5px' }}>
-                            Batal
+                            Cancel
                         </Button>
                     </Form.Item>
                     <Form.Item>
@@ -152,64 +153,6 @@ export default function PublisherFormModal({ isOpen, close, isNewRecord, publish
                     </Form.Item>
                 </div>
             </Form>
-            {/* <Flex vertical gap={8} className="mb-3">
-                <Form.Label style={{ fontSize: "0.8em" }}>Name</Form.Label>
-                <Form.Control
-                    value={formData.name}
-                    autoComplete={"name"}
-                    onChange={(e) => setFormData({
-                        ...formData,
-                        name: e.target.value
-                    })} 
-                    type="text" placeholder="Name" />
-            </Flex>
-            <Flex vertical gap={8} className="mb-3">
-                <Form.Label style={{ fontSize: "0.8em" }}>Address</Form.Label>
-                <Form.Control
-                    value={formData.address}
-                    autoComplete={"address"}
-                    onChange={(e) => setFormData({
-                        ...formData,
-                        address: e.target.value
-                    })} 
-                    type="text" placeholder="Address" />
-            </Flex>
-            <Flex vertical gap={8} className="mb-3">
-                <Form.Label style={{ fontSize: "0.8em" }}>Phone</Form.Label>
-                <Form.Control
-                    value={formData.phone}
-                    autoComplete={"phone"}
-                    pattern=''
-                    onChange={(e) => setFormData({
-                        ...formData,
-                        phone: e.target.value
-                    })} 
-                    type="text" placeholder="Phone" />
-            </Flex>
-            <Flex vertical gap={8} className="mb-3">
-                <Form.Label style={{ fontSize: "0.8em" }}>Email</Form.Label>
-                <Form.Control
-                    value={formData.email}
-                    autoComplete={"email"}
-                    pattern=''
-                    onChange={(e) => setFormData({
-                        ...formData,
-                        email: e.target.value
-                    })} 
-                    type="email" placeholder="Email" />
-            </Flex>
-
-            <div className={"d-flex flex-row justify-content-end"}>
-                <Button className={'text-white'} type={'link'} size="sm" variant="outline-danger"
-                    onClick={() => handleClose()} style={{ marginRight: '5px' }}>
-                    Cancel
-                </Button>
-                <Button type={'primary'} size="sm" variant="primary" onClick={() => {
-                    onSubmit()
-                }}>
-                    {isNewRecord ? 'Add' : 'Save'}
-                </Button>
-            </div> */}
         </Modal.Body>
     </Modal>
 }

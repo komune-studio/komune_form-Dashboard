@@ -139,35 +139,10 @@ const CategoryList = () => {
                 <div style={{ fontWeight: "bold", fontSize: "1.1em" }}>Categories</div>
               </Col>
               <Col className='mb-3 text-right' md={6}>
-                <CSVLink
-                  headers={[
-                    { label: "Name", key: "name" },
-                    { label: "Address", key: "address" },
-                    { label: "Website", key: "website" },
-                  ]}
-                  filename={
-                    "Category Data - " +
-                    new moment().format("dddd, MMMM Do YYYY, HH:mm") +
-                    ".csv"
-                  }
-                  data={dataSource.map(obj => {
-                    // console.log("DDSS", dataSource)
-                    return {
-                      ...obj,
-                      name: obj.name,
-                      description: obj.description
-                    }
-                  })}
-                >
-                  <AntButton className={"mr-1 bg-transparent text-white"}>
-                    <Iconify icon={"mdi:download"}></Iconify> Export
-                  </AntButton>
-                </CSVLink>
-
                 <AntButton onClick={() => {
                   setIsNewRecord(true)
                   setOpenCateogryModal(true)
-                }} size={'middle'} type={'primary'} style={{ border: "1px solid #ef6024" }}>Add Category</AntButton>
+                }} size={'middle'} type={'primary'}>Add Category</AntButton>
               </Col>
             </Row>
             <Row>

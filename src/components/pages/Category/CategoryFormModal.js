@@ -94,6 +94,7 @@ export default function CategoryFormModal({ isOpen, close, isNewRecord, category
                 form={form}
                 onFinish={onSubmit}
                 validateTrigger="onSubmit"
+                autoComplete='off'
             >
                 <Form.Item
                     label={"Name"}
@@ -102,20 +103,20 @@ export default function CategoryFormModal({ isOpen, close, isNewRecord, category
                         required: true,
                     }]}
                 >
-                    <Input />
+                    <Input variant='filled' />
                 </Form.Item>
                 <Form.Item
                     label={"Description"}
                     name={"description"}
                 >
-                    <Input.TextArea />
+                    <Input.TextArea variant='filled' />
                 </Form.Item>
 
                 <div className={"d-flex flex-row justify-content-end"}>
                     <Form.Item>
                         <Button className={'text-white'} type={'link'} size="sm" variant="outline-danger"
                             onClick={() => handleClose()} style={{ marginRight: '5px' }}>
-                            Batal
+                            Cancel
                         </Button>
                     </Form.Item>
                     <Form.Item>

@@ -26,7 +26,7 @@ export default function EditTranslatorModal({ isOpen, close, translatorData }) {
             //     username: username,
             // })
             // console.log("body: ", body)
-            message.success('Berhasil menyimpan')
+            message.success('Successfully updated Translator')
             handleClose(true)
         } catch (e) {
             console.log(e)
@@ -91,7 +91,7 @@ export default function EditTranslatorModal({ isOpen, close, translatorData }) {
                         rules={[
                             {
                                 required: true,
-                                message: 'Mohon memasukkan nama!',
+                                // message: 'Mohon memasukkan nama!',
                             },
                         ]}
                     >
@@ -103,11 +103,11 @@ export default function EditTranslatorModal({ isOpen, close, translatorData }) {
                         rules={[
                             {
                                 required: true,
-                                message: 'Mohon memasukkan email!',
+                                // message: 'Mohon memasukkan email!',
                             },
                             {
                                 type: 'email',
-                                message: 'Email tidak valid.',
+                                message: 'Please enter a valid email',
                             },
                         ]}
                     >
@@ -119,7 +119,11 @@ export default function EditTranslatorModal({ isOpen, close, translatorData }) {
                         rules={[
                             {
                                 required: true,
-                                message: 'Mohon memasukkan Nomor HP.',
+                                // message: 'Mohon memasukkan Nomor HP.',
+                            },
+                            {
+                                pattern: /^[0-9]+$/,
+                                message: 'Phone Number can only include numbers',
                             },
                         ]}
                     >

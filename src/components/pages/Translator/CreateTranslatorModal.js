@@ -27,7 +27,7 @@ export default function CreateTranslatorModal({ isOpen, close }) {
                 languages: values.languages,
             }
             // console.log("Body's body: ", body)
-            message.success('Berhasil menambahkan Admin')
+            message.success('Successfully created Translator')
             handleClose(true)
 
 
@@ -36,7 +36,7 @@ export default function CreateTranslatorModal({ isOpen, close }) {
             let errorMessage = "An Error Occured"
             await swal.fire({
                 title: 'Error',
-                text: e.error_message ? e.error_message : "An Error Occured",
+                text: e.error_message ? e.error_message : errorMessage,
                 icon: 'error',
                 confirmButtonText: 'Okay'
             })
@@ -72,12 +72,12 @@ export default function CreateTranslatorModal({ isOpen, close }) {
                 validateTrigger= "onSubmit"
             >
                 <Form.Item
-                    label="Nama"
+                    label="Name"
                     name="name"
                     rules={[
                         {
                             required: true,
-                            message: 'Mohon memasukkan nama!',
+                            // message: 'Mohon memasukkan nama!',
                         },
                     ]}
                 >
@@ -89,11 +89,11 @@ export default function CreateTranslatorModal({ isOpen, close }) {
                     rules={[
                         {
                             required: true,
-                            message: 'Mohon memasukkan email!',
+                            // message: 'Mohon memasukkan email!',
                         },
                         {
                             type: 'email',
-                            message: 'Email tidak valid.',
+                            message: 'Please enter a valid email',
                         },
                     ]}
                 >
@@ -105,7 +105,11 @@ export default function CreateTranslatorModal({ isOpen, close }) {
                     rules={[
                         {
                             required: true,
-                            message: 'Mohon memasukkan Nomor HP.',
+                            // message: 'Mohon memasukkan Nomor HP.',
+                        },
+                        {
+                            pattern: /^[0-9]+$/,
+                            message: 'Phone Number can only include numbers',
                         },
                     ]}
                 >
@@ -117,7 +121,7 @@ export default function CreateTranslatorModal({ isOpen, close }) {
                     rules={[
                         {
                             required: true,
-                            message: 'Mohon memasukkan bahasa.',
+                            // message: 'Mohon memasukkan bahasa.',
                         },
                     ]}
                 >

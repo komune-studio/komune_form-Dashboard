@@ -146,38 +146,10 @@ const PublisherList = () => {
                 <div style={{ fontWeight: "bold", fontSize: "1.1em" }}>Publisher</div>
               </Col>
               <Col className='mb-3 text-right' md={6}>
-                <CSVLink
-                  headers={[
-                    { label: "Name", key: "name" },
-                    { label: "Address", key: "address" },
-                    { label: "Phone", key: "address" },
-                    { label: "Email", key: "address" },
-                  ]}
-                  filename={
-                    "Publisher Data - " +
-                    new moment().format("dddd, MMMM Do YYYY, HH:mm") +
-                    ".csv"
-                  }
-                  data={dataSource.map(obj => {
-                    // console.log("DDSS", dataSource)
-                    return {
-                      ...obj,
-                      name: obj.name,
-                      address: obj.address,
-                      phone: obj.phone,
-                      email: obj.email,
-                    }
-                  })}
-                >
-                  <AntButton className={"mr-1 bg-transparent text-white"}>
-                    <Iconify icon={"mdi:download"}></Iconify> Export
-                  </AntButton>
-                </CSVLink>
-
                 <AntButton onClick={() => {
                   setIsNewRecord(true)
                   setOpenPublisherModal(true)
-                }} size={'middle'} type={'primary'} style={{ border: "1px solid #ef6024" }}>Add Publisher</AntButton>
+                }} size={'middle'} type={'primary'}>Add Publisher</AntButton>
               </Col>
             </Row>
             <Row>

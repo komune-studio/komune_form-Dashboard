@@ -131,7 +131,7 @@ const LiteraryAgencyList = () => {
 
     return (
         <>
-            <Container fluid style={{minHeight: "90vh"}}>
+            <Container fluid>
                 <Card style={{background: Palette.BACKGROUND_DARK_GRAY, color: "white"}}
                       className="card-stats mb-4 mb-xl-0">
                     <CardBody>
@@ -153,6 +153,7 @@ const LiteraryAgencyList = () => {
                             </Col>
                         </Row>
                         <CustomTable
+                            showFilter={true}
                             pagination={false}
                             searchText={''}
                             data={dataSource}

@@ -27,7 +27,7 @@ export default function EditliteraryAgencyModal({ isOpen, close, literaryAgencyD
                 website: values.website,
             }
             // console.log("body: ", body)
-            message.success('Berhasil menyimpan')
+            message.success('Successfully updated Literary Agency')
             handleClose(true)
         } catch (e) {
             console.log(e)
@@ -90,7 +90,7 @@ export default function EditliteraryAgencyModal({ isOpen, close, literaryAgencyD
                     rules={[
                         {
                             required: true,
-                            message: 'Mohon memasukkan nama!',
+                            // message: 'Mohon memasukkan nama!',
                         },
                     ]}
                 >
@@ -102,11 +102,11 @@ export default function EditliteraryAgencyModal({ isOpen, close, literaryAgencyD
                     rules={[
                         {
                             required: true,
-                            message: 'Mohon memasukkan email!',
+                            // message: 'Mohon memasukkan email!',
                         },
                         {
                             type: 'email',
-                            message: 'Email tidak valid.',
+                            message: 'Please enter a valid email',
                         },
                     ]}
                 >
@@ -118,7 +118,11 @@ export default function EditliteraryAgencyModal({ isOpen, close, literaryAgencyD
                     rules={[
                         {
                             required: true,
-                            message: 'Mohon memasukkan Nomor HP.',
+                            // message: 'Mohon memasukkan Nomor HP.',
+                        },
+                        {
+                            pattern: /^[0-9]+$/,
+                            message: 'Phone Number can only include numbers',
                         },
                     ]}
                 >
@@ -130,7 +134,7 @@ export default function EditliteraryAgencyModal({ isOpen, close, literaryAgencyD
                     rules={[
                         {
                             required: true,
-                            message: 'Mohon memasukkan website link.',
+                            // message: 'Mohon memasukkan website link.',
                         },
                     ]}
                 >

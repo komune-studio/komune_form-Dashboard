@@ -29,7 +29,7 @@ import "./App.css"
 import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
 
-import {ConfigProvider} from "antd";
+import {ConfigProvider, theme} from "antd";
 import Palette from "./utils/Palette";
 
 export default function (props) {

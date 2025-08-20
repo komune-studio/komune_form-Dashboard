@@ -56,7 +56,7 @@ export default function CreateIlustratorModal({ isOpen, itemId, close }) {
         keyboard={false}
     >
         <Modal.Header>
-            <Modal.Title>Buat Translator</Modal.Title>
+            <Modal.Title>Create Ilustrator</Modal.Title>
             <Button 
                 onClick={handleClose} 
                 style={{ position: 'relative', top: -5, color: '#fff', fontWeight: 800 }} type="link" shape="circle"

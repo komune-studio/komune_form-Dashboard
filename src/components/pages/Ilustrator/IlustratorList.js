@@ -34,12 +34,6 @@ const IlustratorList = () => {
             id: 'phone_number', label: 'Phone No.', filter: false,
         },
         {
-            id: 'created_at', label: 'Created At', filter: false,
-        },
-        {
-            id: 'modified_at', label: 'Modified At', filter: false,
-        },
-        {
             id: '', label: '', filter: false,
             render: ((value) => {
                 return (
@@ -112,16 +106,12 @@ const IlustratorList = () => {
                 "name": "Budi kreatfi",
                 "email": "budikreatfi@gmail.com",
                 "phone_number": "0811112222",
-                "created_at": "today",
-                "modified_at": "today",
                 },
                 {
                 "id": 2,
                 "name": "Susi kreatfi",
                 "email": "susikreatfi@gmail.com",
                 "phone_number": "0822221111",
-                "created_at": "today",
-                "modified_at": "today",
                 },
             ]
             console.log(result)

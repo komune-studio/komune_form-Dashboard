@@ -38,9 +38,6 @@ const TranslatorList = () => {
             id: 'languages', label: 'Languages', filter: false,
         },
         {
-            id: 'created_at', label: 'Created At', filter: false,
-        },
-        {
             id: '', label: '', filter: false,
             render: ((value) => {
                 return (
@@ -116,7 +113,6 @@ const TranslatorList = () => {
                 "email": "budikraetif@gmail.com",
                 "phone": "0811112222",
                 "languages": "English, Indonesia",
-                "created_at": "today",
                 },
                 {
                 "id": 2,
@@ -124,7 +120,6 @@ const TranslatorList = () => {
                 "email": "budichungf@gmail.com",
                 "phone": "0811112223",
                 "languages": "Mandarin, Indonesia",
-                "created_at": "today",
                 },
             ]
             console.log(result)

@@ -1,9 +1,8 @@
 import Modal from 'react-bootstrap/Modal';
-import {Button, DatePicker, message, Spin, Upload as AntUpload, Flex} from "antd";
-import {Form} from 'react-bootstrap';
-import {useEffect, useState} from "react";
+import { Button, DatePicker, message, Spin, Flex, Form, Input, Select } from "antd";
+import { useEffect, useState } from "react";
 import UserModel from "../../../models/UserModel";
-import {CloseOutlined, PlusOutlined} from '@ant-design/icons';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import PropTypes from "prop-types";
 import swal from "../../reusable/CustomSweetAlert";
 import moment from "moment/moment";
@@ -17,7 +16,7 @@ UserFormModal.propTypes = {
 };
 
 
-export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
+export default function UserFormModal({ isOpen, close, isNewRecord, userData }) {
     const [username, setUsername] = useState(null)
     const [password, setPassword] = useState(null)
     const [email, setEmail] = useState(null)
@@ -27,6 +26,13 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
     const [phoneNumber, setPhoneNumber] = useState(null)
     const [confirmPassword, setConfirmPassword] = useState("")
     const [avatarImage, setAvatarImage] = useState(null)
+    const [form] = Form.useForm()
+
+    const userRoles = [
+        { label: "Admin", value: "ADMIN" },
+        { label: "Super Admin", value: "SUPERADMIN" },
+    ];
+
     const [loadingUpload, setLoadingUpload] = useState(false)
 
 
@@ -47,62 +53,19 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
         }
     }
     const onSubmit = async () => {
-        if (!username) {
-            swal.fireError({text: "Username Wajib diisi",})
-            return
-        }
-
-        if (!username) {
-            swal.fireError({text: "Username Wajib diisi",})
-            return
-        }
-        // if (!fullName) {
-        //     swal.fireError({text: "Nama Lengkap Wajib diisi",})
-        //     return
-        // }
-        if (!email) {
-            swal.fireError({text: "Email Wajib diisi",})
-            return
-        }
-        // if (!phoneNumber) {
-        //     swal.fireError({text: "Nomor Telepon Wajib diisi",})
-        //     return
-        // }
-
         try {
             let result;
-            let body = {
-                username: username,
-                gender: gender,
-                full_name: fullName,
-                email: email,
-                phone_number: phoneNumber,
-                birth_date: new Date(birthDate),
-                avatar_url: avatarImage
-            }
+            let body = form.getFieldsValue();
             let msg = ''
+                console.log(body)
             if (isNewRecord) {
-                if (!password) {
-                    swal.fireError({text: "Password Wajib diisi",})
-                    return
-                }
-
-                if (!confirmPassword) {
-                    swal.fireError({text: "Konfirmasi Password Wajib diisi",})
-                    return
-                }
-
-                if (password !== confirmPassword) {
-                    swal.fireError({text: "Password dan Konfirmasi Password tidak sama",})
-                    return
-                }
-                Object.assign(body, {
-                    password: password
-                })
-                await UserModel.create(body)
+                // Object.assign(body, {
+                //     password: password
+                // })
+                // await UserModel.create(body)
                 msg = "Berhasil membuat User"
             } else {
-                await UserModel.edit(userData?.id, body)
+                // await UserModel.edit(userData?.id, body)
                 msg = "Berhasil update User"
             }
 
@@ -113,7 +76,7 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
             let errorMessage = "An Error Occured"
             await swal.fire({
                 title: 'Error',
-                text: e.error_message ? e.error_message : "An Error Occured",
+                text: e.error_message ? e.error_message : errorMessage,
                 icon: 'error',
                 confirmButtonText: 'Okay'
             })
@@ -128,13 +91,10 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
     const initForm = () => {
         console.log('isi userData', userData)
         if (!isNewRecord) {
-            setUsername(userData?.username)
-            setBirthDate(moment(userData?.birth_date) || null)
-            setEmail(userData?.email)
-            setGender(userData?.gender)
-            setFullName(userData?.full_name)
-            setPhoneNumber(userData?.phone_number)
-            setAvatarImage(userData?.avatar_url)
+            form.setFieldsValue({
+                username: userData?.username,
+                role: userData?.role,
+            })
         }
 
     }
@@ -149,15 +109,7 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
     }, [isOpen])
 
     const reset = () => {
-        setUsername("")
-        setPassword("")
-        setConfirmPassword("")
-        setFullName("")
-        setEmail("")
-        setPhoneNumber("")
-        setGender(null)
-        setAvatarImage(null)
-        setBirthDate(null)
+        form.resetFields();
     }
 
     return <Modal
@@ -170,109 +122,87 @@ export default function UserFormModal({isOpen, close, isNewRecord, userData}) {
                 <Modal.Title>{isNewRecord ? 'Buat User' : `Ubah User`}</Modal.Title>
                 <Button onClick={() => {
                     close()
-                }} style={{position: 'relative', top: -5, color: '#fff', fontWeight: 800}} type="link" shape="circle"
-                        icon={<CloseOutlined/>}/>
+                }} style={{ position: 'relative', top: -5, color: '#fff', fontWeight: 800 }} type="link" shape="circle"
+                    icon={<CloseOutlined />} />
             </div>
         </Modal.Header>
         <Modal.Body>
-            <Flex vertical gap={8}  className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Username</Form.Label>
-                <Form.Control
-                    value={username}
-                    autoComplete={"username"}
-                    onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Username"/>
-            </Flex>
-            <Flex vertical gap={8}  className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Full Name</Form.Label>
-                <Form.Control
-                    value={fullName}
-                    autoComplete={"fullname"}
-                    onChange={(e) => setFullName(e.target.value)} type="text" placeholder="Fullname"/>
-            </Flex>
+            <Form
+                layout='vertical'
+                form={form}
+                onFinish={onSubmit}
+                validateTrigger="onSubmit"
+                autoComplete="off"
+            >
+                <Form.Item
+                    label={"Username"}
+                    name={"username"}
+                    rules={[{
+                        required: true,
+                    }]}
+                >
+                    <Input variant='filled' />
+                </Form.Item>
+                <Form.Item
+                    label={"Role"}
+                    name={"role"}
+                    rules={[{
+                        required: true,
+                    }]}
+                >
+                    <Select variant='filled' options={userRoles} />
+                </Form.Item>
+                {isNewRecord ? (
+                    <>
+                        <Form.Item
+                            label={"Password"}
+                            name={"password"}
+                            rules={[{
+                                required: true,
+                            }]}
+                        >
+                            <Input.Password variant='filled' />
+                        </Form.Item>
+                        <Form.Item
+                            label={"Confirm Password"}
+                            name={"confirm_password"}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: ""
+                                },
+                                {
+                                    validator: async (_, value) => {
+                                        if(!form.getFieldValue("password")) return Promise.reject("Please enter Password");
+                                        if(!value) return Promise.reject("Please confirm your password");
+                                        if(value !== form.getFieldValue("password")) {
+                                            return Promise.reject("Password confirmation does not match")
+                                        }
+                                    }
+                                }
+                            ]}
+                        >
+                            <Input.Password variant='filled' />
+                        </Form.Item>
+                    </>
+                ) : (
+                    <></>
+                )}
 
-            <Flex vertical gap={8}  className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Email</Form.Label>
-                <Form.Control
-                    value={email}
-                    autoComplete={"email"}
-                    onChange={(e) => setEmail(e.target.value)} type="text" placeholder="Email"/>
-            </Flex>
-            <Flex vertical gap={8}  className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Phone Number</Form.Label>
-                <Form.Control
-                    value={phoneNumber}
-                    autoComplete={"email"}
-                    onChange={(e) => setPhoneNumber(e.target.value)} type="text" placeholder="Phone Number"/>
-            </Flex>
-            <Flex vertical gap={8}  className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Gender</Form.Label>
-                <Form.Check
-                    value={'M'}
-                    type="radio"
-                    aria-label="Male"
-                    label="Male"
-                    onChange={(e) => {
-                        setGender(e.target.value)
-                    }}
-                    checked={gender === "M"}
-                />
-                <Form.Check
-                    value={'F'}
-                    type="radio"
-                    aria-label="Female"
-                    label="Female"
-                    onChange={(e) => {
-                        setGender(e.target.value)
-                    }}
-                    checked={gender === "F"}
-                />
-            </Flex>
-
-            <Flex vertical gap={8}  className="mb-3">
-                <Form.Label style={{fontSize: "0.8em"}}>Tanggal Lahir</Form.Label>
-                <DatePicker
-                    getPopupContainer={(triggerNode) => {
-                        return triggerNode.parentNode;
-                    }}
-                    style={{width: "100%"}}
-                    value={birthDate}
-                    onChange={(value) => {
-                        setBirthDate(value)
-                    }}
-                />
-            </Flex>
-
-            {
-                isNewRecord &&
-                <>
-                    <Flex vertical gap={8}  className="mb-3">
-                        <Form.Label style={{fontSize: "0.8em"}}>Password</Form.Label>
-                        <Form.Control
-                            autoComplete={"password"}
-                            onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password"/>
-                    </Flex>
-
-                    <Flex vertical gap={8}  className="mb-3">
-                        <Form.Label style={{fontSize: "0.8em"}}>Confirm Password</Form.Label>
-                        <Form.Control
-                            autoComplete={"confirm-password"}
-                            onChange={(e) => setConfirmPassword(e.target.value)} type="password"
-                            placeholder="Password"/>
-                    </Flex>
-                </>
-            }
-
-            <div className={"d-flex flex-row justify-content-end"}>
-                <Button className={'text-white'} type={'link'} size="sm" variant="outline-danger"
-                        onClick={() => handleClose()} style={{marginRight: '5px'}}>
-                    Batal
-                </Button>
-                <Button type={'primary'} size="sm" variant="primary" onClick={() => {
-                    onSubmit()
-                }}>
-                    {isNewRecord ? 'Simpan' : 'Ubah'}
-                </Button>
-            </div>
+                <div className={"d-flex flex-row justify-content-end"}>
+                    <Form.Item>
+                        <Button className={'text-white'} type={'link'} size="sm" variant="outline-danger"
+                            onClick={() => handleClose()} style={{ marginRight: '5px' }}>
+                            Cancel
+                        </Button>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button size="sm" type='primary' variant="primary" htmlType='submit'>
+                            {isNewRecord ? 'Add' : 'Save'}
+                        </Button>
+                    </Form.Item>
+                </div>
+            </Form>
         </Modal.Body>
     </Modal>
 }

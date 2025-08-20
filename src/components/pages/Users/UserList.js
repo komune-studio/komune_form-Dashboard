@@ -10,8 +10,6 @@ import CustomTable from "../../reusable/CustomTable";
 import Palette from "../../../utils/Palette";
 import UserFormModal from "./UserFormModal";
 import UserResetPasswordModal from "./UserResetPasswordModal";
-import UserHistoryModal from "./UserHistoryModal";
-import UserLinkChildrenModal from './UserLinkChildrenModal';
 import moment from "moment"
 import {CSVLink} from "react-csv";
 
@@ -24,67 +22,26 @@ const UserList = () => {
   const [openUserModal, setOpenUserModal] = useState(false)
   const [isNewRecord, setIsNewRecord] = useState(false)
   const [openUserResetModal, setOpenUserResetModal] = useState(false)
-  const [openHistory, setOpenHistory] = useState(false)
-  const [openLinkChildren, setOpenLinkChildren] = useState(false)
-
-  const [selectedForAddLoyaltyPoints, setSelectedForAddLoyaltyPoints] = useState(null)
-  const [selectedForVIP, setSelectedForVIP] = useState(null)
 
   const columns = [
     {
       id: 'id', label: 'ID', filter: false,
     },
     {
-      id: 'username', label: 'Username', filter: true,
-      render: (value) => {
-        return <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-start"}}>
-          <div style={{marginRight: 5}}>{value?.username}</div>
-
-          {
-            moment(value?.vip_until).isAfter() &&
-            <Tooltip title={`VIP sampai ${moment(value?.vip_until).format("DD MMM YYYY")}`}>
-              <Iconify icon={"mdi:crown-outline"}/>
-            </Tooltip>
-          }
-        </div>
-      }
+      id: 'username', label: 'Username', filter: true
     },
     // {
     //     id: 'full_name', label: 'Full Name', filter: true,
     // },
     {
-      id: 'email', label: 'Email', filter: false,
+      id: 'role', label: 'Role', filter: false,
     },
-    {
-      id: 'city', label: 'Address', filter: false,
-    },
-    {
-      id: 'gender', label: 'Gender', filter: false,
-    },
-    // {
-    //     id: 'phone_number', label: 'Phone Number', filter: false,
-    // },
     {
       id: '', label: '', filter: false,
       render: ((value) => {
         return (
           <>
             <Space size="small">
-              <Tooltip title="Transaction History">
-                <AntButton
-                  type={'link'}
-                  style={{color: Palette.MAIN_THEME}}
-                  onClick={() => {
-                    setSelectedUser(value)
-                    setOpenHistory(true)
-                    setOpenUserModal(false)
-                    setOpenUserResetModal(false)
-                    setOpenLinkChildren(false)
-                  }}
-                  className={"d-flex align-items-center justify-content-center"}
-                  shape="circle"
-                  icon={<Iconify icon={"ic:outline-history"}/>}/>
-              </Tooltip>
               <Tooltip title="Edit">
                 <AntButton
                   type={'link'}
@@ -94,7 +51,6 @@ const UserList = () => {
                     setOpenUserModal(true)
                     setSelectedUser(value)
                     setIsNewRecord(false)
-                    setOpenLinkChildren(false)
 
 
                   }}
@@ -102,18 +58,7 @@ const UserList = () => {
                   shape="circle"
                   icon={<Iconify icon={"material-symbols:edit"}/>}/>
               </Tooltip>
-              <Tooltip title="Tambah Loyalty">
-                <AntButton
-                  type={'link'}
-                  style={{color: Palette.MAIN_THEME}}
-                  onClick={() => {
-                    setSelectedForAddLoyaltyPoints(value)
-                  }}
-                  className={"d-flex align-items-center justify-content-center"}
-                  shape="circle"
-                  icon={<Iconify icon={"mdi:coins-plus-outline"}/>}/>
-              </Tooltip>
-              <Tooltip title="Ubah kata sandi">
+              <Tooltip title="Reset Password">
                 <AntButton
                   type={'link'}
                   style={{color: Palette.MAIN_THEME}}
@@ -121,39 +66,12 @@ const UserList = () => {
                     setSelectedUser(value)
                     setOpenUserResetModal(true)
                     setOpenUserModal(false)
-                    setOpenLinkChildren(false)
                   }}
                   className={"d-flex align-items-center justify-content-center"}
                   shape="circle"
                   icon={<Iconify icon={"material-symbols:lock"}/>}/>
               </Tooltip>
-              <Tooltip title="Jadikan VIP">
-                <AntButton
-                  type={'link'}
-                  style={{color: Palette.MAIN_THEME}}
-                  onClick={() => {
-                    setSelectedForVIP(value)
-                  }}
-                  className={"d-flex align-items-center justify-content-center"}
-                  shape="circle"
-                  icon={<Iconify icon={"mdi:crown-outline"}/>}/>
-              </Tooltip>
-              <Tooltip title="Sambungkan akun children">
-                <AntButton
-                  type={'link'}
-                  style={{color: Palette.MAIN_THEME}}
-                  onClick={() => {
-                    setSelectedUser(value)
-                    setOpenHistory(false)
-                    setOpenUserModal(false)
-                    setOpenUserResetModal(false)
-                    setOpenLinkChildren(true)
-                  }}
-                  className={"d-flex align-items-center justify-content-center"}
-                  shape="circle"
-                  icon={<Iconify icon={"material-symbols:link"}/>}/>
-              </Tooltip>
-              <Tooltip title="Hapus">
+              <Tooltip title="Delete">
                 <AntButton
                   type={'link'}
                   style={{color: Palette.MAIN_THEME}}
@@ -233,45 +151,11 @@ const UserList = () => {
                 <div style={{fontWeight: "bold", fontSize: "1.1em"}}>User</div>
               </Col>
               <Col className='mb-3 text-right' md={6}>
-                <CSVLink
-                  headers={[
-                    {label: "Username", key: "username"},
-                    {label: "Email", key: "email"},
-                    {label: "City", key: "city"},
-                    {label: "Balance", key: "balance"},
-                    {label: "Beginner Rides", key: "beginner_rides"},
-                    {label: "Advanced Rides", key: "advanced_rides"},
-                    {label: "Pro Rides", key: "pro_rides"},
-                  ]}
-                  filename={
-                    "User Data - " +
-                    new moment().format("dddd, MMMM Do YYYY, HH:mm") +
-                    ".csv"
-                  }
-                  data={dataSource.map(obj => {
-                    // console.log("DDSS", dataSource)
-                    return {
-                      ...obj,
-                      username: obj.username,
-                      email: obj.email,
-                      city: obj.city,
-                      balance: obj.barcoin_balance,
-                      beginner_rides: obj.ride_balance.BEGINNER_RIDES,
-                      advanced_rides: obj.ride_balance.ADVANCED_RIDES,
-                      pro_rides: obj.ride_balance.PRO_RIDES,
-                    }
-                  })}
-                >
-                  <AntButton className={"mr-1 bg-transparent text-white"}>
-                    <Iconify icon={"mdi:download"}></Iconify> Export
-                  </AntButton>
-                </CSVLink>
-
                 <AntButton onClick={() => {
                   setIsNewRecord(true)
                   setOpenUserModal(true)
                   setOpenUserResetModal(false)
-                }} size={'middle'} type={'primary'} style={{border : "1px solid #ef6024"}}>Tambah User</AntButton>
+                }} size={'middle'} type={'primary'}>Tambah User</AntButton>
               </Col>
             </Row>
             <Row>
@@ -300,18 +184,6 @@ const UserList = () => {
         }}
       />
 
-      <UserHistoryModal
-        isOpen={openHistory}
-        userData={selectedUser}
-        onClose={async (refresh) => {
-          setOpenHistory(false)
-          setSelectedUser(null)
-          if (refresh) {
-            await initializeData()
-          }
-        }}
-      />
-
       <UserFormModal
         isOpen={openUserModal}
         isNewRecord={isNewRecord}
@@ -322,17 +194,6 @@ const UserList = () => {
           }
           setOpenUserModal(false)
           setOpenUserResetModal(false)
-        }}
-      />
-
-      <UserLinkChildrenModal
-        isOpen={openLinkChildren}
-        userData={selectedUser}
-        handleClose={async (refresh) => {
-          if (refresh) {
-            await initializeData();
-          }
-          setOpenLinkChildren(false);
         }}
       />
 

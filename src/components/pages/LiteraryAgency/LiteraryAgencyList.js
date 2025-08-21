@@ -78,7 +78,7 @@ const LiteraryAgencyList = () => {
     const deleteItem = async (id) => {
         try {
             await LiteraryAgencies.delete(id)
-            message.success('Admin telah dihapus')
+            message.success('Literary Agency telah dihapus')
             initializeData();
         } catch (e) {
             message.error('There was error from server')
@@ -88,7 +88,7 @@ const LiteraryAgencyList = () => {
 
     const onDelete = (record) => {
         Modal.confirm({
-            title: "Apakah Anda yakin ingin menghapus akun admin ini?",
+            title: "Apakah Anda yakin ingin menghapus akun Literary Agency ini?",
             okText: "Yes",
             okType: "danger",
             onOk: () => {

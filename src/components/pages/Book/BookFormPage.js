@@ -268,13 +268,13 @@ export default function BookFormPage({
                           label={"Description"}
                           name={"description"}
                         >
-                          <Input.TextArea variant='filled' />
+                          <Input.TextArea variant='filled' rows={4} />
                         </Form.Item>
                         <Form.Item
                           label={"Description (Translated)"}
                           name={"description_tl"}
                         >
-                          <Input.TextArea variant='filled' />
+                          <Input.TextArea variant='filled' rows={4} />
                         </Form.Item>
                         <Form.Item
                           label={"Publisher"}

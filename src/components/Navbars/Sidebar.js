@@ -90,8 +90,8 @@ const SIDEBAR = [
         color: SIDEBAR_COLOR
     },
     {
-        path: "/ilustrator",
-        name: "Ilustrator",
+        path: "/illustrator",
+        name: "Illustrator",
         icon: "fluent:draw-image-20-filled",
         color: SIDEBAR_COLOR
     },

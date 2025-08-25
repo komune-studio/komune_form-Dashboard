@@ -78,8 +78,8 @@ var routes = [
         layout: "/admin",
     },
     {
-        path: "/ilustrator",
-        name: "Ilustrator",
+        path: "/illustrator",
+        name: "Illustrator",
         component: IlustratorList,
         layout: "/admin",
     },

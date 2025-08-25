@@ -120,7 +120,7 @@ const IlustratorList = () => {
                     <CardBody>
                         <Row>
                             <Col className='mb-3' md={6}>
-                                <div style={{fontWeight: "bold", fontSize: "1.1em"}}>Ilustrator</div>
+                                <div style={{fontWeight: "bold", fontSize: "1.1em"}}>Illustrator</div>
                             </Col>
                             <Col className='mb-3 text-right' md={6}>
                                 <AntButton 
@@ -130,7 +130,7 @@ const IlustratorList = () => {
                                     size={'middle'} 
                                     type={'primary'}
                                 >
-                                    Add Ilustrator
+                                    Add Illustrator
                                 </AntButton>
                             </Col>
                         </Row>

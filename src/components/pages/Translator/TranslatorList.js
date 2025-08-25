@@ -32,7 +32,7 @@ const TranslatorList = () => {
             id: 'email', label: 'Email', filter: false,
         },
         {
-            id: 'phone', label: 'Phone No.', filter: false,
+            id: 'phone', label: 'Phone', filter: false,
         },
         {
             id: 'languages', label: 'Languages', filter: false,

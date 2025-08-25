@@ -28,10 +28,10 @@ const IlustratorList = () => {
             id: 'name', label: 'Name', filter: true,
         },
         {
-            id: 'email', label: 'Email At', filter: false,
+            id: 'email', label: 'Email', filter: false,
         },
         {
-            id: 'phone_number', label: 'Phone No.', filter: false,
+            id: 'phone_number', label: 'Phone', filter: false,
         },
         {
             id: '', label: '', filter: false,

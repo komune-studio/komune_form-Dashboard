@@ -27,10 +27,10 @@ const PublisherList = () => {
       id: 'address', label: 'Address', filter: true,
     },
     {
-      id: 'phone', label: 'Phone', filter: false,
+      id: 'email', label: 'Email', filter: false,
     },
     {
-      id: 'email', label: 'Email', filter: false,
+      id: 'phone', label: 'Phone', filter: false,
     },
     {
       id: '', label: '', filter: false,

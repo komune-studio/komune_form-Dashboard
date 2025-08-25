@@ -42,14 +42,15 @@ export default function UserFormModal({ isOpen, close, isNewRecord, userData, is
                     await Admin.createSuperAdmin(body);
                 }
                 msg = "Successfully created User"
-            } else {
-                if (isSuperAdmin) {
-                    await Admin.edit(userData?.id, body)
-                } else {
-                    await Admin.editSelf(body);
-                }
-                msg = "Successfully updated User"
-            }
+            } 
+            // else {
+            //     if (isSuperAdmin) {
+            //         await Admin.edit(userData?.id, body)
+            //     } else {
+            //         await Admin.editSelf(body);
+            //     }
+            //     msg = "Successfully updated User"
+            // }
 
             message.success(msg)
             handleClose(true)
@@ -101,7 +102,8 @@ export default function UserFormModal({ isOpen, close, isNewRecord, userData, is
     >
         <Modal.Header style={{ paddingBottom: "0" }}>
             <div className={'d-flex w-100 justify-content-between'}>
-                <Modal.Title>{isNewRecord ? 'Create User' : `Update User`}</Modal.Title>
+                {/* <Modal.Title>{isNewRecord ? 'Create User' : `Update User`}</Modal.Title> */}
+                <Modal.Title>Create User</Modal.Title>
                 <Button onClick={() => {
                     close()
                 }} style={{ position: 'relative', top: -5, color: '#fff', fontWeight: 800 }} type="link" shape="circle"
@@ -180,7 +182,8 @@ export default function UserFormModal({ isOpen, close, isNewRecord, userData, is
                     </Form.Item>
                     <Form.Item>
                         <Button size="sm" type='primary' variant="primary" htmlType='submit'>
-                            {isNewRecord ? 'Add' : 'Save'}
+                            {/* {isNewRecord ? 'Add' : 'Save'} */}
+                            Add
                         </Button>
                     </Form.Item>
                 </div>

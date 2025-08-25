@@ -10,10 +10,10 @@ export default class User {
     return await ApiRequest.set("v1/user", "POST", body);
   }
 
-  static edit = async (id, body) => {
-    console.log("BODYZ", body)
-    return await ApiRequest.set(`v1/user/${id}`, "PUT", body);
-  }
+  // static edit = async (id, body) => {
+  //   console.log("Body: ", body)
+  //   return await ApiRequest.set(`v1/user/${id}`, "PUT", body);
+  // }
 
   static getById = async (id, body) => {
     return await ApiRequest.set(`v1/user/${id}`, "GET", body);

@@ -43,7 +43,7 @@ const UserList = () => {
         return (
           <>
             <Space size="small">
-              <Tooltip title="Edit">
+              {/* <Tooltip title="Edit">
                 <AntButton
                   type={'link'}
                   style={{color: Palette.MAIN_THEME}}
@@ -58,7 +58,7 @@ const UserList = () => {
                   className={"d-flex align-items-center justify-content-center"}
                   shape="circle"
                   icon={<Iconify icon={"material-symbols:edit"}/>}/>
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip title="Reset Password">
                 <AntButton
                   type={'link'}

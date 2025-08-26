@@ -6,35 +6,23 @@ import Iconify from "../../reusable/Iconify";
 import { Col, } from "react-bootstrap";
 import CustomTable from "../../reusable/CustomTable";
 import Palette from "../../../utils/Palette";
-import Book from 'models/BookModel';
-import BookCategory from 'models/BookCategoryModel';
+import Author from 'models/AuthorModel';
 
-const textToUppercase = (text) => {
-  let textToFormat = String(text);
-  let words = textToFormat.split(" ");
-  let formattedText = '';
-  words.forEach((word, index) => {
-    formattedText += `${word.charAt(0).toUpperCase()}${word.slice(1).toLowerCase()}`
-    if (index < words.length - 1) formattedText += " "
-  })
-  return formattedText;
-}
-
-const BookList = () => {
+const AuthorList = () => {
 
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
-  const [selectedBook, setSelectedBook] = useState(null)
-  const [openBookModal, setOpenBookModal] = useState(false)
+  const [selectedAuthor, setSelectedAuthor] = useState(null)
+  const [openAuthorModal, setOpenAuthorModal] = useState(false)
   const [isNewRecord, setIsNewRecord] = useState(false)
 
   const columns = [
     {
-      id: 'image_cover', label: 'Cover Image', filter: false,
+      id: 'profile_picture', label: 'Profile Picture', filter: false,
       render: (row) => {
         return (
           <Flex style={{ height: "100px", width: "auto", aspectRatio: "3/4", alignItems: "center", justifyContent: "center" }}>
-            {!row?.image_cover ? (
+            {!row?.profile_picture ? (
               <Iconify
                 icon={"material-symbols:hide-image-outline"}
                 style={{
@@ -42,51 +30,17 @@ const BookList = () => {
                 }}
               />
             ) : (
-              <Image height={"100%"} width={"100%"} style={{ objectFit: "contain" }} src={row?.image_cover}></Image>
+              <Image height={"100%"} width={"100%"} style={{ objectFit: "contain" }} src={row?.profile_picture}></Image>
             )}
           </Flex>
         )
       }
     },
     {
-      id: 'title', label: 'Title', filter: true,
-      // render: (row) => (
-      //   textToUppercase(row.title)
-      // )
+      id: 'name', label: 'Name', filter: true,
     },
     {
-      id: 'authors', label: 'Authors', filter: false,
-      render: (row) => (
-        <Space wrap size={4} style={{ maxWidth: "200px" }}>
-          {!row?.book_authors ? (
-            <></>
-          ) : (
-            row?.book_authors?.map((ba) => (
-              `- ${ba.authors.name}`
-            ))
-          )}
-        </Space>
-      )
-    },
-    {
-      id: 'publisher', label: 'Publisher', filter: true,
-      render: (row) => {
-        return row.publishers.name;
-      }
-    },
-    {
-      id: 'categories', label: 'Categories', filter: false,
-      render: (row) => (
-        <Space wrap size={4} style={{ maxWidth: "200px" }}>
-          {!row?.book_categories ? (
-            <></>
-          ) : (
-            row?.book_categories?.map((bc) => (
-              <Tag>{bc.categories.name}</Tag>
-            ))
-          )}
-        </Space>
-      )
+      id: 'biography', label: 'Biography', filter: true,
     },
     {
       id: '', label: '', filter: false,
@@ -94,23 +48,23 @@ const BookList = () => {
         return (
           <>
             <Space size="small">
-              <Tooltip title="Detail">
+              {/* <Tooltip title="Detail">
                 <Link to={`/books/${row.id}`}>
                   <AntButton
                     type={'link'}
                     style={{ color: Palette.MAIN_THEME }}
                     onClick={() => {
-                      setOpenBookModal(true)
-                      setSelectedBook(row)
+                      setOpenAuthorModal(true)
+                      setSelectedAuthor(row)
                       setIsNewRecord(false)
                     }}
                     className={"d-flex align-items-center justify-content-center"}
                     shape="circle"
                     icon={<Iconify icon={"material-symbols:search-rounded"} />} />
                 </Link>
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip title="Edit">
-                <Link to={`/books/${row.id}/edit`}>
+                <Link to={`/authors/${row.id}/edit`}>
                   <AntButton
                     type={'link'}
                     style={{ color: Palette.MAIN_THEME }}
@@ -153,8 +107,8 @@ const BookList = () => {
 
   const deleteItem = async (id) => {
     try {
-      await Book.delete(id)
-      message.success('Book deleted')
+      await Author.delete(id)
+      message.success('Author deleted')
       initializeData();
     } catch (e) {
       message.error('There was error from server')
@@ -164,7 +118,7 @@ const BookList = () => {
 
   const onDelete = (record) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this book data?",
+      title: "Are you sure you want to delete this author data?",
       okText: "Yes",
       okType: "danger",
       onOk: () => {
@@ -176,8 +130,7 @@ const BookList = () => {
   const initializeData = async () => {
     setLoading(true)
     try {
-      let result = await Book.getAllWithCategoriesAndAuthors();
-      console.log(result);
+      let result = await Author.getAll();
       setDataSource(result)
       setLoading(false)
     } catch (e) {
@@ -198,13 +151,13 @@ const BookList = () => {
 
             <Row>
               <Col className='mb-3' md={6}>
-                <div style={{ fontWeight: "bold", fontSize: "1.1em" }}>Books</div>
+                <div style={{ fontWeight: "bold", fontSize: "1.1em" }}>Authors</div>
               </Col>
               <Col className='mb-3 text-right' md={6}>
-                <Link to="/books/create">
+                <Link to="/authors/create">
                   <AntButton
                     onClick={() => { }}
-                    size={'middle'} type={'primary'}>Add Book</AntButton>
+                    size={'middle'} type={'primary'}>Add Author</AntButton>
                 </Link>
               </Col>
             </Row>
@@ -223,15 +176,15 @@ const BookList = () => {
 
       </Container>
 
-      {/* <BookFormModal
-        isOpen={openBookModal}
+      {/* <AuthorFormModal
+        isOpen={openAuthorModal}
         isNewRecord={isNewRecord}
-        bookData={selectedBook}
+        bookData={selectedAuthor}
         close={async (refresh) => {
           if (refresh) {
             await initializeData()
           }
-          setOpenBookModal(false)
+          setOpenAuthorModal(false)
         }}
       /> */}
 
@@ -239,4 +192,4 @@ const BookList = () => {
   )
 }
 
-export default BookList;
+export default AuthorList;

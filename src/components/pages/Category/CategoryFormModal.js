@@ -1,6 +1,7 @@
 import Modal from 'react-bootstrap/Modal';
-import { Button, message, Flex, Form, Input } from "antd";
+import { Button, message, Flex, Form, Input, Tag, Segmented } from "antd";
 import { useEffect, useState } from "react";
+import Palette from '../../../utils/Palette';
 import { CloseOutlined } from '@ant-design/icons';
 import PropTypes from "prop-types";
 import swal from "../../reusable/CustomSweetAlert";
@@ -16,7 +17,7 @@ CategoryFormModal.propTypes = {
 
 export default function CategoryFormModal({ isOpen, close, isNewRecord, categoryData }) {
     const [form] = Form.useForm();
-
+    const [language, setLanguage] = useState("ID");
 
     const onSubmit = async () => {
 
@@ -57,18 +58,30 @@ export default function CategoryFormModal({ isOpen, close, isNewRecord, category
             form.setFieldsValue({
                 id: categoryData?.id,
                 name: categoryData?.name,
+                name_tl: categoryData?.name_tl,
                 description: categoryData?.description,
+                description_tl: categoryData?.description_tl,
             })
         }
 
     }
+
+    const languageTag = (text, tagColor = Palette.MAIN_THEME) => (
+    <span>
+        {text} | {language}{" "}
+        <Tag color={tagColor} style={{ fontSize: '10px', marginLeft: '8px' }}>
+        Multi-Language
+        </Tag>
+    </span>
+    );
+    
     useEffect(() => {
         if (isNewRecord) {
             reset()
         } else {
             initForm()
         }
-
+        setLanguage("ID");
 
     }, [isOpen])
 
@@ -98,18 +111,45 @@ export default function CategoryFormModal({ isOpen, close, isNewRecord, category
                 validateTrigger="onSubmit"
                 autoComplete='off'
             >
+                <Flex justify="flex-end"> 
+                    <Segmented
+                    value={language}
+                    style={{ marginBottom: 8 }}
+                    onChange={setLanguage}
+                    options={['ID', 'EN']}
+                    />
+                </Flex>
                 <Form.Item
-                    label={"Name"}
+                    label={languageTag("Name")}
                     name={"name"}
                     rules={[{
                         required: true,
                     }]}
+                    hidden={language !== "ID"}
                 >
                     <Input variant='filled' />
                 </Form.Item>
                 <Form.Item
-                    label={"Description"}
+                    label={languageTag("Description")}
                     name={"description"}
+                    rules={[{
+                        required: true,
+                    }]}
+                    hidden={language !== "ID"}
+                >
+                    <Input.TextArea variant='filled' />
+                </Form.Item>
+                <Form.Item
+                    label={languageTag("Name")}
+                    name={"name_tl"}
+                    hidden={language === "ID"}
+                >
+                    <Input variant='filled' />
+                </Form.Item>
+                <Form.Item
+                    label={languageTag("Description")}
+                    name={"description_tl"}
+                    hidden={language === "ID"}
                 >
                     <Input.TextArea variant='filled' />
                 </Form.Item>

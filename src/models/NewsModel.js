@@ -16,4 +16,8 @@ export default class News {
   static edit = async (id, body) => {
     return await ApiRequest.set(`v1/news/update/${id}`, "PUT", body)
   }
+
+  static delete = async (id) => {
+    return await ApiRequest.set(`v1/news/delete/${id}`, "DELETE")
+  }
 }

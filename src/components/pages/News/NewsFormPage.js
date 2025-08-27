@@ -107,7 +107,7 @@ export default function NewsFormPage({
       form.setFieldsValue({
         title: newsData.title,
         body: newsData.body,
-        biography_tl: newsData.biography_tl,
+        body_tl: newsData.body_tl,
       })
 
       if (newsData.image_cover) {

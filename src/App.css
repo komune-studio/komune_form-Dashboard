@@ -31,9 +31,9 @@ option {
     z-index: 1000000000 !important;
 }
 
-input::placeholder {
+/* input::placeholder {
     color: #FFF !important;
-}
+} */
 
 input.order-input {
     margin-top: 8px;

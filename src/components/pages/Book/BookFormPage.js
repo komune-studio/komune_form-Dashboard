@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Divider } from 'antd';
+import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag } from 'antd';
 import { Card, CardBody, Container } from 'reactstrap';
 import { Col, Row } from 'react-bootstrap';
 import Palette from '../../../utils/Palette';
@@ -188,6 +188,15 @@ export default function BookFormPage({
     setLoadingSubmit(true);
   }
 
+  const languageTag = (text, tagColor = Palette.MAIN_THEME) => (
+    <span>
+      {text}{" "}
+      <Tag color={tagColor} style={{ fontSize: '10px', marginLeft: '8px' }}>
+        Multi-Language
+      </Tag>
+    </span>
+  );
+
   useEffect(() => {
     (async () => {
       await initializeData();
@@ -261,10 +270,7 @@ export default function BookFormPage({
                   >
                     <Flex gap={"48px"}>
                       <Flex vertical style={{ width: "60%" }}> 
-                        <Flex justify="space-between"> 
-                          <Typography.Text style={{ fontSize: "16px" }}>
-                            Multi-Language Part
-                          </Typography.Text> 
+                        <Flex justify="flex-end"> 
                           <Segmented
                             value={language}
                             style={{ marginBottom: 8 }}
@@ -273,47 +279,39 @@ export default function BookFormPage({
                           />
                         </Flex>
                         <Form.Item
-                          label="Title"
+                          label={languageTag("Title")}
                           name="title"
                           rules={[{ 
                             required: true,
                           }]}
-                          hidden={language !== "ID"} // 
+                          hidden={language !== "ID"} 
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder='Title in Indonesian'/>
                         </Form.Item>
 
                         <Form.Item
-                          label="Description"
+                          label={languageTag("Description")}
                           name="description"
                           hidden={language !== "ID"}
                         >
-                          <Input.TextArea variant='filled' rows={4} />
-                        </Form.Item>
+                          <Input.TextArea variant='filled' rows={4} placeholder='Description in Indonesian'/>
+                        </Form.Item >
 
                         <Form.Item
-                          label="Title (Translated)"
+                          label={languageTag("Title")}
                           name="title_tl"
                           hidden={language === "ID"}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder='Title in English'/>
                         </Form.Item>
 
                         <Form.Item
-                          label="Description (Translated)"
+                          label={languageTag("Description")}
                           name="description_tl"
                           hidden={language === "ID"}
                         >
-                          <Input.TextArea variant='filled' rows={4} />
+                          <Input.TextArea variant='filled' rows={4} placeholder='Description in English'/>
                         </Form.Item>
-                        <Divider 
-                          dashed 
-                          style={{ 
-                            borderWidth: '0.5px', 
-                            borderColor: '#424242',
-                            margin: '20px 0',
-                          }}
-                          />
                         <Form.Item
                           label={"Publisher"}
                           name={"publisher_id"}

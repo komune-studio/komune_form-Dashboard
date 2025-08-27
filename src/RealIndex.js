@@ -63,6 +63,7 @@ export default function (props) {
                     },
                     Input: {
                         activeBg: "#282828",
+                        colorTextPlaceholder: Palette.INACTIVE_GRAY,
                     },
                     Typography: {
                         titleMarginBottom: 0,

@@ -44,7 +44,7 @@ const PublisherList = () => {
     //   id: 'address', label: 'Address', filter: true,
     // },
     {
-      id: 'email', label: 'Email', filter: false,
+      id: 'email', label: 'Email', filter: true,
     },
     {
       id: 'phone', label: 'Phone', filter: false, allowSort: false,

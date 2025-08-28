@@ -28,7 +28,7 @@ const IlustratorList = () => {
             id: 'name', label: 'Name', filter: true,
         },
         {
-            id: 'email', label: 'Email', filter: false,
+            id: 'email', label: 'Email', filter: true,
         },
         {
             id: 'phone_number', label: 'Phone', filter: false, allowSort: false,

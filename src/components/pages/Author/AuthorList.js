@@ -40,7 +40,7 @@ const AuthorList = () => {
       id: 'name', label: 'Name', filter: true,
     },
     {
-      id: 'biography', label: 'Biography', filter: true, allowSort: false,
+      id: 'biography', label: 'Biography', filter: false, allowSort: false,
     },
     {
       id: '', label: '', filter: false,

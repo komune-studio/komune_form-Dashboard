@@ -29,13 +29,13 @@ const TranslatorList = () => {
             id: 'name', label: 'Name', filter: true,
         },
         {
-            id: 'email', label: 'Email', filter: false,
+            id: 'email', label: 'Email', filter: true,
         },
         {
             id: 'phone', label: 'Phone', filter: false, allowSort: false,
         },
         {
-            id: 'languages', label: 'Languages', filter: false,
+            id: 'languages', label: 'Languages', filter: true,
         },
         {
             id: '', label: '', filter: false,

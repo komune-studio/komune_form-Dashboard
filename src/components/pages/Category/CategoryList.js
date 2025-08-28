@@ -24,7 +24,7 @@ const CategoryList = () => {
       id: 'name', label: 'Name', filter: true,
     },
     {
-      id: 'description', label: 'Description', filter: true, allowSort: false,
+      id: 'description', label: 'Description', filter: false, allowSort: false,
     },
     {
       id: '', label: '', filter: false,

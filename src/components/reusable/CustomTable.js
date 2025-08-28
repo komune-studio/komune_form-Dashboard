@@ -217,7 +217,10 @@ const CustomTable = ({
 									sortDirection={orderBy === headCell.id ? order : false}
 								>
 									<TableSortLabel
-										style={{ color: mode === 'dark' ? 'white' : 'black' }}
+										style={{ 
+											color: mode === 'dark' ? 'white' : 'black',
+											cursor: (headCell.allowSort || headCell.allowSort === undefined) ? 'pointer' : 'auto'
+										}}
 										hideSortIcon
 										active={orderBy === headCell.id && headCell.allowSort !== false}
 										direction={orderBy === headCell.id ? order : 'asc'}

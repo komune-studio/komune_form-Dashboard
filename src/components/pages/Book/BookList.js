@@ -19,7 +19,7 @@ const BookList = () => {
 
   const columns = [
     {
-      id: 'image_cover', label: 'Cover Image', filter: false,
+      id: 'image_cover', label: 'Cover Image', filter: false, allowSort: false,
       render: (row) => {
         return (
           <Flex style={{ height: "100px", width: "auto", aspectRatio: "3/4", alignItems: "center", justifyContent: "center" }}>
@@ -64,7 +64,7 @@ const BookList = () => {
       }
     },
     {
-      id: 'categories', label: 'Categories', filter: false,
+      id: 'categories', label: 'Categories', filter: false, allowSort: false,
       render: (row) => (
         <Space wrap size={4} style={{ maxWidth: "200px" }}>
           {!row?.book_categories ? (

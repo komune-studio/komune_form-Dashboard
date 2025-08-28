@@ -219,10 +219,10 @@ const CustomTable = ({
 									<TableSortLabel
 										style={{ color: mode === 'dark' ? 'white' : 'black' }}
 										hideSortIcon
-										active={orderBy === headCell.id}
+										active={orderBy === headCell.id && headCell.allowSort !== false}
 										direction={orderBy === headCell.id ? order : 'asc'}
 										onClick={(e) => {
-											if (headCell.allowSort || headCell.allowSort == undefined) {
+											if (headCell.allowSort || headCell.allowSort === undefined) {
 												createSortHandler(headCell.id)(e)
 											}
 										}}

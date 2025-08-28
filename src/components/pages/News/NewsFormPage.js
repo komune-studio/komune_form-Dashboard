@@ -225,7 +225,7 @@ export default function NewsFormPage({
                             onChange={onUploadChange}
                             beforeUpload={() => false}
                           >
-                            <button style={{ border: "none", background: "none", padding: "24px", minHeight: "200px", width: "100%", aspectRatio: 4/1, ...(formDisabled && { cursor: "not-allowed" }) }} type='button'>
+                            <button style={{ border: "none", background: "none", padding: "24px", minHeight: "200px", maxWidth: "100%", ...(formDisabled && { cursor: "not-allowed" }) }} type='button'>
                               <Flex vertical align='center'>
                                 {imagePreviewURL ? (
                                   <>

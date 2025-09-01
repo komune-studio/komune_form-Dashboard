@@ -1,64 +1,69 @@
-import {Table, Image, Space, Button as AntButton, Tooltip, Modal, message, Input} from 'antd';
+import {Table, Flex, Image, Space, Button as AntButton, Tooltip, Modal, message, Input} from 'antd';
 import HeaderNav from "components/Headers/HeaderNav.js";
 import React, {useState, useEffect} from 'react';
 import {Card, Row, CardBody, Container, Button} from "reactstrap";
-import Ilustrator from '../../../models/IlustratorModel'
-import {Link, useHistory} from 'react-router-dom';
+import Ilustrator from '../../../models/IllustratorModel'
+import {Link} from 'react-router-dom';
 import Iconify from "../../reusable/Iconify";
 import Palette from 'utils/Palette';
 import {InputGroup, Form, Col,} from "react-bootstrap";
 import CustomTable from "../../reusable/CustomTable";
 import swal from "../../reusable/CustomSweetAlert";
-import CreateIllustratorModal from './CreateIllustratorModal';
-import EditIllustratorModal from './EditIllustratorModal';
 
 const IllustratorList = () => {
-    const history = useHistory();
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-    const [isCreateOpen, setIsCreateOpen] = useState(false)
-    const [selectedIlustrator, setSelectedIlustrator] = useState(null)
 
     const columns = [
         {
-            id: 'id', label: 'ID', filter: false, allowSort: false,
+            id: 'profile_picture', label: 'Profile Picture', filter: false, allowSort: false,
+            render: (row) => {
+                return (
+                <Flex style={{ height: "100px", width: "auto", aspectRatio: "3/4", alignItems: "center", justifyContent: "center" }}>
+                    {!row?.profile_picture ? (
+                    <Iconify
+                        icon={"material-symbols:hide-image-outline"}
+                        style={{
+                        fontSize: "48px"
+                        }}
+                    />
+                    ) : (
+                    <Image height={"100%"} width={"100%"} style={{ objectFit: "contain" }} src={row?.profile_picture}></Image>
+                    )}
+                </Flex>
+                )
+            }
         },
         {
             id: 'name', label: 'Name', filter: true,
         },
         {
-            id: 'email', label: 'Email', filter: true,
-        },
-        {
-            id: 'phone_number', label: 'Phone', filter: false, allowSort: false,
+            id: 'biography', label: 'Biography', filter: false, allowSort: false,
         },
         {
             id: '', label: '', filter: false,
-            render: ((value) => {
+            render: ((row) => {
                 return (
                     <>
                         <Space size="small">
                             <Tooltip title="Edit">
-                                <AntButton
-                                    onClick={() => {
-                                        setSelectedIlustrator(value)
-                                        setIsEditModalOpen(true)
-                                    }}
+                                <Link to={`/illustrators/${row.id}/edit`}>
+                                    <AntButton
                                     type={'link'}
-                                    style={{color: Palette.MAIN_THEME}}
+                                    style={{ color: Palette.MAIN_THEME }}
+                                    onClick={() => {
+                                    }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
-                                    icon={<Iconify icon={"material-symbols:edit"}/>}
-                                >
-                                </AntButton>   
+                                    icon={<Iconify icon={"material-symbols:edit"} />} />
+                                </Link>
                             </Tooltip>
                             <Tooltip title="Delete">
                                 <AntButton
                                     type={'link'}
                                     style={{color: Palette.MAIN_THEME}}
                                     onClick={() => {
-                                        onDelete(value.id)
+                                        onDelete(row.id)
                                     }}
                                     className={"d-flex align-items-center justify-content-center"}
                                     shape="circle"
@@ -123,15 +128,11 @@ const IllustratorList = () => {
                                 <div style={{fontWeight: "bold", fontSize: "1.1em"}}>Illustrators</div>
                             </Col>
                             <Col className='mb-3 text-right' md={6}>
-                                <AntButton 
-                                    onClick={() => {
-                                        setIsCreateOpen(true)
-                                    }} 
-                                    size={'middle'} 
-                                    type={'primary'}
-                                >
-                                    Add Illustrator
-                                </AntButton>
+                                <Link to="/illustrators/create">
+                                    <AntButton
+                                    onClick={() => {console.log("button worked") }}
+                                    size={'middle'} type={'primary'}>Add Illustrator</AntButton>
+                                </Link>
                             </Col>
                         </Row>
                         <CustomTable
@@ -145,26 +146,7 @@ const IllustratorList = () => {
                 </Card>
 
             </Container>
-            <CreateIllustratorModal
-                isOpen={isCreateOpen}
-                close={async (refresh) => {
-                    if (refresh) {
-                        await initializeData()
-                    }
-                    setIsCreateOpen(false)
-                }}
-            />
-            {isEditModalOpen ? <EditIllustratorModal
-                isOpen={isEditModalOpen}
-                ilustratorData={selectedIlustrator}
-                close={(refresh) => {
-                    if (refresh) {
-                        initializeData()
-                    }
-                    setIsEditModalOpen(false)
-                    setSelectedIlustrator(null)
-                }}
-            /> : ''}
+            
         </>
     )
 }

@@ -19,6 +19,8 @@ import Logout from "./components/pages/Logout";
 import Login from "./components/pages/Login";
 import UserList from "./components/pages/Users/UserList";
 import IllustratorList from "components/pages/Illustrator/IllustratorList";
+import IllustratorCreate from "components/pages/Illustrator/IllustratorCreate";
+import IllustratorEdit from "components/pages/Illustrator/IllustratorEdit";
 import LiteraryAgencyList from "components/pages/LiteraryAgency/LiteraryAgencyList";
 import TranslatorList from "components/pages/Translator/TranslatorList";
 import PublisherList from "components/pages/Publisher/PublisherList";
@@ -131,6 +133,18 @@ var routes = [
         path: "/illustrators",
         name: "Illustrators",
         component: IllustratorList,
+        layout: "/admin",
+    },
+    {
+        path: "/illustrators/create",
+        name: "Illustrators",
+        component: IllustratorCreate,
+        layout: "/admin",
+    },
+    {
+        path: "/illustrators/:id/edit",
+        name: "Illustrators",
+        component: IllustratorEdit,
         layout: "/admin",
     },
     {

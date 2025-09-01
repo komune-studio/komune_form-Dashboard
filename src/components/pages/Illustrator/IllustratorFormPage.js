@@ -6,13 +6,13 @@ import { Col, Row } from 'react-bootstrap';
 import Palette from '../../../utils/Palette';
 import Iconify from '../../reusable/Iconify';
 import swal from '../../reusable/CustomSweetAlert';
-import Author from 'models/AuthorModel';
+import Illustrator from 'models/IllustratorModel';
 import Upload from 'models/UploadModel';
 
 const allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
 
 export default function IllustratorFormPage({
-  authorData,
+  illustratorData,
   disabled,
 }) {
   const history = useHistory();
@@ -22,7 +22,6 @@ export default function IllustratorFormPage({
   const [form] = Form.useForm();
   const [formDisabled, setFormDisabled] = useState(false);
   const [language, setLanguage] = useState("ID");
-
   const [imagePreviewURL, setImagePreviewURL] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
@@ -71,11 +70,11 @@ export default function IllustratorFormPage({
       body = form.getFieldsValue()
       console.log(body)
 
-      let msg = 'Successfully created Authors'
-      if (!authorData) {
-        result = await Author.create(body);
+      let msg = 'Successfully created Illustrator'
+      if (!illustratorData) {
+        result = await Illustrator.create(body);
       } else {
-        result = await Author.edit(authorData.id, body);
+        result = await Illustrator.edit(illustratorData.id, body);
       }
 
       message.success(msg)
@@ -103,23 +102,30 @@ export default function IllustratorFormPage({
   );
 
   useEffect(() => {
-    if (authorData) {
+    if (illustratorData) {
       form.setFieldsValue({
-        name: authorData.name,
-        biography: authorData.biography,
-        biography_tl: authorData.biography_tl,
+        name: illustratorData.name,
+        biography: illustratorData.biography,
+        biography_tl: illustratorData.biography_tl,
+        email: illustratorData.email,
+        phone_number: illustratorData.phone_number,
+        facebook: illustratorData.facebook,
+        instagram: illustratorData.instagram,
+        youtube: illustratorData.youtube,
+        tiktok: illustratorData.tiktok,
+        twitter: illustratorData.twitter,
       })
 
-      if (authorData.profile_picture) {
-        console.log(authorData.profile_picture)
-        form.setFieldValue("profile_picture", authorData.profile_picture);
-        setImagePreviewURL(authorData.profile_picture);
+      if (illustratorData.profile_picture) {
+        console.log(illustratorData.profile_picture)
+        form.setFieldValue("profile_picture", illustratorData.profile_picture);
+        setImagePreviewURL(illustratorData.profile_picture);
       }
     }
     if (disabled) {
       setFormDisabled(disabled);
     }
-  }, [authorData])
+  }, [illustratorData])
 
   return (
     <>
@@ -130,7 +136,7 @@ export default function IllustratorFormPage({
             <Row>
               <Col className='mb-3' md={6}>
                 <Space align='center'>
-                  <Link to={'/authors'}>
+                  <Link to={'/illustrators'}>
                     <Space align='center'>
                       <Iconify icon={'material-symbols:arrow-back-rounded'} style={{ fontSize: "16px", color: "white" }}></Iconify>
                     </Space>
@@ -141,7 +147,7 @@ export default function IllustratorFormPage({
             </Row>
             <Row>
               <Col className='mb-3' md={12} style={{ marginTop: "40px" }}>
-                <Typography.Title level={3}>{!authorData ? "Add" : "Update"} Author</Typography.Title>
+                <Typography.Title level={3}>{!illustratorData ? "Add" : "Update"} Author</Typography.Title>
               </Col>
             </Row>
             <Row>
@@ -192,11 +198,53 @@ export default function IllustratorFormPage({
                         >
                           <Input.TextArea variant='filled' rows={4} />
                         </Form.Item>
+                        <Form.Item
+                          label="Email"
+                          name="email"
+                        >
+                          <Input variant='filled' />
+                        </Form.Item>
+                        <Form.Item
+                          label="Phone"
+                          name="phone_number"
+                        >
+                          <Input variant='filled' />
+                        </Form.Item>
+                        <Form.Item
+                          label="Instagram"
+                          name="instagram"
+                        >
+                          <Input variant='filled' />
+                        </Form.Item>
+                        <Form.Item
+                          label="Facebook"
+                          name="facebook"
+                        >
+                          <Input variant='filled' />
+                        </Form.Item>
+                        <Form.Item
+                          label="Youtube"
+                          name="youtube"
+                        >
+                          <Input variant='filled' />
+                        </Form.Item>
+                        <Form.Item
+                          label="Tiktok"
+                          name="tiktok"
+                        >
+                          <Input variant='filled' />
+                        </Form.Item>
+                        <Form.Item
+                          label="Twitter"
+                          name="twitter"
+                        >
+                          <Input variant='filled' />
+                        </Form.Item>
 
                         {!formDisabled ? (
                           <div className={"d-flex flex-row"}>
                             <Button size="sm" type='primary' variant="primary" htmlType='submit' loading={loadingSubmit}>
-                              {!authorData ? "Add Authors" : "Save Authors"}
+                              {!illustratorData ? "Add Illustrator" : "Save Illustrator"}
                             </Button>
                           </div>
                         ) : (

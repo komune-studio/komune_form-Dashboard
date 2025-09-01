@@ -1,6 +1,6 @@
 import ApiRequest from "../utils/ApiRequest";
 
-export default class Ilustrator {
+export default class Illustrator {
 
   static getAll = async () => {
     return await ApiRequest.set("/v1/illustrators/getall", "GET");

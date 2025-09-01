@@ -8,7 +8,7 @@ import Iconify from '../../reusable/Iconify';
 import swal from '../../reusable/CustomSweetAlert';
 import User from 'models/UserModel';
 import Publisher from 'models/PublisherModel';
-import Ilustrator from 'models/IlustratorModel';
+import Illustrator from 'models/IllustratorModel';
 import Category from 'models/CategoryModel';
 import Translator from 'models/TranslatorModel';
 import Book from 'models/BookModel';
@@ -35,7 +35,7 @@ export default function BookFormPage({
 
   const [publishers, setPublishers] = useState([]);
   const [translators, setTranslators] = useState([]);
-  const [ilustrators, setIlustrators] = useState([]);
+  const [Illustrators, setIllustrators] = useState([]);
   const [categories, setCategories] = useState([]);
   const [authors, setAuthors] = useState([]);
 
@@ -64,10 +64,10 @@ export default function BookFormPage({
     }
   }
 
-  const getIlustratorsData = async () => {
+  const getIllustratorsData = async () => {
     try {
-      let result = await Ilustrator.getAll()
-      setIlustrators(result.map((r) => ({
+      let result = await Illustrator.getAll()
+      setIllustrators(result.map((r) => ({
         value: r.id,
         label: r.name,
       })))
@@ -102,7 +102,7 @@ export default function BookFormPage({
     await Promise.all([
       getPublishersData(),
       getTranslatorsData(),
-      getIlustratorsData(),
+      getIllustratorsData(),
       getCategoriesData(),
       getAuthorsData(),
     ])
@@ -395,7 +395,7 @@ export default function BookFormPage({
                             required: true,
                           }]}
                         >
-                          <Select showSearch={true} options={ilustrators} variant='filled' filterOption={selectFilterFunction} />
+                          <Select showSearch={true} options={Illustrators} variant='filled' filterOption={selectFilterFunction} />
                         </Form.Item>
                         <Form.Item
                           label={"Translator"}

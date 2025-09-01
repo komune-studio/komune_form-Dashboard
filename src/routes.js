@@ -38,12 +38,6 @@ import NewsEdit from "components/pages/News/NewsEdit";
 
 var routes = [
     {
-        path: "/users",
-        name: "Users",
-        component: UserList,
-        layout: "/admin",
-    },
-    {
         path: "/publishers/create",
         name: "Publisher Create",
         component: PublisherCreate,
@@ -143,6 +137,12 @@ var routes = [
         path: "/literary-agencies",
         name: "Literary Agencies",
         component: LiteraryAgencyList,
+        layout: "/admin",
+    },
+    {
+        path: "/admins",
+        name: "Admins",
+        component: UserList,
         layout: "/admin",
     },
     {

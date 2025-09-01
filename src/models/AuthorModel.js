@@ -16,4 +16,8 @@ export default class Author {
   static edit = async (id, body) => {
     return await ApiRequest.set(`v1/authors/update-authors-byid/${id}`, "PUT", body)
   }
+
+  static delete = async (id) => {
+    return await ApiRequest.set(`v1/authors/delete/${id}`, "DELETE")
+  }
 }

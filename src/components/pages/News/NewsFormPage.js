@@ -34,7 +34,7 @@ export default function NewsFormPage({
       let result = await Upload.uploadPicutre(imageFile);
       console.log(result)
 
-      form.setFieldValue("profile_picture", result?.location);
+      form.setFieldValue("image_cover", result?.location);
       setImagePreviewURL(result?.location)
       message.success("Image uploaded successfully");
     } catch (e) {
@@ -213,7 +213,7 @@ export default function NewsFormPage({
 
                         <Form.Item
                           label={"Image Cover"}
-                          name={"profile_picture"}
+                          name={"image_cover"}
                         >
                           <AntUpload.Dragger
                             name="avatar"

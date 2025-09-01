@@ -23,7 +23,7 @@ const NewsList = () => {
       render: (row) => {
         return (
           <Flex style={{ height: "100px", width: "auto", aspectRatio: "3/4", alignItems: "center", justifyContent: "center" }}>
-            {!row?.profile_picture ? (
+            {!row?.image_cover ? (
               <Iconify
                 icon={"material-symbols:hide-image-outline"}
                 style={{
@@ -31,7 +31,7 @@ const NewsList = () => {
                 }}
               />
             ) : (
-              <Image height={"100%"} width={"100%"} style={{ objectFit: "contain" }} src={row?.profile_picture}></Image>
+              <Image height={"100%"} width={"100%"} style={{ objectFit: "contain" }} src={row?.image_cover}></Image>
             )}
           </Flex>
         )

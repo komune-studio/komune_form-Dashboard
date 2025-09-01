@@ -60,18 +60,6 @@ const SIDEBAR_COLOR = Palette.MAIN_THEME;
 
 const SIDEBAR = [
     {
-        path: "/users",
-        name: "Users",
-        icon: "mdi:user",
-        color: SIDEBAR_COLOR
-    },
-    {
-        path: "/publishers",
-        name: "Publishers",
-        icon: "mdi:public",
-        color: SIDEBAR_COLOR
-    },
-    {
         path: "/books",
         name: "Books",
         icon: "mdi:book",
@@ -90,15 +78,9 @@ const SIDEBAR = [
         color: SIDEBAR_COLOR
     },
     {
-        path: "/categories",
-        name: "Category",
-        icon: "mdi:category",
-        color: SIDEBAR_COLOR
-    },
-    {
-        path: "/translators",
-        name: "Translators",
-        icon: "ic:round-translate",
+        path: "/publishers",
+        name: "Publishers",
+        icon: "mdi:public",
         color: SIDEBAR_COLOR
     },
     {
@@ -108,9 +90,27 @@ const SIDEBAR = [
         color: SIDEBAR_COLOR
     },
     {
+        path: "/translators",
+        name: "Translators",
+        icon: "ic:round-translate",
+        color: SIDEBAR_COLOR
+    },
+    {
         path: "/literary-agencies",
         name: "Literary Agencies",
         icon: "famicons:people",
+        color: SIDEBAR_COLOR
+    },
+    {
+        path: "/categories",
+        name: "Category",
+        icon: "mdi:category",
+        color: SIDEBAR_COLOR
+    },
+    {
+        path: "/admins",
+        name: "Admins",
+        icon: "mdi:user",
         color: SIDEBAR_COLOR
     },
 ]

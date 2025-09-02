@@ -16,6 +16,7 @@ import BookCategory from 'models/BookCategoryModel';
 import Upload from 'models/UploadModel';
 import Author from 'models/AuthorModel';
 import BookAuthor from 'models/BookAuthorModel';
+import Placeholder from 'utils/Placeholder';
 
 const allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
 
@@ -344,7 +345,7 @@ export default function BookFormPage({
                           }]}
                           hidden={language !== "ID"}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder={Placeholder.name_book} />
                         </Form.Item>
 
                         <Form.Item
@@ -352,7 +353,11 @@ export default function BookFormPage({
                           name="description"
                           hidden={language !== "ID"}
                         >
-                          <Input.TextArea variant='filled' rows={4} />
+                          <Input.TextArea 
+                            variant='filled' 
+                            rows={4} 
+                            placeholder={Placeholder.description}
+                          />
                         </Form.Item >
 
                         <Form.Item
@@ -360,7 +365,7 @@ export default function BookFormPage({
                           name="title_tl"
                           hidden={language === "ID"}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder={Placeholder.translated.name_book} />
                         </Form.Item>
 
                         <Form.Item
@@ -368,7 +373,11 @@ export default function BookFormPage({
                           name="description_tl"
                           hidden={language === "ID"}
                         >
-                          <Input.TextArea variant='filled' rows={4} />
+                          <Input.TextArea 
+                            variant='filled' 
+                            rows={4} 
+                            placeholder={Placeholder.translated.description}
+                          />
                         </Form.Item>
                         <Form.Item
                           label={"Authors"}
@@ -377,7 +386,13 @@ export default function BookFormPage({
                             required: true,
                           }]}
                         >
-                          <Select mode='multiple' options={authors} variant='filled' filterOption={selectFilterFunction} />
+                          <Select 
+                            mode='multiple' 
+                            options={authors} 
+                            variant='filled' 
+                            filterOption={selectFilterFunction} 
+                            placeholder={Placeholder.admin_role}
+                          />
                         </Form.Item>
                         <Form.Item
                           label={"Publisher"}
@@ -386,7 +401,13 @@ export default function BookFormPage({
                             required: true,
                           }]}
                         >
-                          <Select showSearch={true} options={publishers} variant='filled' filterOption={selectFilterFunction} />
+                          <Select 
+                            showSearch={true} 
+                            options={publishers} 
+                            variant='filled' 
+                            filterOption={selectFilterFunction}
+                            placeholder={Placeholder.select_author}
+                           />
                         </Form.Item>
                         <Form.Item
                           label={"Illustrator"}
@@ -395,7 +416,13 @@ export default function BookFormPage({
                             required: true,
                           }]}
                         >
-                          <Select showSearch={true} options={Illustrators} variant='filled' filterOption={selectFilterFunction} />
+                          <Select 
+                            showSearch={true} 
+                            options={Illustrators} 
+                            variant='filled' 
+                            filterOption={selectFilterFunction}
+                            placeholder={Placeholder.select_illustrator}
+                           />
                         </Form.Item>
                         <Form.Item
                           label={"Translator"}
@@ -404,7 +431,13 @@ export default function BookFormPage({
                         //   required: true,
                         // }]}
                         >
-                          <Select showSearch={true} options={translators} variant='filled' filterOption={selectFilterFunction} />
+                          <Select 
+                            showSearch={true} 
+                            options={translators} 
+                            variant='filled' 
+                            filterOption={selectFilterFunction}
+                            placeholder={Placeholder.select_translator}
+                           />
                         </Form.Item>
                         <Form.Item
                           label={"Categories"}
@@ -413,7 +446,13 @@ export default function BookFormPage({
                         //   required: true,
                         // }]}
                         >
-                          <Select mode='multiple' options={categories} variant='filled' filterOption={selectFilterFunction} />
+                          <Select 
+                            showSearch={true} 
+                            options={categories} 
+                            variant='filled' 
+                            filterOption={selectFilterFunction}
+                            placeholder={Placeholder.select_categories}
+                           />
                         </Form.Item>
 
                         {!formDisabled ? (

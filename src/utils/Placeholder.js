@@ -3,11 +3,17 @@ export default class Placeholder {
   static name_book = "e.g. Laskar Pelangi"
   static name_category = "e.g. Fiksi"
   static name_publisher = "e.g. AAA Group / PT barabaca"
+  static name_news = "e.g. Weekly Announcement"
   static password = "Insert password here"
   static password_old = "Insert old password here"
   static password_new = "Insert new password here"
   static password_confirm = "Confirm your password"
   static admin_role = "Select a role"
+  static select_author = "Select author(s)"
+  static select_publisher = "Select a publisher"
+  static select_illustrator = "Select an illustrator"
+  static select_translator = "Select a translator"
+  static select_categories = "Select category(s)"
   static phone = "e.g. +62 081233445566"
   static email = "e.g. example@email.com"
   static website = "www.example.com"
@@ -20,11 +26,14 @@ export default class Placeholder {
   static tiktok = "TikTok username"
   static twitter = "Twitter username"
   static youtube = "YouTube channel name"
+  static video_embed = "e.g. https://www.youtube.com/embed/DenUCuq4"
+  
 
   static translated = {
     name_person: "e.g. John Doe (Translated Version)",
     name_book: "e.g. The Rainbow Troops (Translated Version)",
     name_category: "e.g. Fiction (Translated Version)",
+    name_news: "e.g. Weekly Announcement (Translated version)",
     biography: "Insert biography here (Translated Version)",
     description: "Insert description here (Translated Version)",
   }

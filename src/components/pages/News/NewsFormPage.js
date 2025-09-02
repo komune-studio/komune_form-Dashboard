@@ -9,6 +9,7 @@ import swal from '../../reusable/CustomSweetAlert';
 import News from 'models/NewsModel';
 import Upload from 'models/UploadModel';
 import ReactQuill from 'react-quill';
+import Placeholder from 'utils/Placeholder';
 import 'react-quill/dist/quill.snow.css';
 
 const allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
@@ -206,14 +207,14 @@ export default function NewsFormPage({
                           }]}
                           hidden={language !== "ID"}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder={Placeholder.name_news} />
                         </Form.Item>
                         <Form.Item
                           label={languageTag("Title")}
                           name={"title_tl"}
                           hidden={language === "ID"}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder={Placeholder.translated.name_news} />
                         </Form.Item>
 
                         <Form.Item
@@ -270,7 +271,7 @@ export default function NewsFormPage({
                             }
                           ]}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder={Placeholder.video_embed} />
                         </Form.Item>
                         <Form.Item
                           label={languageTag("Body")}

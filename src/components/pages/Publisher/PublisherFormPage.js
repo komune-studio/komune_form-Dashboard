@@ -9,6 +9,7 @@ import swal from '../../reusable/CustomSweetAlert';
 import Publisher from 'models/PublisherModel';
 import Upload from 'models/UploadModel';
 import Helper from 'utils/Helper';
+import Placeholder from 'utils/Placeholder';
 
 const allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
 
@@ -180,27 +181,35 @@ export default function PublisherFormPage({
                             required: true,
                           }]}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder={Placeholder.name_publisher} />
                         </Form.Item>
                         <Form.Item
                           label={languageTag("Description")}
                           name={"description"}
                           hidden={language !== "ID"}
                         >
-                          <Input.TextArea variant='filled' rows={4} />
+                          <Input.TextArea 
+                            variant='filled' 
+                            rows={4} 
+                            placeholder={Placeholder.description} 
+                          />
                         </Form.Item>
                         <Form.Item
                           label={languageTag("Description")}
                           name={"description_tl"}
                           hidden={language === "ID"}
                         >
-                          <Input.TextArea variant='filled' rows={4} />
+                          <Input.TextArea 
+                            variant='filled' 
+                            rows={4} 
+                            placeholder={Placeholder.translated.description} 
+                          />
                         </Form.Item>
                         <Form.Item
                           label={"Address"}
                           name={"address"}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder={Placeholder.address} />
                         </Form.Item>
                         <Form.Item
                           label={"Phone Number"}
@@ -212,7 +221,7 @@ export default function PublisherFormPage({
                             }
                           ]}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder={Placeholder.phone} />
                         </Form.Item>
                         <Form.Item
                           label={"Email"}
@@ -224,7 +233,7 @@ export default function PublisherFormPage({
                             }
                           ]}
                         >
-                          <Input variant='filled' />
+                          <Input variant='filled' placeholder={Placeholder.email} />
                         </Form.Item>
 
                         {!formDisabled ? (

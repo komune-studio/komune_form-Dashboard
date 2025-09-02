@@ -180,6 +180,8 @@ export default function TranslatorFormPage({
                             options={['ID', 'EN']}
                           />
                         </Flex>
+
+                        <Divider>Personal Information</Divider>
                         
                         <Form.Item
                           label={"Name"}
@@ -214,6 +216,21 @@ export default function TranslatorFormPage({
                         </Form.Item>
 
                         <Form.Item
+                          label={languageTag("Biography")}
+                          name={"biography"}
+                          hidden={language !== "ID"}
+                        >
+                          <Input.TextArea variant='filled' rows={4} />
+                        </Form.Item>
+                        <Form.Item
+                          label={languageTag("Biography")}
+                          name={"biography_tl"}
+                          hidden={language === "ID"}
+                        >
+                          <Input.TextArea variant='filled' rows={4} />
+                        </Form.Item>
+
+                         <Form.Item
                           label={"Languages"}
                           name={"languages"}
                           rules={[{
@@ -232,7 +249,7 @@ export default function TranslatorFormPage({
                               label="Facebook"
                               name="facebook"
                             >
-                              <Input placeholder="Facebook username" />
+                              <Input variant='filled' placeholder="Facebook username" />
                             </Form.Item>
                           </Col>
                           
@@ -241,7 +258,7 @@ export default function TranslatorFormPage({
                               label="Instagram"
                               name="instagram"
                             >
-                              <Input placeholder="Instagram username" prefix="@" />
+                              <Input variant='filled' placeholder="Instagram username" prefix="@" />
                             </Form.Item>
                           </Col>
                         </Row>
@@ -252,7 +269,7 @@ export default function TranslatorFormPage({
                               label="TikTok"
                               name="tiktok"
                             >
-                              <Input placeholder="TikTok username" prefix="@" />
+                              <Input variant='filled' placeholder="TikTok username" prefix="@" />
                             </Form.Item>
                           </Col>
                           
@@ -261,7 +278,7 @@ export default function TranslatorFormPage({
                               label="Twitter"
                               name="twitter"
                             >
-                              <Input placeholder="Twitter username" prefix="@" />
+                              <Input variant='filled' placeholder="Twitter username" prefix="@" />
                             </Form.Item>
                           </Col>
                         </Row>
@@ -270,24 +287,7 @@ export default function TranslatorFormPage({
                           label="YouTube"
                           name="youtube"
                         >
-                          <Input placeholder="YouTube channel name" />
-                        </Form.Item>
-
-                        <Divider>Biography</Divider>
-
-                        <Form.Item
-                          label={languageTag("Biography")}
-                          name={"biography"}
-                          hidden={language !== "ID"}
-                        >
-                          <Input.TextArea variant='filled' rows={4} />
-                        </Form.Item>
-                        <Form.Item
-                          label={languageTag("Biography")}
-                          name={"biography_tl"}
-                          hidden={language === "ID"}
-                        >
-                          <Input.TextArea variant='filled' rows={4} />
+                          <Input variant='filled' placeholder="YouTube channel name" />
                         </Form.Item>
 
                         {!formDisabled ? (

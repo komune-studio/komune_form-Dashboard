@@ -178,6 +178,8 @@ export default function IllustratorFormPage({
                           />
                         </Flex>
                         
+                        <Divider>Personal Information</Divider>
+                        
                         <Form.Item
                           label={"Name"}
                           name={"name"}
@@ -210,57 +212,6 @@ export default function IllustratorFormPage({
                           <Input variant='filled' />
                         </Form.Item>
 
-                        <Divider>Social Media Profiles</Divider>
-
-                        <Row gutter={16}>
-                          <Col xs={24} md={12}>
-                            <Form.Item
-                              label="Facebook"
-                              name="facebook"
-                            >
-                              <Input placeholder="Facebook username" />
-                            </Form.Item>
-                          </Col>
-                          
-                          <Col xs={24} md={12}>
-                            <Form.Item
-                              label="Instagram"
-                              name="instagram"
-                            >
-                              <Input placeholder="Instagram username" prefix="@" />
-                            </Form.Item>
-                          </Col>
-                        </Row>
-
-                        <Row gutter={16}>
-                          <Col xs={24} md={12}>
-                            <Form.Item
-                              label="TikTok"
-                              name="tiktok"
-                            >
-                              <Input placeholder="TikTok username" prefix="@" />
-                            </Form.Item>
-                          </Col>
-                          
-                          <Col xs={24} md={12}>
-                            <Form.Item
-                              label="Twitter"
-                              name="twitter"
-                            >
-                              <Input placeholder="Twitter username" prefix="@" />
-                            </Form.Item>
-                          </Col>
-                        </Row>
-
-                        <Form.Item
-                          label="YouTube"
-                          name="youtube"
-                        >
-                          <Input placeholder="YouTube channel name" />
-                        </Form.Item>
-
-                        <Divider>Biography</Divider>
-
                         <Form.Item
                           label={languageTag("Biography")}
                           name={"biography"}
@@ -274,6 +225,55 @@ export default function IllustratorFormPage({
                           hidden={language === "ID"}
                         >
                           <Input.TextArea variant='filled' rows={4} />
+                        </Form.Item>
+
+                        <Divider>Social Media Profiles</Divider>
+
+                        <Row gutter={16}>
+                          <Col xs={24} md={12}>
+                            <Form.Item
+                              label="Facebook"
+                              name="facebook"
+                            >
+                              <Input variant='filled' placeholder="Facebook username" />
+                            </Form.Item>
+                          </Col>
+                          
+                          <Col xs={24} md={12}>
+                            <Form.Item
+                              label="Instagram"
+                              name="instagram"
+                            >
+                              <Input variant='filled' placeholder="Instagram username" prefix="@" />
+                            </Form.Item>
+                          </Col>
+                        </Row>
+
+                        <Row gutter={16}>
+                          <Col xs={24} md={12}>
+                            <Form.Item
+                              label="TikTok"
+                              name="tiktok"
+                            >
+                              <Input variant='filled' placeholder="TikTok username" prefix="@" />
+                            </Form.Item>
+                          </Col>
+                          
+                          <Col xs={24} md={12}>
+                            <Form.Item
+                              label="Twitter"
+                              name="twitter"
+                            >
+                              <Input variant='filled' placeholder="Twitter username" prefix="@" />
+                            </Form.Item>
+                          </Col>
+                        </Row>
+
+                        <Form.Item
+                          label="YouTube"
+                          name="youtube"
+                        >
+                          <Input variant='filled' placeholder="YouTube channel name" />
                         </Form.Item>
 
                         {!formDisabled ? (

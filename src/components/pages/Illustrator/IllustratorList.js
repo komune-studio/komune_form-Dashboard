@@ -161,7 +161,7 @@ const IllustratorList = () => {
             </Row>
             <CustomTable
               showFilter={true}
-              pagination={false}
+              pagination={true}
               searchText={''}
               data={dataSource}
               columns={columns}

@@ -2,7 +2,8 @@ import moment from 'moment';
 import Constant from './Constant';
 
 export default class Helper {
-	static phoneRegEx = /^(?:([+]\d{1,4})[-.\s]){1}\d+$/
+	static phoneRegEx = /^\+[1-9]\d{1,14}$/;
+
 
 	static formatNumber(number) {
 		// Convert number to string

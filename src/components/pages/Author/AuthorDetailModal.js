@@ -11,10 +11,10 @@ const AuthorDetailModal = ({ open, author, onClose }) => {
   const bioBoxStyle = {
     marginTop: '5px',
     padding: '10px',
-    background: '#000', // hitam
+    background: '#000', 
     borderRadius: '6px',
-    border: '1px solid #fff', // border putih
-    color: '#fff', // teks putih biar terbaca
+    border: '1px solid #fff', 
+    color: '#fff', 
     maxHeight: '150px',
     overflowY: 'auto'
   };
@@ -22,7 +22,7 @@ const AuthorDetailModal = ({ open, author, onClose }) => {
   const infoStyle = {
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px', // jarak antar email & phone lebih rapih
+    gap: '4px', 
     marginTop: '8px',
   };
 

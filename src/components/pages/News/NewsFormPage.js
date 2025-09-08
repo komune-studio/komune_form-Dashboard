@@ -265,6 +265,9 @@ export default function NewsFormPage({
                         <Form.Item
                           label={"Video Embed Link"}
                           name={"video_url"}
+                          style={{
+                            width: "50%"
+                          }}
                           rules={[
                             {
                               type: "url",

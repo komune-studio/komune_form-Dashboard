@@ -230,52 +230,73 @@ export default function IllustratorFormPage({
 
                         <Divider>Social Media Profiles</Divider>
 
-                        <Row gutter={16}>
-                          <Col xs={24} md={12}>
+                        <Flex vertical>
+                          <Flex gap={12} wrap style={{ width: "100%" }}>
                             <Form.Item
                               label="Facebook"
                               name="facebook"
+                              style={{
+                                width: "100%",
+                              }}
                             >
                               <Input variant='filled' placeholder={Placeholder.facebook} />
                             </Form.Item>
-                          </Col>
-                          
-                          <Col xs={24} md={12}>
+                            
                             <Form.Item
                               label="Instagram"
                               name="instagram"
+                              style={{
+                                width: "100%",
+                              }}
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.instagram} />
                             </Form.Item>
-                          </Col>
-                        </Row>
+                          </Flex>
 
-                        <Row gutter={16}>
-                          <Col xs={24} md={12}>
+                          <Flex gap={12} wrap>
+                            <Form.Item
+                              label="Instagram"
+                              name="instagram"
+                              style={{
+                                width: "100%"
+                              }}
+                            >
+                              <Input variant='filled' prefix="@" placeholder={Placeholder.instagram} />
+                            </Form.Item>
+
                             <Form.Item
                               label="TikTok"
                               name="tiktok"
+                              style={{
+                                width: "100%"
+                              }}
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.tiktok} />
                             </Form.Item>
-                          </Col>
-                          
-                          <Col xs={24} md={12}>
+                          </Flex>
+
+                          <Flex gap={12} wrap>
                             <Form.Item
                               label="Twitter"
                               name="twitter"
+                              style={{
+                                width: "100%",
+                              }}
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.twitter} />
                             </Form.Item>
-                          </Col>
-                        </Row>
 
-                        <Form.Item
-                          label="YouTube"
-                          name="youtube"
-                        >
-                          <Input variant='filled' placeholder={Placeholder.youtube} />
-                        </Form.Item>
+                            <Form.Item
+                              label="YouTube"
+                              name="youtube"
+                              style={{
+                                width: "100%",
+                              }}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.youtube} />
+                            </Form.Item>
+                          </Flex>
+                        </Flex>
 
                         {!formDisabled ? (
                           <div className={"d-flex flex-row"}>

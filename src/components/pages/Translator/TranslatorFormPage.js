@@ -244,6 +244,7 @@ export default function TranslatorFormPage({
 
                         <Divider>Social Media Profiles</Divider>
 
+
                         <Flex vertical>
                           <Flex gap={12} wrap style={{ width: "100%" }}>
                             <Form.Item
@@ -265,9 +266,7 @@ export default function TranslatorFormPage({
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.instagram} />
                             </Form.Item>
-                          </Flex>
-
-                          <Flex gap={12} wrap>
+                            
                             <Form.Item
                               label="Instagram"
                               name="instagram"
@@ -277,7 +276,9 @@ export default function TranslatorFormPage({
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.instagram} />
                             </Form.Item>
+                          </Flex>
 
+                          <Flex gap={12} wrap>
                             <Form.Item
                               label="TikTok"
                               name="tiktok"
@@ -287,9 +288,7 @@ export default function TranslatorFormPage({
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.tiktok} />
                             </Form.Item>
-                          </Flex>
-
-                          <Flex gap={12} wrap>
+                            
                             <Form.Item
                               label="Twitter"
                               name="twitter"

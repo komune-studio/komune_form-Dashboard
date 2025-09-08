@@ -259,9 +259,7 @@ export default function AuthorFormPage({
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.instagram} />
                             </Form.Item>
-                          </Flex>
-
-                          <Flex gap={12} wrap>
+                            
                             <Form.Item
                               label="Instagram"
                               name="instagram"
@@ -271,7 +269,9 @@ export default function AuthorFormPage({
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.instagram} />
                             </Form.Item>
+                          </Flex>
 
+                          <Flex gap={12} wrap>
                             <Form.Item
                               label="TikTok"
                               name="tiktok"
@@ -281,9 +281,7 @@ export default function AuthorFormPage({
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.tiktok} />
                             </Form.Item>
-                          </Flex>
-
-                          <Flex gap={12} wrap>
+                            
                             <Form.Item
                               label="Twitter"
                               name="twitter"

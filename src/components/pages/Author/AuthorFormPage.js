@@ -199,7 +199,7 @@ export default function AuthorFormPage({
                             message: 'Please enter a valid email address!',
                           }]}
                         >
-                          <Input variant='filled' placeholder={Placeholder.email}/>
+                          <Input variant='filled' placeholder={Placeholder.email} />
                         </Form.Item>
 
                         <Form.Item
@@ -210,7 +210,7 @@ export default function AuthorFormPage({
                             message: 'Please enter a valid phone number!',
                           }]}
                         >
-                          <Input variant='filled' placeholder={Placeholder.phone}/>
+                          <Input variant='filled' placeholder={Placeholder.phone} />
                         </Form.Item>
 
                         <Form.Item
@@ -218,9 +218,9 @@ export default function AuthorFormPage({
                           name={"biography"}
                           hidden={language !== "ID"}
                         >
-                          <Input.TextArea 
-                            variant='filled' 
-                            rows={4} 
+                          <Input.TextArea
+                            variant='filled'
+                            rows={4}
                             placeholder={Placeholder.biography}
                           />
                         </Form.Item>
@@ -229,17 +229,17 @@ export default function AuthorFormPage({
                           name={"biography_tl"}
                           hidden={language === "ID"}
                         >
-                          <Input.TextArea 
-                          variant='filled' 
-                          rows={4} 
-                          placeholder={Placeholder.translated.biography}
+                          <Input.TextArea
+                            variant='filled'
+                            rows={4}
+                            placeholder={Placeholder.translated.biography}
                           />
                         </Form.Item>
 
                         <Divider>Social Media Profiles</Divider>
 
-                        <Flex vertical>
-                          <Flex gap={12} wrap style={{ width: "100%" }}>
+                        <Row>
+                          <Col xs={4}>
                             <Form.Item
                               label="Facebook"
                               name="facebook"
@@ -249,7 +249,9 @@ export default function AuthorFormPage({
                             >
                               <Input variant='filled' placeholder={Placeholder.facebook} />
                             </Form.Item>
-                            
+                          </Col>
+
+                          <Col xs={4}>
                             <Form.Item
                               label="Instagram"
                               name="instagram"
@@ -259,19 +261,9 @@ export default function AuthorFormPage({
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.instagram} />
                             </Form.Item>
-                            
-                            <Form.Item
-                              label="Instagram"
-                              name="instagram"
-                              style={{
-                                width: "100%"
-                              }}
-                            >
-                              <Input variant='filled' prefix="@" placeholder={Placeholder.instagram} />
-                            </Form.Item>
-                          </Flex>
+                          </Col>
 
-                          <Flex gap={12} wrap>
+                          <Col xs={4}>
                             <Form.Item
                               label="TikTok"
                               name="tiktok"
@@ -281,7 +273,10 @@ export default function AuthorFormPage({
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.tiktok} />
                             </Form.Item>
-                            
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col xs={4}>
                             <Form.Item
                               label="Twitter"
                               name="twitter"
@@ -291,6 +286,9 @@ export default function AuthorFormPage({
                             >
                               <Input variant='filled' prefix="@" placeholder={Placeholder.twitter} />
                             </Form.Item>
+                          </Col>
+
+                          <Col xs={4}>
 
                             <Form.Item
                               label="YouTube"
@@ -301,8 +299,8 @@ export default function AuthorFormPage({
                             >
                               <Input variant='filled' placeholder={Placeholder.youtube} />
                             </Form.Item>
-                          </Flex>
-                        </Flex>
+                          </Col>
+                        </Row>
 
                         {!formDisabled ? (
                           <div className={"d-flex flex-row"}>

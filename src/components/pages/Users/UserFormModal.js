@@ -42,7 +42,7 @@ export default function UserFormModal({ isOpen, close, isNewRecord, userData, is
                 } else {
                     await Admin.createSuperAdmin(body);
                 }
-                msg = "Successfully created User"
+                msg = "Successfully added new User"
             } 
             // else {
             //     if (isSuperAdmin) {

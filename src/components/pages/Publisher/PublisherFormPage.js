@@ -73,10 +73,12 @@ export default function PublisherFormPage({
       body = form.getFieldsValue()
       console.log(body)
 
-      let msg = 'Successfully created Publishers'
+      let msg
       if (!publisherData) {
+        msg = 'Successfully added new Publishers'
         result = await Publisher.create(body);
       } else {
+        msg = 'Successfully updated Publishers'
         result = await Publisher.edit(publisherData.id, body);
       }
 

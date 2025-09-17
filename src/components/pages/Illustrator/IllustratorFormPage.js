@@ -73,10 +73,12 @@ export default function IllustratorFormPage({
       body = form.getFieldsValue()
       console.log(body)
 
-      let msg = 'Successfully created Illustrator'
+      let msg
       if (!illustratorData) {
+        msg = 'Successfully added new Illustrator'
         result = await Illustrator.create(body);
       } else {
+        msg = 'Successfully updated Illustrator'
         result = await Illustrator.edit(illustratorData.id, body);
       }
 

@@ -19,17 +19,17 @@ option {
     background-color: #FFF !important;
 }
 
-.ant-picker-outlined {
-    z-index: 1000000000 !important;
+/* .ant-picker-outlined {
+    z-index: 1000 !important;
 }
 
 .ant-picker-focused {
-    z-index: 1000000000 !important;
+    z-index: 1000 !important;
 }
 
 .ant-picker {
-    z-index: 1000000000 !important;
-}
+    z-index: 1100 !important;
+} */
 
 /* input::placeholder {
     color: #FFF !important;

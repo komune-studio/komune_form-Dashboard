@@ -73,10 +73,12 @@ export default function AuthorFormPage({
       body = form.getFieldsValue()
       console.log(body)
 
-      let msg = 'Successfully created Authors'
+      let msg
       if (!authorData) {
+        msg = 'Successfully added new Authors'
         result = await Author.create(body);
       } else {
+        msg = 'Successfully updated Authors'
         result = await Author.edit(authorData.id, body);
       }
 

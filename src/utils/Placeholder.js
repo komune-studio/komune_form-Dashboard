@@ -21,13 +21,16 @@ export default class Placeholder {
   static biography = "Insert biography here"
   static description = "Insert description here"
   static language = "e.g. Indonesia, English, Spanish, French"
+  static initial_language = "e.g. Indonesia / English / Spanish"
   static facebook = "Facebook username"
   static instagram = "Instagram username"
   static tiktok = "TikTok username"
   static twitter = "Twitter username"
   static youtube = "YouTube channel name"
   static video_embed = "e.g. https://www.youtube.com/embed/DenUCuq4"
-  
+  static isbn = "e.g. 978-0-306-40615-7"
+  static total_page = "e.g. 224"
+
 
   static translated = {
     name_person: "e.g. John Doe (Translated Version)",

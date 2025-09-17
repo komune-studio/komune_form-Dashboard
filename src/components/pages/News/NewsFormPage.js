@@ -75,10 +75,12 @@ export default function NewsFormPage({
       body = form.getFieldsValue()
       console.log(body)
 
-      let msg = 'Successfully created News'
+      let msg
       if (!newsData) {
+        msg = 'Successfully added new News'
         result = await News.create(body);
       } else {
+        msg = 'Successfully updated News'
         result = await News.edit(newsData.id, body);
       }
 

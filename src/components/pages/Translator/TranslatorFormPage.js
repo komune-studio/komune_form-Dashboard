@@ -75,10 +75,12 @@ export default function TranslatorFormPage({
       body = form.getFieldsValue()
       console.log(body)
 
-      let msg = 'Successfully created Translator'
+      let msg
       if (!translatorData) {
+        msg = 'Successfully added new Translator'
         result = await Translator.create(body);
       } else {
+        msg = 'Successfully updated Translator'
         result = await Translator.edit(translatorData.id, body);
       }
 

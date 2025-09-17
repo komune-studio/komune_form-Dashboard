@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag, DatePicker } from 'antd';
+import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag, DatePicker, Checkbox, Divider, InputNumber } from 'antd';
 import { Card, CardBody, Container } from 'reactstrap';
 import { Col, Row } from 'react-bootstrap';
 import Palette from '../../../utils/Palette';
@@ -157,12 +157,14 @@ export default function BookFormPage({
         await uploadImage();
       }
       body = form.getFieldsValue()
-      // console.log("Body: ", body)
+      console.log("Body: ", body)
 
-      let msg = 'Successfully created Book'
+      let msg;
       if (!bookData) {
+        msg = 'Successfully added new Book';
         result = await Book.create(body);
       } else {
+        msg = 'Successfully updated Book';
         result = await Book.edit(bookData.id, body);
       }
 
@@ -265,9 +267,15 @@ export default function BookFormPage({
         publisher_id: bookData.publisher_id,
         illustrator_id: bookData.illustrator_id,
         translator_id: bookData.translator_id,
+        isbn: bookData.isbn,
+        total_page: bookData.total_page,
+        initial_language: bookData.initial_language,
+        translation_rights: bookData.translation_rights,
+        contact_person_name: bookData.contact_person_name,
+        contact_person_email: bookData.contact_person_email,
       })
 
-      if(bookData.release_date) {
+      if (bookData.release_date) {
         form.setFieldValue("release_date", moment(bookData.release_date))
       }
 
@@ -342,6 +350,9 @@ export default function BookFormPage({
                             options={['ID', 'EN']}
                           />
                         </Flex>
+
+                        <Divider>General Information</Divider>
+
                         <Form.Item
                           label={languageTag("Title")}
                           name="title"
@@ -354,18 +365,6 @@ export default function BookFormPage({
                         </Form.Item>
 
                         <Form.Item
-                          label={languageTag("Description")}
-                          name="description"
-                          hidden={language !== "ID"}
-                        >
-                          <Input.TextArea 
-                            variant='filled' 
-                            rows={4} 
-                            placeholder={Placeholder.description}
-                          />
-                        </Form.Item >
-
-                        <Form.Item
                           label={languageTag("Title")}
                           name="title_tl"
                           hidden={language === "ID"}
@@ -375,23 +374,28 @@ export default function BookFormPage({
 
                         <Form.Item
                           label={languageTag("Description")}
+                          name="description"
+                          hidden={language !== "ID"}
+                        >
+                          <Input.TextArea
+                            variant='filled'
+                            rows={4}
+                            placeholder={Placeholder.description}
+                          />
+                        </Form.Item >
+
+                        <Form.Item
+                          label={languageTag("Description")}
                           name="description_tl"
                           hidden={language === "ID"}
                         >
-                          <Input.TextArea 
-                            variant='filled' 
-                            rows={4} 
+                          <Input.TextArea
+                            variant='filled'
+                            rows={4}
                             placeholder={Placeholder.translated.description}
                           />
                         </Form.Item>
 
-                        <Form.Item
-                          label={"Released Date"}
-                          name="release_date"
-                        >
-                          <DatePicker picker='date' style={{ width: "100%" }} />
-                        </Form.Item >
-                        
                         <Form.Item
                           label={"Authors"}
                           name={"authors"}
@@ -399,14 +403,15 @@ export default function BookFormPage({
                             required: true,
                           }]}
                         >
-                          <Select 
-                            mode='multiple' 
-                            options={authors} 
-                            variant='filled' 
-                            filterOption={selectFilterFunction} 
+                          <Select
+                            mode='multiple'
+                            options={authors}
+                            variant='filled'
+                            filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_author}
                           />
                         </Form.Item>
+
                         <Form.Item
                           label={"Publisher"}
                           name={"publisher_id"}
@@ -414,25 +419,75 @@ export default function BookFormPage({
                             required: true,
                           }]}
                         >
-                          <Select 
-                            showSearch={true} 
-                            options={publishers} 
-                            variant='filled' 
+                          <Select
+                            showSearch={true}
+                            options={publishers}
+                            variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_publisher}
-                           />
+                          />
                         </Form.Item>
+
+                        <Form.Item
+                          label={"Categories"}
+                          name={"categories"}
+                        // rules={[{
+                        //   required: true,
+                        // }]}
+                        >
+                          <Select
+                            mode='multiple'
+                            showSearch={true}
+                            options={categories}
+                            variant='filled'
+                            filterOption={selectFilterFunction}
+                            placeholder={Placeholder.select_categories}
+                          />
+                        </Form.Item>
+
+                        <Divider>Detail Information</Divider>
+
+                        <Form.Item
+                          label={"Released Date"}
+                          name="release_date"
+                        >
+                          <DatePicker picker='date' style={{ width: "100%" }} />
+                        </Form.Item >
+
+                        <Form.Item
+                          label={"ISBN"}
+                          name="isbn"
+                        >
+                          <Input variant='filled' placeholder={Placeholder.isbn} />
+                        </Form.Item >
+                        <Form.Item
+                          label={"Initial Language"}
+                          name="initial_language"
+                          style={{
+                            flexGrow: 1
+                          }}
+                        >
+                          <Input variant='filled' placeholder={Placeholder.initial_language} />
+                        </Form.Item >
+
+                        <Form.Item
+                          label={"Total Page"}
+                          name="total_page"
+                        >
+                          <InputNumber variant='filled' placeholder={Placeholder.total_page} style={{ width: "100%" }} />
+                        </Form.Item >
+
                         <Form.Item
                           label={"Illustrator"}
                           name={"illustrator_id"}
                         >
-                          <Select 
-                            showSearch={true} 
-                            options={Illustrators} 
-                            variant='filled' 
+                          <Select
+                            showSearch={true}
+                            options={Illustrators}
+                            variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_illustrator}
-                           />
+                          />
                         </Form.Item>
                         <Form.Item
                           label={"Translator"}
@@ -441,30 +496,47 @@ export default function BookFormPage({
                         //   required: true,
                         // }]}
                         >
-                          <Select 
-                            showSearch={true} 
-                            options={translators} 
-                            variant='filled' 
+                          <Select
+                            showSearch={true}
+                            options={translators}
+                            variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_translator}
-                           />
+                          />
                         </Form.Item>
+
                         <Form.Item
-                          label={"Categories"}
-                          name={"categories"}
-                        // rules={[{
-                        //   required: true,
-                        // }]}
+                          label={"Translation Rights"}
+                          name="translation_rights"
+                          valuePropName='checked'
                         >
-                          <Select 
-                            mode='multiple'
-                            showSearch={true} 
-                            options={categories} 
-                            variant='filled' 
-                            filterOption={selectFilterFunction}
-                            placeholder={Placeholder.select_categories}
-                           />
-                        </Form.Item>
+                          <Checkbox>Available for translation</Checkbox>
+                        </Form.Item >
+
+                        <Divider>Contact Person Information</Divider>
+
+                        <Row>
+                          <Col md={6}>
+                            <Form.Item
+                              label={"Name"}
+                              name="contact_person_name"
+                            >
+                              <Input variant='filled' placeholder={Placeholder.name_person} />
+                            </Form.Item >
+                          </Col>
+                          <Col md={6}>
+                            <Form.Item
+                              label={"Email"}
+                              name="contact_person_email"
+                              rules={[{
+                                type: 'email',
+                                message: 'Please enter a valid email address!',
+                              }]}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.email} />
+                            </Form.Item >
+                          </Col>
+                        </Row>
 
                         {!formDisabled ? (
                           <div className={"d-flex flex-row"}>

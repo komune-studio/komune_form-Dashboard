@@ -39,6 +39,9 @@ import AuthorEdit from "components/pages/Author/AuthorEdit";
 import NewsList from "components/pages/News/NewsList";
 import NewsCreate from "components/pages/News/NewsCreate";
 import NewsEdit from "components/pages/News/NewsEdit";
+import MediaList from "components/pages/Media/MediaList";
+import MediaCreate from "components/pages/Media/MediaCreate";
+import MediaEdit from "components/pages/Media/MediaEdit";
 
 var routes = [
     {
@@ -123,6 +126,24 @@ var routes = [
         path: "/news",
         name: "News",
         component: NewsList,
+        layout: "/admin",
+    },
+    {
+        path: "/medias/create",
+        name: "Medias",
+        component: MediaCreate,
+        layout: "/admin",
+    },
+    {
+        path: "/medias/:id/edit",
+        name: "Medias",
+        component: MediaEdit,
+        layout: "/admin",
+    },
+    {
+        path: "/medias",
+        name: "Medias",
+        component: MediaList,
         layout: "/admin",
     },
     {

@@ -4,6 +4,7 @@ export default class Placeholder {
   static name_category = "e.g. Fiksi"
   static name_publisher = "e.g. AAA Group / PT barabaca"
   static name_news = "e.g. Weekly Announcement"
+  static name_media = "e.g. Tinta & Ide: Dari Coretan sampai Jadi Buku"
   static password = "Insert password here"
   static password_old = "Insert old password here"
   static password_new = "Insert new password here"

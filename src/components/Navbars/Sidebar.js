@@ -78,6 +78,12 @@ const SIDEBAR = [
         color: SIDEBAR_COLOR
     },
     {
+        path: "/medias",
+        name: "Medias",
+        icon: "mdi:library-video",
+        color: SIDEBAR_COLOR
+    },
+    {
         path: "/publishers",
         name: "Publishers",
         icon: "mdi:public",

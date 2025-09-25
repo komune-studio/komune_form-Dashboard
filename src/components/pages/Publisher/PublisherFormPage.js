@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag } from 'antd';
+import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag, Divider } from 'antd';
 import { Card, CardBody, Container } from 'reactstrap';
 import { Col, Row } from 'react-bootstrap';
 import Palette from '../../../utils/Palette';
@@ -115,6 +115,12 @@ export default function PublisherFormPage({
         address: publisherData?.address,
         phone: publisherData?.phone,
         email: publisherData?.email,
+        facebook: publisherData?.facebook,
+        tiktok: publisherData?.tiktok,
+        instagram: publisherData?.instagram,
+        twitter: publisherData?.twitter,
+        youtube: publisherData?.youtube,
+        website_url: publisherData?.website_url,
       })
 
       if (publisherData.publisher_logo) {
@@ -176,6 +182,9 @@ export default function PublisherFormPage({
                             options={['ID', 'EN']}
                           />
                         </Flex>
+
+                        <Divider>Details Information</Divider>
+
                         <Form.Item
                           label={"Name"}
                           name={"name"}
@@ -190,10 +199,10 @@ export default function PublisherFormPage({
                           name={"description"}
                           hidden={language !== "ID"}
                         >
-                          <Input.TextArea 
-                            variant='filled' 
-                            rows={4} 
-                            placeholder={Placeholder.description} 
+                          <Input.TextArea
+                            variant='filled'
+                            rows={4}
+                            placeholder={Placeholder.description}
                           />
                         </Form.Item>
                         <Form.Item
@@ -201,10 +210,10 @@ export default function PublisherFormPage({
                           name={"description_tl"}
                           hidden={language === "ID"}
                         >
-                          <Input.TextArea 
-                            variant='filled' 
-                            rows={4} 
-                            placeholder={Placeholder.translated.description} 
+                          <Input.TextArea
+                            variant='filled'
+                            rows={4}
+                            placeholder={Placeholder.translated.description}
                           />
                         </Form.Item>
                         <Form.Item
@@ -237,6 +246,83 @@ export default function PublisherFormPage({
                         >
                           <Input variant='filled' placeholder={Placeholder.email} />
                         </Form.Item>
+                        <Form.Item
+                          label={"Website URL"}
+                          name={"website_url"}
+                          rules={[
+                            {
+                              type: "url",
+                            }
+                          ]}
+                        >
+                          <Input variant='filled' placeholder={Placeholder.website} />
+                        </Form.Item>
+
+                        <Divider>Social Media Accounts (URL)</Divider>
+
+                        <Row>
+                          <Col xs={4}>
+                            <Form.Item
+                              label="Facebook"
+                              name="facebook"
+                              style={{
+                                width: "100%",
+                              }}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.facebook} />
+                            </Form.Item>
+                          </Col>
+
+                          <Col xs={4}>
+                            <Form.Item
+                              label="Instagram"
+                              name="instagram"
+                              style={{
+                                width: "100%",
+                              }}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.instagram} />
+                            </Form.Item>
+                          </Col>
+
+                          <Col xs={4}>
+                            <Form.Item
+                              label="TikTok"
+                              name="tiktok"
+                              style={{
+                                width: "100%"
+                              }}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.tiktok} />
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col xs={4}>
+                            <Form.Item
+                              label="Twitter"
+                              name="twitter"
+                              style={{
+                                width: "100%",
+                              }}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.twitter} />
+                            </Form.Item>
+                          </Col>
+
+                          <Col xs={4}>
+
+                            <Form.Item
+                              label="YouTube"
+                              name="youtube"
+                              style={{
+                                width: "100%",
+                              }}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.youtube} />
+                            </Form.Item>
+                          </Col>
+                        </Row>
 
                         {!formDisabled ? (
                           <div className={"d-flex flex-row"}>

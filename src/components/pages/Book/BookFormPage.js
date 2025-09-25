@@ -18,6 +18,7 @@ import Author from 'models/AuthorModel';
 import BookAuthor from 'models/BookAuthorModel';
 import Placeholder from 'utils/Placeholder';
 import dayjs from 'dayjs';
+import LiteraryAgencies from 'models/LiteraryAgenciesModel';
 
 const allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
 
@@ -37,7 +38,8 @@ export default function BookFormPage({
 
   const [publishers, setPublishers] = useState([]);
   const [translators, setTranslators] = useState([]);
-  const [Illustrators, setIllustrators] = useState([]);
+  const [illustrators, setIllustrators] = useState([]);
+  const [agencies, setAgencies] = useState([]);
   const [categories, setCategories] = useState([]);
   const [authors, setAuthors] = useState([]);
 
@@ -77,6 +79,17 @@ export default function BookFormPage({
     }
   }
 
+  const getAgenciesData = async () => {
+    try {
+      let result = await LiteraryAgencies.getAll()
+      setAgencies(result.map((r) => ({
+        value: r.id,
+        label: r.name,
+      })))
+    } catch (e) {
+    }
+  }
+
   const getCategoriesData = async () => {
     try {
       let result = await Category.getAll();
@@ -105,6 +118,7 @@ export default function BookFormPage({
       getPublishersData(),
       getTranslatorsData(),
       getIllustratorsData(),
+      getAgenciesData(),
       getCategoriesData(),
       getAuthorsData(),
     ])
@@ -267,6 +281,7 @@ export default function BookFormPage({
         publisher_id: bookData.publisher_id,
         illustrator_id: bookData.illustrator_id,
         translator_id: bookData.translator_id,
+        literary_agency_id: bookData.literary_agency_id,
         isbn: bookData.isbn,
         total_page: bookData.total_page,
         initial_language: bookData.initial_language,
@@ -483,7 +498,7 @@ export default function BookFormPage({
                         >
                           <Select
                             showSearch={true}
-                            options={Illustrators}
+                            options={illustrators}
                             variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_illustrator}
@@ -502,6 +517,18 @@ export default function BookFormPage({
                             variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_translator}
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          label={"Literary Agency"}
+                          name={"literary_agency_id"}
+                        >
+                          <Select
+                            showSearch={true}
+                            options={agencies}
+                            variant='filled'
+                            filterOption={selectFilterFunction}
+                            placeholder={Placeholder.select_agency}
                           />
                         </Form.Item>
 

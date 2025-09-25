@@ -13,6 +13,7 @@ export default class Placeholder {
   static select_author = "Select author(s)"
   static select_publisher = "Select a publisher"
   static select_illustrator = "Select an illustrator"
+  static select_agency = "Select a literary agency"
   static select_translator = "Select a translator"
   static select_categories = "Select category(s)"
   static phone = "e.g. +621111222233"

@@ -42,6 +42,8 @@ import NewsEdit from "components/pages/News/NewsEdit";
 import MediaList from "components/pages/Media/MediaList";
 import MediaCreate from "components/pages/Media/MediaCreate";
 import MediaEdit from "components/pages/Media/MediaEdit";
+import LiteraryAgencyCreate from "components/pages/LiteraryAgency/LiteraryAgencyCreate";
+import LiteraryAgencyEdit from "components/pages/LiteraryAgency/LiteraryAgencyEdit";
 
 var routes = [
     {
@@ -182,7 +184,18 @@ var routes = [
         component: IllustratorList,
         layout: "/admin",
     },
-    
+    {
+        path: "/literary-agencies/create",
+        name: "Literary Agencies",
+        component: LiteraryAgencyCreate,
+        layout: "/admin",
+    },
+    {
+        path: "/literary-agencies/:id/edit",
+        name: "Literary Agencies",
+        component: LiteraryAgencyEdit,
+        layout: "/admin",
+    },
     {
         path: "/literary-agencies",
         name: "Literary Agencies",

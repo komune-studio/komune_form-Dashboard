@@ -117,6 +117,7 @@ export default function AuthorFormPage({
         tiktok: authorData.tiktok,
         twitter: authorData.twitter,
         youtube: authorData.youtube,
+        website_url: authorData.website_url,
         biography: authorData.biography,
         biography_tl: authorData.biography_tl,
       })
@@ -300,6 +301,19 @@ export default function AuthorFormPage({
                               }}
                             >
                               <Input variant='filled' placeholder={Placeholder.youtube} />
+                            </Form.Item>
+                          </Col>
+
+                          <Col xs={4}>
+
+                            <Form.Item
+                              label="Website"
+                              name="website_url"
+                              style={{
+                                width: "100%",
+                              }}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.website} />
                             </Form.Item>
                           </Col>
                         </Row>

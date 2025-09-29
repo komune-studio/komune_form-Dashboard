@@ -119,6 +119,7 @@ export default function TranslatorFormPage({
         tiktok: translatorData.tiktok,
         twitter: translatorData.twitter,
         youtube: translatorData.youtube,
+        website_url: translatorData.website_url,
         biography: translatorData.biography,
         biography_tl: translatorData.biography_tl,
         languages: translatorData.languages,
@@ -301,6 +302,19 @@ export default function TranslatorFormPage({
                             <Form.Item
                               label="YouTube"
                               name="youtube"
+                              style={{
+                                width: "100%",
+                              }}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.youtube} />
+                            </Form.Item>
+                          </Col>
+
+                          <Col xs={4}>
+
+                            <Form.Item
+                              label="Website"
+                              name="website_url"
                               style={{
                                 width: "100%",
                               }}

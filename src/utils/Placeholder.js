@@ -29,7 +29,8 @@ export default class Placeholder {
   static tiktok = "e.g. https://www.tiktok.com/@bukugpu.id"
   static twitter = "e.g. https://x.com/bukugpu"
   static youtube = "e.g. https://www.youtube.com/@gramediabooks"
-  static video_embed = "e.g. https://www.youtube.com/embed/DenUCuq4"
+  static website = "e.g. https://example.com/"
+  static video_embed = "e.g. https://www.youtube.com/watch?v=w9WBlURy5yQ"
   static isbn = "e.g. 978-0-306-40615-7"
   static total_page = "e.g. 224"
 

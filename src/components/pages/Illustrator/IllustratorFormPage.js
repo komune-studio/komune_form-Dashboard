@@ -117,6 +117,7 @@ export default function IllustratorFormPage({
         tiktok: illustratorData.tiktok,
         twitter: illustratorData.twitter,
         youtube: illustratorData.youtube,
+        website_url: illustratorData.website_url,
         biography: illustratorData.biography,
         biography_tl: illustratorData.biography_tl,
       })
@@ -292,6 +293,19 @@ export default function IllustratorFormPage({
                               }}
                             >
                               <Input variant='filled' placeholder={Placeholder.youtube} />
+                            </Form.Item>
+                          </Col>
+
+                          <Col xs={4}>
+
+                            <Form.Item
+                              label="Website"
+                              name="website_url"
+                              style={{
+                                width: "100%",
+                              }}
+                            >
+                              <Input variant='filled' placeholder={Placeholder.website} />
                             </Form.Item>
                           </Col>
                         </Row>

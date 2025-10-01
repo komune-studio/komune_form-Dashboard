@@ -11,8 +11,7 @@ import Upload from 'models/UploadModel';
 import Helper from 'utils/Helper';
 import Placeholder from 'utils/Placeholder';
 import LiteraryAgencies from 'models/LiteraryAgenciesModel';
-
-const allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
+import CropperUploadForm from 'components/reusable/CropperUploadForm';
 
 export default function LiteraryAgencyFormPage({
   agencyData,
@@ -26,7 +25,6 @@ export default function LiteraryAgencyFormPage({
   const [formDisabled, setFormDisabled] = useState(false);
   const [language, setLanguage] = useState("ID");
 
-  const [imagePreviewURL, setImagePreviewURL] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
   const uploadImage = async () => {
@@ -35,31 +33,12 @@ export default function LiteraryAgencyFormPage({
       console.log(result)
 
       form.setFieldValue("agency_logo", result?.location);
-      setImagePreviewURL(result?.location)
       message.success("Image uploaded successfully");
     } catch (e) {
       console.log("isi e", e);
       message.error("Failed to upload image");
       throw e
     }
-  }
-
-  const onUploadChange = ({ file }) => {
-    const isImage = allowedImageType.includes(file.type);
-    if (!isImage) {
-      message.error("File must be image type " +
-        allowedImageType.map((type) => type.slice(6).toUpperCase()).join(", "))
-      return Upload.LIST_IGNORE;
-    }
-    const lessThan5MB = file.size / 1024 / 1024 < 5;
-    if (!lessThan5MB) {
-      message.error("Image must be smaller than 5MB.")
-      return Upload.LIST_IGNORE;
-    }
-
-    setImageFile(file);
-    const url = URL.createObjectURL(file);
-    setImagePreviewURL(url);
   }
 
   const onSubmit = async () => {
@@ -125,9 +104,7 @@ export default function LiteraryAgencyFormPage({
       })
 
       if (agencyData.agency_logo) {
-        console.log(agencyData.agency_logo)
         form.setFieldValue("agency_logo", agencyData.agency_logo);
-        setImagePreviewURL(agencyData.agency_logo);
       }
     }
     if (disabled) {
@@ -336,51 +313,10 @@ export default function LiteraryAgencyFormPage({
                         )}
                       </Flex>
                       <Flex vertical style={{ width: "30%" }} className='text-white'>
-                        <Form.Item
+                        <CropperUploadForm 
                           label={"Literary Agency Logo"}
                           name={"agency_logo"}
-                        >
-                          <AntUpload.Dragger
-                            name="avatar"
-                            listType="picture"
-                            className="avatar-uploader"
-                            showUploadList={false}
-                            multiple={false}
-                            accept={allowedImageType.join(",")}
-                            onChange={onUploadChange}
-                            beforeUpload={() => false}
-                          >
-                            <button style={{ border: "none", background: "none", padding: "24px", minHeight: "200px", width: "100%", ...(formDisabled && { cursor: "not-allowed" }) }} type='button'>
-                              <Flex vertical align='center'>
-                                {imagePreviewURL ? (
-                                  <>
-                                    <img src={imagePreviewURL} style={{ width: "100%", height: "auto" }} />
-                                  </>
-                                ) : (
-                                  <>
-                                    <Iconify icon={"mdi:tray-upload"} style={{ fontSize: "48px" }} />
-                                    <Typography.Text style={{ display: "inline-block", marginTop: "8px" }}>
-                                      Click or drag here to upload image.
-                                    </Typography.Text>
-                                  </>
-                                )}
-                              </Flex>
-                            </button>
-                          </AntUpload.Dragger>
-                          <Flex justify='start' style={{ marginTop: "4px" }}>
-                            <Space wrap size={8}>
-                              <Typography.Text type="secondary" style={{ fontSize: "12px", display: "inline-block" }}>
-                                Max image size 5MB
-                              </Typography.Text>
-                              <Typography.Text type="secondary" style={{ fontSize: "12px", display: "inline-block" }}>
-                                -
-                              </Typography.Text>
-                              <Typography.Text type="secondary" style={{ fontSize: "12px", display: "inline-block" }}>
-                                JPG, JPEG, PNG, WEBP supported
-                              </Typography.Text>
-                            </Space>
-                          </Flex>
-                        </Form.Item>
+                          onImageChange={(file) => setImageFile(file)}/>
                       </Flex>
                     </Flex>
                   </Form>

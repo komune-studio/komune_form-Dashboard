@@ -4,6 +4,8 @@ import Constant from './Constant';
 export default class Helper {
 	static phoneRegEx = /^\+[1-9]\d{1,14}$/;
 
+	static allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
+
 
 	static formatNumber(number) {
 		// Convert number to string

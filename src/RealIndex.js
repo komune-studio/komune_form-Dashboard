@@ -72,6 +72,9 @@ export default function (props) {
                     Tag: {
                         colorBgContainer: Palette.BACKGROUND_BLACK,
                     },
+                    Modal: {
+                        headerBg: "#161616"
+                    }
                 }
             }}
         >

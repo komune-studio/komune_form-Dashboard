@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag, DatePicker, Checkbox, Divider, InputNumber } from 'antd';
+import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag, DatePicker, Checkbox, Divider, InputNumber, Tooltip } from 'antd';
 import { Card, CardBody, Container } from 'reactstrap';
 import { Col, Row } from 'react-bootstrap';
 import Palette from '../../../utils/Palette';
@@ -19,8 +19,7 @@ import BookAuthor from 'models/BookAuthorModel';
 import Placeholder from 'utils/Placeholder';
 import dayjs from 'dayjs';
 import LiteraryAgencies from 'models/LiteraryAgenciesModel';
-
-const allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
+import CropperUploadForm from 'components/reusable/CropperUploadForm';
 
 export default function BookFormPage({
   bookData,
@@ -43,7 +42,6 @@ export default function BookFormPage({
   const [categories, setCategories] = useState([]);
   const [authors, setAuthors] = useState([]);
 
-  const [imagePreviewURL, setImagePreviewURL] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
   const getPublishersData = async () => {
@@ -135,30 +133,11 @@ export default function BookFormPage({
       console.log(result)
 
       form.setFieldValue("image_cover", result?.location);
-      setImagePreviewURL(result?.location)
       message.success("Image uploaded successfully");
     } catch (e) {
       console.log("isi e", e);
       message.error("Failed to upload image");
     }
-  }
-
-  const onUploadChange = ({ file }) => {
-    const isImage = allowedImageType.includes(file.type);
-    if (!isImage) {
-      message.error("File must be image type " +
-        allowedImageType.map((type) => type.slice(6).toUpperCase()).join(", "))
-      return Upload.LIST_IGNORE;
-    }
-    const lessThan5MB = file.size / 1024 / 1024 < 5;
-    if (!lessThan5MB) {
-      message.error("Image must be smaller than 5MB.")
-      return Upload.LIST_IGNORE;
-    }
-
-    setImageFile(file);
-    const url = URL.createObjectURL(file);
-    setImagePreviewURL(url);
   }
 
   const onSubmit = async () => {
@@ -307,9 +286,7 @@ export default function BookFormPage({
       form.setFieldValue("authors", authorIds);
 
       if (bookData.image_cover) {
-        console.log(bookData.image_cover)
         form.setFieldValue("image_cover", bookData.image_cover);
-        setImagePreviewURL(bookData.image_cover);
       }
     }
     if (disabled) {
@@ -576,51 +553,10 @@ export default function BookFormPage({
                         )}
                       </Flex>
                       <Flex vertical style={{ width: "30%" }} className='text-white'>
-                        <Form.Item
+                        <CropperUploadForm 
                           label={"Cover Image"}
                           name={"image_cover"}
-                        >
-                          <AntUpload.Dragger
-                            name="avatar"
-                            listType="picture"
-                            className="avatar-uploader"
-                            showUploadList={false}
-                            multiple={false}
-                            accept={allowedImageType.join(",")}
-                            onChange={onUploadChange}
-                            beforeUpload={() => false}
-                          >
-                            <button style={{ border: "none", background: "none", padding: "24px", minHeight: "200px", width: "100%", ...(formDisabled && { cursor: "not-allowed" }) }} type='button'>
-                              <Flex vertical align='center'>
-                                {imagePreviewURL ? (
-                                  <>
-                                    <img src={imagePreviewURL} style={{ width: "100%", height: "auto" }} />
-                                  </>
-                                ) : (
-                                  <>
-                                    <Iconify icon={"mdi:tray-upload"} style={{ fontSize: "48px" }} />
-                                    <Typography.Text style={{ display: "inline-block", marginTop: "8px" }}>
-                                      Click or drag here to upload image.
-                                    </Typography.Text>
-                                  </>
-                                )}
-                              </Flex>
-                            </button>
-                          </AntUpload.Dragger>
-                          <Flex justify='start' style={{ marginTop: "4px" }}>
-                            <Space wrap size={8}>
-                              <Typography.Text type="secondary" style={{ fontSize: "12px", display: "inline-block" }}>
-                                Max image size 5MB
-                              </Typography.Text>
-                              <Typography.Text type="secondary" style={{ fontSize: "12px", display: "inline-block" }}>
-                                -
-                              </Typography.Text>
-                              <Typography.Text type="secondary" style={{ fontSize: "12px", display: "inline-block" }}>
-                                JPG, JPEG, PNG, WEBP supported
-                              </Typography.Text>
-                            </Space>
-                          </Flex>
-                        </Form.Item>
+                          onImageChange={(file) => setImageFile(file)} />
                       </Flex>
                     </Flex>
                   </Form>

@@ -8,6 +8,8 @@ import CustomTable from "../../reusable/CustomTable";
 import Palette from "../../../utils/Palette";
 import Grant from 'models/GrantModel';
 import GrantReviewModal from './GrantReviewModal';
+import moment from 'moment';
+import Helper from 'utils/Helper';
 
 const tabs = [
   {
@@ -46,10 +48,45 @@ const GrantList = () => {
       id: 'target_language', label: 'Target Language', filter: true,
     },
     {
-      id: 'document_url', label: 'Document URL', filter: true,
+      id: "applicants_name", label: "Applicants Name", filter: true,
+      render: (row) => Helper.toTitleCase(row?.members.first_name + " " + row?.members.last_name)
+    },
+    {
+      id: 'created_at', label: 'Created At', filter: true,
+      render: (row) => moment(row?.created_at).format("DD MMMM YYYY")
+    },
+    {
+      id: 'modified_at', label: 'Modified At', filter: true,
+      render: (row) => moment(row?.created_at).format("DD MMMM YYYY")
     },
     {
       id: 'status', label: 'Status', filter: true,
+      render: (row) => 
+        <span className={`font-weight-bold
+          ${row?.status === "WAITING" ? "text-white" :
+            row?.status === "APPROVED" ? "text-success" :
+            row?.status === "REJECTED" ? "text-danger" : ""
+          }
+        `} 
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "4px"
+        }}>
+          {row?.status}
+          {" "}
+          {
+            row?.status === "WAITING" ? (
+              <Iconify icon={'mdi:clock-time-seven-outline'} width={20} height={20} />
+            ) : row?.status === "APPROVED" ? (
+              <Iconify icon={'mdi:check'} width={20} height={20} />
+            ) : row?.status === "REJECTED" ? (
+              <Iconify icon={'mdi:close'} width={20} height={20} />
+            ) : (
+              <></>
+            )
+          }
+        </span>
     },
     {
       id: '', label: '', filter: false,
@@ -217,6 +254,7 @@ const GrantList = () => {
               searchText={''}
               data={filteredData}
               columns={columns}
+              defaultOrder={"modified_at"}
             />
           </CardBody>
         </Card>

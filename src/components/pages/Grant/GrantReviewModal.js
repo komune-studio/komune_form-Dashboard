@@ -3,6 +3,7 @@ import { Modal, Button, Flex, Image, Tag, Segmented, Typography, Space, message 
 import { Link } from 'react-router-dom';
 import Iconify from "../../reusable/Iconify";
 import Grant from 'models/GrantModel';
+import moment from 'moment';
 
 const GrantReviewModal = ({ open, grant, onApprove, onReject, onClose }) => {
   if (!grant) return null;
@@ -48,11 +49,24 @@ const GrantReviewModal = ({ open, grant, onApprove, onReject, onClose }) => {
           <div style={infoStyle}>
             <p style={{ margin: 0, display: "flex", justifyContent: "space-between" }}><strong>Book Title:</strong> {grant.book_title || "-"}</p>
             <p style={{ margin: 0, display: "flex", justifyContent: "space-between" }}><strong>Target Language:</strong> {grant.target_language || "-"}</p>
-            <p style={{ margin: 0, display: "flex", justifyContent: "space-between" }}><strong>Applicant Name:</strong> {`${grant.members.first_name} ${grant.members.last_name}` || "-"}</p>
+            <p style={{ margin: 0, display: "flex", justifyContent: "space-between" }}><strong>Applicants Name:</strong> {`${grant.members.first_name} ${grant.members.last_name}` || "-"}</p>
             <p style={{ margin: 0, display: "flex", justifyContent: "space-between" }}><strong>Status:</strong> <strong>{grant.status || "-"}</strong></p>
+            {grant?.status == "APPROVED" ? (
+              <p style={{ margin: 0, display: "flex", justifyContent: "space-between" }}>
+                <strong>Approved At:</strong> 
+                <strong>{moment(grant.approved_at).format("DD MMMM YYYY") || "-"}</strong>
+              </p>
+            ) : grant?.status == "REJECTED" ? (
+              <p style={{ margin: 0, display: "flex", justifyContent: "space-between" }}>
+                <strong>Rejected At:</strong> 
+                <strong>{moment(grant.rejected_at).format("DD MMMM YYYY") || "-"}</strong>
+              </p>
+            ) : (
+              <></>
+            )}
             <a href={grant.document_url} className='' target="_blank" rel="noopener noreferrer">
               <Button type='default'>
-                <p style={{ margin: 0 }}><strong>Document Link</strong></p>
+                <p style={{ margin: 0 }}><strong>Download Document</strong></p>
               </Button>
             </a>
           </div>

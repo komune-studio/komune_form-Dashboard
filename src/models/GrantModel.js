@@ -9,8 +9,8 @@ export default class Grant {
     return await ApiRequest.set(`v1/grants/approve-grant-by-id/${id}`, "PUT");
   }
 
-  static rejectGrant = async (id) => {
-    return await ApiRequest.set(`v1/grants/reject-grant-by-id/${id}`, "PUT");
+  static rejectGrant = async (id, body) => {
+    return await ApiRequest.set(`v1/grants/reject-grant-by-id/${id}`, "PUT", body);
   }
 
   static edit = async (id, body) => {

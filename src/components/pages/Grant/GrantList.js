@@ -57,22 +57,22 @@ const GrantList = () => {
     },
     {
       id: 'modified_at', label: 'Modified At', filter: true,
-      render: (row) => moment(row?.created_at).format("DD MMMM YYYY")
+      render: (row) => row?.modified_at ? moment(row?.modified_at).format("DD MMMM YYYY") : "-"
     },
     {
       id: 'status', label: 'Status', filter: true,
-      render: (row) => 
+      render: (row) =>
         <span className={`font-weight-bold
           ${row?.status === "WAITING" ? "text-white" :
             row?.status === "APPROVED" ? "text-success" :
-            row?.status === "REJECTED" ? "text-danger" : ""
+              row?.status === "REJECTED" ? "text-danger" : ""
           }
-        `} 
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "4px"
-        }}>
+        `}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "4px"
+          }}>
           {row?.status}
           {" "}
           {
@@ -161,9 +161,9 @@ const GrantList = () => {
     }
   }
 
-  const rejectGrant = async (id) => {
+  const rejectGrant = async (id, reject_reason) => {
     try {
-      await Grant.rejectGrant(id)
+      await Grant.rejectGrant(id, { reject_reason })
       message.success('Grant rejected')
       initializeData();
       setOpenGrantModal(false);
@@ -254,7 +254,7 @@ const GrantList = () => {
               searchText={''}
               data={filteredData}
               columns={columns}
-              defaultOrder={"modified_at"}
+              defaultOrder={selectedTab == "pending" ? "created_at" : "modified_at"}
             />
           </CardBody>
         </Card>

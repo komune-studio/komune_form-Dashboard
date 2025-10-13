@@ -38,6 +38,23 @@ const BannerList = () => {
       )
     },
     {
+      id: 'image_url_english', label: 'Banner Image (English Version)', filter: true,
+      render: (row) => (
+        <Flex style={{ height: "100px", width: "auto", aspectRatio: "4/3", alignItems: "center", justifyContent: "center" }}>
+          {!row?.image_url_english ? (
+            <Iconify
+              icon={"material-symbols:hide-image-outline"}
+              style={{
+                fontSize: "48px"
+              }}
+            />
+          ) : (
+            <Image height={"100%"} width={"100%"} style={{ objectFit: "contain" }} src={row?.image_url_english}></Image>
+          )}
+        </Flex>
+      )
+    },
+    {
       id: 'show_banner', label: 'Show Banner', filter: true,
       render: (row) => (
         <Tooltip title="Show Banner on Landing Page">

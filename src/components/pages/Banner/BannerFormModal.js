@@ -24,15 +24,19 @@ export default function BannerFormModal({ isOpen, close, isNewRecord, bannerData
     const [language, setLanguage] = useState("ID");
 
     const imagePreview = Form.useWatch("image_url", form)
+    const imageEnglishPreview = Form.useWatch("image_url_english", form)
 
     const [imageFile, setImageFile] = useState(null);
+    const [imageEnglishFile, setImageEnglishFile] = useState(null);
 
     const uploadImage = async () => {
         try {
             let result = await Upload.uploadPicutre(imageFile);
+            let resultEnglish = await Upload.uploadPicutre(imageEnglishFile);
             console.log(result)
 
             form.setFieldValue("image_url", result?.location);
+            form.setFieldValue("image_url_english", resultEnglish?.location);
             message.success("Image uploaded successfully");
         } catch (e) {
             console.log("isi e", e);
@@ -78,6 +82,7 @@ export default function BannerFormModal({ isOpen, close, isNewRecord, bannerData
             form.setFieldsValue({
                 id: bannerData?.id,
                 image_url: bannerData?.image_url,
+                image_url_english: bannerData?.image_url_english,
                 show_banner: bannerData?.show_banner
             })
         }
@@ -128,6 +133,14 @@ export default function BannerFormModal({ isOpen, close, isNewRecord, bannerData
                     name={"image_url"}
                     imagePreview={imagePreview}
                     onImageChange={(file) => setImageFile(file)}
+                />
+
+                <CropperUploadForm
+                    key={imageEnglishPreview}
+                    label={"Banner Image"}
+                    name={"image_url_english"}
+                    imagePreview={imageEnglishPreview}
+                    onImageChange={(file) => setImageEnglishFile(file)}
                 />
 
                 <Form.Item

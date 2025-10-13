@@ -56,10 +56,6 @@ const GrantList = () => {
       render: (row) => moment(row?.created_at).format("DD MMMM YYYY")
     },
     {
-      id: 'modified_at', label: 'Modified At', filter: true,
-      render: (row) => row?.modified_at ? moment(row?.modified_at).format("DD MMMM YYYY") : "-"
-    },
-    {
       id: 'status', label: 'Status', filter: true,
       render: (row) =>
         <span className={`font-weight-bold
@@ -254,7 +250,7 @@ const GrantList = () => {
               searchText={''}
               data={filteredData}
               columns={columns}
-              defaultOrder={selectedTab == "pending" ? "created_at" : "modified_at"}
+              defaultOrder={"created_at"}
             />
           </CardBody>
         </Card>

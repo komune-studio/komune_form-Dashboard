@@ -29,15 +29,9 @@ export default function BannerFormModal({ isOpen, close, isNewRecord, bannerData
     const [imageFile, setImageFile] = useState(null);
     const [imageEnglishFile, setImageEnglishFile] = useState(null);
 
-    const uploadImage = async () => {
+    const uploadImage = async (file, form_name) => {
         try {
-            let result = await Upload.uploadPicutre(imageFile);
-            let resultEnglish = await Upload.uploadPicutre(imageEnglishFile);
-            console.log(result)
-
-            form.setFieldValue("image_url", result?.location);
-            form.setFieldValue("image_url_english", resultEnglish?.location);
-            message.success("Image uploaded successfully");
+            return await Upload.uploadPicutre(file);
         } catch (e) {
             console.log("isi e", e);
             message.error("Failed to upload image");
@@ -47,7 +41,15 @@ export default function BannerFormModal({ isOpen, close, isNewRecord, bannerData
     const onSubmit = async () => {
 
         try {
-            await uploadImage();
+            if (imageFile) {
+                const result = await uploadImage(imageFile);
+                form.setFieldValue("image_url", result?.location);
+            }
+            if (imageEnglishFile) {
+                const result = await uploadImage(imageEnglishFile);
+                form.setFieldValue("image_url_english", result?.location);
+            }
+            message.success("Image uploaded successfully");
             let body = form.getFieldsValue();
             let msg = ''
             if (isNewRecord) {
@@ -91,7 +93,6 @@ export default function BannerFormModal({ isOpen, close, isNewRecord, bannerData
 
     useEffect(() => {
         if (isNewRecord) {
-            console.log("ASDOIJASD")
             reset()
         } else {
             initForm()
@@ -101,7 +102,6 @@ export default function BannerFormModal({ isOpen, close, isNewRecord, bannerData
     }, [isOpen])
 
     const reset = () => {
-        form.resetFields();
         form.resetFields();
     }
 

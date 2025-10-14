@@ -6,7 +6,7 @@ export default class Helper {
 
 	static allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
 
-	static redirectURL = "http://localhost:5173"
+	static redirectURL = "https://dev.readindonesia.id/" 
 
 	static formatNumber(number) {
 		// Convert number to string

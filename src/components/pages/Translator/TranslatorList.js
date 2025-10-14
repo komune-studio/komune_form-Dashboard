@@ -74,7 +74,7 @@ const TranslatorList = () => {
               type={'link'}
               style={{ color: Palette.MAIN_THEME }}
               onClick={() => {
-                window.open(`${Helper.redirectURL}/translators/${row?.id}`)
+                window.open(`${Helper.redirectURL}translators/${row?.id}`)
               }}
               className={"d-flex align-items-center justify-content-center"}
               shape="circle"

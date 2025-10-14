@@ -81,7 +81,7 @@ const AuthorList = () => {
                   type={'link'}
                   style={{ color: Palette.MAIN_THEME }}
                   onClick={() => {
-                    window.open(`${Helper.redirectURL}/authors/${row?.id}`)
+                    window.open(`${Helper.redirectURL}authors/${row?.id}`)
                   }}
                   className={"d-flex align-items-center justify-content-center"}
                   shape="circle"

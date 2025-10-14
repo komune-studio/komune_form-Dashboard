@@ -79,7 +79,7 @@ const IllustratorList = () => {
                   type={'link'}
                   style={{ color: Palette.MAIN_THEME }}
                   onClick={() => {
-                    window.open(`${Helper.redirectURL}/illustrators/${row?.id}`)
+                    window.open(`${Helper.redirectURL}illustrators/${row?.id}`)
                   }}
                   className={"d-flex align-items-center justify-content-center"}
                   shape="circle"

@@ -61,7 +61,7 @@ const PublisherList = () => {
                   type={'link'}
                   style={{ color: Palette.MAIN_THEME }}
                   onClick={() => {
-                    window.open(`${Helper.redirectURL}/publishers/${row?.id}`)
+                    window.open(`${Helper.redirectURL}publishers/${row?.id}`)
                   }}
                   className={"d-flex align-items-center justify-content-center"}
                   shape="circle"

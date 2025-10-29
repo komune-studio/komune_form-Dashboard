@@ -37,10 +37,34 @@ export default function (props) {
     const [kicked, setKicked] = useState(true)
 
     useEffect(() => {
-        if (localStorage.getItem('super_token') !== null) {
-            setKicked(false)
-        }
+        checkToken();
     }, []);
+
+    const checkToken = () => {
+        let token = localStorage.getItem('super_token') || localStorage.getItem('token');
+        
+        if (!token) {
+            setKicked(true);
+            return;
+        }
+
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const isExpired = Date.now() >= payload.exp * 1000;
+            
+            if (isExpired) {
+                localStorage.removeItem("super_token");
+                localStorage.removeItem("token");
+                setKicked(true);
+            } else {
+                setKicked(false);
+            }
+        } catch (error) {
+            localStorage.removeItem("super_token");
+            localStorage.removeItem("token");
+            setKicked(true);
+        }
+    }
 
     return <div>
         <ConfigProvider

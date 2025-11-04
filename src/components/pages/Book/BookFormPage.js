@@ -543,6 +543,15 @@ export default function BookFormPage({
                           />
                         </Form.Item>
                         <Form.Item
+                          label={"Translation Rights"}
+                          name="translation_rights"
+                          valuePropName='checked'
+                        >
+                          <Checkbox>Available for translation</Checkbox>
+                        </Form.Item >
+
+                        <Divider>Contact Person Information</Divider>
+                        <Form.Item
                           label={"Literary Agency"}
                           name={"literary_agency_id"}
                         >
@@ -554,17 +563,6 @@ export default function BookFormPage({
                             placeholder={Placeholder.select_agency}
                           />
                         </Form.Item>
-
-                        <Form.Item
-                          label={"Translation Rights"}
-                          name="translation_rights"
-                          valuePropName='checked'
-                        >
-                          <Checkbox>Available for translation</Checkbox>
-                        </Form.Item >
-
-                        <Divider>Contact Person Information</Divider>
-
                         <Row>
                           <Col md={6}>
                             <Form.Item

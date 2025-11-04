@@ -136,7 +136,7 @@ const BannerList = () => {
   const toggleShowBanner = async (checked, id) => {
     try {
       await Banner.edit(id, { show_banner: checked })
-      initializeData()
+      // initializeData()
     } catch(e) {
       message.error("Error updating banner image")
     }

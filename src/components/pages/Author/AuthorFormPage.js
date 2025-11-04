@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
-import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Tag, Segmented, Divider } from 'antd';
+import { useHistory, Link, Prompt } from 'react-router-dom';
+import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Tag, Segmented, Divider, Switch } from 'antd';
 import { Card, CardBody, Container } from 'reactstrap';
 import { Col, Row } from 'react-bootstrap';
 import Palette from '../../../utils/Palette';
@@ -39,10 +39,14 @@ export default function AuthorFormPage({
   const history = useHistory();
 
   const [loading, setLoading] = useState(false);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState({
+    save: false,
+    saveDraft: false
+  });
   const [form] = Form.useForm();
   const [formDisabled, setFormDisabled] = useState(false);
   const [language, setLanguage] = useState("ID");
+  const [hasChanges, setHasChanges] = useState(false);
 
   const [imageFile, setImageFile] = useState(null);
 
@@ -60,8 +64,31 @@ export default function AuthorFormPage({
     }
   }
 
-  const onSubmit = async () => {
-    setLoadingSubmit(true);
+  const onValuesChanged = (changedValues, allValues) => {
+    const changed = Object.keys(allValues).some((key) => {
+      if (allValues[key] != authorData[key]) {
+        console.log(key)
+        return true
+      }
+      return false
+    })
+    setHasChanges(changed)
+  }
+
+  const toggleLoadingSubmit = (action) => {
+    setLoadingSubmit((prevLoadings) => {
+      const newLoadings = { ...prevLoadings }
+      newLoadings[action] = !prevLoadings[action];
+      return newLoadings;
+    })
+  }
+
+  const onSubmit = async (asDraft = false) => {
+    if (asDraft) {
+      toggleLoadingSubmit("saveDraft")
+    } else {
+      toggleLoadingSubmit("save")
+    }
     try {
       let result;
       let body;
@@ -70,6 +97,9 @@ export default function AuthorFormPage({
         await uploadImage();
       }
       body = form.getFieldsValue()
+      if (asDraft) {
+        body["hide"] = true
+      }
       console.log(body)
 
       let msg
@@ -92,8 +122,13 @@ export default function AuthorFormPage({
         icon: 'error',
         confirmButtonText: 'Okay'
       })
+    } finally {
+      if (asDraft) {
+        toggleLoadingSubmit("saveDraft")
+      } else {
+        toggleLoadingSubmit("save")
+      }
     }
-    setLoadingSubmit(false);
   }
 
   const languageTag = (text, tagColor = Palette.MAIN_THEME) => (
@@ -138,6 +173,7 @@ export default function AuthorFormPage({
         website_url: authorData.website_url,
         biography: authorData.biography,
         biography_tl: authorData.biography_tl,
+        hide: authorData.hide,
       })
 
       if (authorData.profile_picture) {
@@ -182,14 +218,29 @@ export default function AuthorFormPage({
                   <Form
                     layout='vertical'
                     form={form}
-                    onFinish={onSubmit}
+                    onFinish={() => onSubmit(false)}
+                    onValuesChange={onValuesChanged}
                     validateTrigger="onSubmit"
                     disabled={formDisabled}
                     autoComplete='off'
                   >
                     <Flex gap={"48px"} >
                       <Flex vertical style={{ width: "60%" }}>
-                        <Flex justify="flex-end">
+                        <Flex justify='space-between' align='center'>
+                          <Flex align='center' gap={12}>
+                            <Typography.Text>
+                              Mark as draft
+                            </Typography.Text>
+                            <Form.Item
+                              label={"Mark as draft"}
+                              name={"hide"}
+                              valuePropName='checked'
+                              noStyle
+                            >
+                              <Switch />
+                            </Form.Item>
+                          </Flex>
+
                           <Segmented
                             value={language}
                             style={{ marginBottom: 8 }}
@@ -341,10 +392,16 @@ export default function AuthorFormPage({
                         </Row>
 
                         {!formDisabled ? (
-                          <div className={"d-flex flex-row"}>
-                            <Button size="sm" type='primary' variant="primary" htmlType='submit' loading={loadingSubmit}>
+                          <div className={"d-flex flex-row"} style={{ gap: "12px" }}>
+                            <Button size="sm" type='primary' variant="primary" htmlType='submit' loading={loadingSubmit["save"]}>
                               {!authorData ? "Add Authors" : "Save Authors"}
                             </Button>
+                            {!authorData ? (
+                              <Button size="sm" type='default' onClick={() => onSubmit(true)} loading={loadingSubmit["saveDraft"]}>
+                                {"Save As Draft"}
+                              </Button>
+                            ) : <></>
+                            }
                           </div>
                         ) : (
                           <></>
@@ -369,6 +426,10 @@ export default function AuthorFormPage({
           </CardBody>
         </Card>
       </Container>
+      <Prompt
+        when={hasChanges}
+        message={"Are you sure you want to leave before saving?"}
+      />
     </>
   );
 }

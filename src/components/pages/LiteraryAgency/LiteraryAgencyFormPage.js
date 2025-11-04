@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
-import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag, Divider } from 'antd';
+import { useHistory, Link, Prompt } from 'react-router-dom';
+import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag, Divider, Switch } from 'antd';
 import { Card, CardBody, Container } from 'reactstrap';
 import { Col, Row } from 'react-bootstrap';
 import Palette from '../../../utils/Palette';
@@ -20,10 +20,14 @@ export default function LiteraryAgencyFormPage({
   const history = useHistory();
 
   const [loading, setLoading] = useState(false);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState({
+    save: false,
+    saveDraft: false,
+  });
   const [form] = Form.useForm();
   const [formDisabled, setFormDisabled] = useState(false);
   const [language, setLanguage] = useState("ID");
+  const [hasChanges, setHasChanges] = useState(false);
 
   const [imageFile, setImageFile] = useState(null);
 
@@ -41,8 +45,30 @@ export default function LiteraryAgencyFormPage({
     }
   }
 
-  const onSubmit = async () => {
-    setLoadingSubmit(true);
+  const onValuesChanged = (changedValues, allValues) => {
+    const changed = Object.keys(allValues).some((key) => {
+      if (allValues[key] != agencyData[key]) {
+        return true
+      }
+      return false
+    })
+    setHasChanges(changed)
+  }
+
+  const toggleLoadingSubmit = (action) => {
+    setLoadingSubmit((prevLoadings) => {
+      const newLoadings = { ...prevLoadings }
+      newLoadings[action] = !prevLoadings[action];
+      return newLoadings;
+    })
+  }
+
+  const onSubmit = async (asDraft = false) => {
+    if (asDraft) {
+      toggleLoadingSubmit("saveDraft")
+    } else {
+      toggleLoadingSubmit("save")
+    }
     try {
       let result;
       let body;
@@ -51,6 +77,9 @@ export default function LiteraryAgencyFormPage({
         await uploadImage();
       }
       body = form.getFieldsValue()
+      if (asDraft) {
+        body["hide"] = true
+      }
       console.log(body)
 
       let msg
@@ -73,8 +102,13 @@ export default function LiteraryAgencyFormPage({
         icon: 'error',
         confirmButtonText: 'Okay'
       })
+    } finally {
+      if (asDraft) {
+        toggleLoadingSubmit("saveDraft")
+      } else {
+        toggleLoadingSubmit("save")
+      }
     }
-    setLoadingSubmit(false);
   }
 
   const languageTag = (text, tagColor = Palette.MAIN_THEME) => (
@@ -101,6 +135,7 @@ export default function LiteraryAgencyFormPage({
         twitter: agencyData?.twitter,
         youtube: agencyData?.youtube,
         website_url: agencyData?.website_url,
+        hide: agencyData?.hide
       })
 
       if (agencyData.agency_logo) {
@@ -145,14 +180,29 @@ export default function LiteraryAgencyFormPage({
                   <Form
                     layout='vertical'
                     form={form}
-                    onFinish={onSubmit}
+                    onFinish={() => onSubmit(false)}
+                    onValuesChange={onValuesChanged}
                     validateTrigger="onSubmit"
                     disabled={formDisabled}
                     autoComplete='off'
                   >
                     <Flex gap={"48px"} >
                       <Flex vertical style={{ width: "60%" }}>
-                        <Flex justify="flex-end">
+                        <Flex justify='space-between' align='center'>
+                          <Flex align='center' gap={12}>
+                            <Typography.Text>
+                              Mark as draft
+                            </Typography.Text>
+                            <Form.Item
+                              label={"Mark as draft"}
+                              name={"hide"}
+                              valuePropName='checked'
+                              noStyle
+                            >
+                              <Switch />
+                            </Form.Item>
+                          </Flex>
+
                           <Segmented
                             value={language}
                             style={{ marginBottom: 8 }}
@@ -303,10 +353,16 @@ export default function LiteraryAgencyFormPage({
                         </Row>
 
                         {!formDisabled ? (
-                          <div className={"d-flex flex-row"}>
-                            <Button size="sm" type='primary' variant="primary" htmlType='submit' loading={loadingSubmit}>
+                          <div className={"d-flex flex-row"} style={{ gap: "12px" }}>
+                            <Button size="sm" type='primary' variant="primary" htmlType='submit' loading={loadingSubmit["save"]}>
                               {!agencyData ? "Add Literary Agencies" : "Save Literary Agencies"}
                             </Button>
+                            {!agencyData ? (
+                              <Button size="sm" type='default' onClick={() => onSubmit(true)} loading={loadingSubmit["saveDraft"]}>
+                                {"Save As Draft"}
+                              </Button>
+                            ) : <></>
+                            }
                           </div>
                         ) : (
                           <></>
@@ -331,6 +387,10 @@ export default function LiteraryAgencyFormPage({
           </CardBody>
         </Card>
       </Container>
+      <Prompt
+        when={hasChanges}
+        message={"Are you sure you want to leave before saving?"}
+      />
     </>
   );
 }

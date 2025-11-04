@@ -1,4 +1,4 @@
-import { Space, Button as AntButton, Tooltip, Modal, message, Flex, Image } from 'antd';
+import { Space, Button as AntButton, Tooltip, Modal, message, Flex, Image, Switch } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { Card, Row, CardBody, Container, Button } from "reactstrap";
 import Iconify from "../../reusable/Iconify";
@@ -49,6 +49,14 @@ const PublisherList = () => {
     },
     {
       id: 'phone', label: 'Phone', filter: false, allowSort: false,
+    },
+    {
+      id: 'hide', label: 'Mark as Draft', filter: true,
+      render: (row) => (
+        <Tooltip title="Hide data on Landing Page">
+          <Switch defaultValue={row?.hide} onChange={(checked) => toggleHide(checked, row?.id)} />
+        </Tooltip>
+      )
     },
     {
       id: '', label: '', filter: false,
@@ -146,6 +154,15 @@ const PublisherList = () => {
       }
     });
   };
+
+  const toggleHide = async (checked, id) => {
+    try {
+      await Publisher.edit(id, { hide: checked })
+      // initializeData()
+    } catch (e) {
+      message.error("Error updating book")
+    }
+  }
 
   const initializeData = async () => {
     setLoading(true)

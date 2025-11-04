@@ -1,4 +1,4 @@
-import { Table, Flex, Image, Space, Button as AntButton, Tooltip, Modal, message, Input } from 'antd';
+import { Table, Flex, Image, Space, Button as AntButton, Tooltip, Modal, message, Input, Switch } from 'antd';
 import HeaderNav from "components/Headers/HeaderNav.js";
 import React, { useState, useEffect } from 'react';
 import { Card, Row, CardBody, Container, Button } from "reactstrap";
@@ -66,6 +66,14 @@ const IllustratorList = () => {
     },
     { id: 'phone_number', label: 'Phone', filter: false, allowSort: false },
     { id: 'email', label: 'Email', filter: true },
+    {
+      id: 'hide', label: 'Mark as Draft', filter: true,
+      render: (row) => (
+        <Tooltip title="Hide data on Landing Page">
+          <Switch defaultValue={row?.hide} onChange={(checked) => toggleHide(checked, row?.id)} />
+        </Tooltip>
+      )
+    },
     {
       id: '',
       label: '',
@@ -151,6 +159,15 @@ const IllustratorList = () => {
       }
     });
   };
+
+  const toggleHide = async (checked, id) => {
+    try {
+      await Illustrator.edit(id, { hide: checked })
+      // initializeData()
+    } catch (e) {
+      message.error("Error updating book")
+    }
+  }
 
   const initializeData = async () => {
     setLoading(true)

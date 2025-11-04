@@ -106,22 +106,22 @@ export default function AuthorFormPage({
   );
 
   const FormQuill = ({ value, onChange, placeholder, ...props }) => {
-      return (
-        <ReactQuill
-          theme="snow"
-          value={value || ''}
-          onChange={onChange}
-          placeholder={placeholder}
-          style={{
-            height: '480px',
-            marginBottom: '84px'
-          }}
-          modules={modules}
-          formats={formats}
-          {...props}
-        />
-      );
-    };
+    return (
+      <ReactQuill
+        theme="snow"
+        value={value || ''}
+        onChange={onChange}
+        placeholder={placeholder}
+        style={{
+          height: '480px',
+          marginBottom: '84px'
+        }}
+        modules={modules}
+        formats={formats}
+        {...props}
+      />
+    );
+  };
 
   useEffect(() => {
     if (authorData) {
@@ -354,8 +354,12 @@ export default function AuthorFormPage({
                         <CropperUploadForm
                           label={"Profile Picture"}
                           name={"profile_picture"}
-                          onImageChange={(file) => setImageFile(file)} 
-                          imageAspect={9/16}/>
+                          onImageChange={(file) => setImageFile(file)}
+                          imageAspect={2 / 3}
+                          helperTextTop={[
+                            <>Recommended: 400px × 600px (Width × Height)</>,
+                          ]}
+                        />
                       </Flex>
                     </Flex>
                   </Form>

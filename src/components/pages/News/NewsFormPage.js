@@ -245,7 +245,11 @@ export default function NewsFormPage({
                           label={"Image Cover"}
                           name={"image_cover"}
                           onImageChange={(file) => setImageFile(file)}
-                          imageAspect={16/9} />
+                          imageAspect={16 / 9}
+                          helperTextTop={[
+                            <>Recommended: 1920px × 1080px (Width × Height)</>,
+                          ]}
+                        />
 
                         <Form.Item
                           label={"Video Embed Link"}

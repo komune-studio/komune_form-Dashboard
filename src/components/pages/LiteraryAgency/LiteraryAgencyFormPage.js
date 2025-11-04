@@ -313,11 +313,15 @@ export default function LiteraryAgencyFormPage({
                         )}
                       </Flex>
                       <Flex vertical style={{ width: "30%" }} className='text-white'>
-                        <CropperUploadForm 
+                        <CropperUploadForm
                           label={"Literary Agency Logo"}
                           name={"agency_logo"}
                           onImageChange={(file) => setImageFile(file)}
-                          imageAspect={[9/16, 16/9]}/>
+                          imageAspect={[1 / 1, 16 / 9, 9 / 16]}
+                          helperTextTop={[
+                            <>Recommended: 400px (Minimal Width or Height)</>,
+                          ]}
+                        />
                       </Flex>
                     </Flex>
                   </Form>

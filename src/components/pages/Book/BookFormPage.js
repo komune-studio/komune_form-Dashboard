@@ -602,7 +602,10 @@ export default function BookFormPage({
                         <CropperUploadForm
                           label={"Cover Image"}
                           name={"image_cover"}
-                          onImageChange={(file) => setImageFile(file)} />
+                          onImageChange={(file) => setImageFile(file)} 
+                          helperTextTop={[
+                            <>Recommended: 600px × 900px (Width × Height)</>,
+                          ]}/>
                       </Flex>
                     </Flex>
                   </Form>

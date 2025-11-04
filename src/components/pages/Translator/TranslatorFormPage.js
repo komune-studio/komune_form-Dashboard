@@ -310,11 +310,15 @@ export default function TranslatorFormPage({
                         )}
                       </Flex>
                       <Flex vertical style={{ width: "30%" }} className='text-white'>
-                        <CropperUploadForm 
+                        <CropperUploadForm
                           label={"Profile Picture"}
                           name={"profile_picture"}
                           onImageChange={(file) => setImageFile(file)}
-                          imageAspect={9/16}/>
+                          imageAspect={2 / 3}
+                          helperTextTop={[
+                            <>Recommended: 400px × 600px (Width × Height)</>,
+                          ]}
+                        />
                       </Flex>
                     </Flex>
                   </Form>

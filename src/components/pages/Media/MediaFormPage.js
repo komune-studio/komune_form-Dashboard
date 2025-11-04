@@ -10,6 +10,7 @@ import Media from 'models/MediaModel';
 import Upload from 'models/UploadModel';
 import Placeholder from 'utils/Placeholder';
 import 'react-quill/dist/quill.snow.css';
+import CropperUploadForm from 'components/reusable/CropperUploadForm';
 
 const allowedImageType = ["image/jpg", "image/jpeg", "image/png", "image/webp"]
 
@@ -216,51 +217,17 @@ export default function MediaFormPage({
                           <Input variant='filled' placeholder={Placeholder.video_embed} />
                         </Form.Item>
 
-                        <Form.Item
+                        <CropperUploadForm
                           label={"Thumbnail Image"}
                           name={"thumbnail_image"}
-                        >
-                          <AntUpload.Dragger
-                            name="avatar"
-                            listType="picture"
-                            className="avatar-uploader"
-                            showUploadList={false}
-                            multiple={false}
-                            accept={allowedImageType.join(",")}
-                            onChange={onUploadChange}
-                            beforeUpload={() => false}
-                          >
-                            <button style={{ border: "none", background: "none", padding: "24px", minHeight: "200px", maxWidth: "100%", ...(formDisabled && { cursor: "not-allowed" }) }} type='button'>
-                              <Flex vertical align='center'>
-                                {imagePreviewURL ? (
-                                  <>
-                                    <img src={imagePreviewURL} style={{ width: "100%", height: "auto" }} />
-                                  </>
-                                ) : (
-                                  <>
-                                    <Iconify icon={"mdi:tray-upload"} style={{ fontSize: "48px" }} />
-                                    <Typography.Text style={{ display: "inline-block", marginTop: "8px" }}>
-                                      Click or drag here to upload image.
-                                    </Typography.Text>
-                                  </>
-                                )}
-                              </Flex>
-                            </button>
-                          </AntUpload.Dragger>
-                          <Flex justify='start' style={{ marginTop: "4px" }}>
-                            <Space size={8}>
-                              <Typography.Text type="secondary" style={{ fontSize: "12px", display: "inline-block" }}>
-                                Max image size 5MB
-                              </Typography.Text>
-                              <Typography.Text type="secondary" style={{ fontSize: "12px", display: "inline-block" }}>
-                                -
-                              </Typography.Text>
-                              <Typography.Text type="secondary" style={{ fontSize: "12px", display: "inline-block" }}>
-                                JPG, JPEG, PNG, WEBP supported
-                              </Typography.Text>
-                            </Space>
-                          </Flex>
-                        </Form.Item>
+                          onImageChange={(file) => setImageFile(file)}
+                          imageAspect={16 / 9}
+                          helperTextTop={[
+                            <>Recommended: 1280px × 720px (Width × Height)</>,
+                            <>If image is not provided, the thumbnail image from youtube will be used.</>,
+                          ]}
+                        />
+                        
                         <Form.Item
                           label={languageTag("Description")}
                           name={"description"}

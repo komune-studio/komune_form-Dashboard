@@ -41,7 +41,7 @@ export default function CropperModal({
   });
   const [loading, setLoading] = useState(false);
   const [aspectCount, setAspectCount] = useState(0)
-  const [currentAspect, setCurrentAspect] = useState(imageAspect ? imageAspect[aspectCount] : undefined);
+  const currentAspect = (imageAspect ? imageAspect[aspectCount] : undefined);
 
   const imgRef = useRef(null)
 
@@ -55,14 +55,28 @@ export default function CropperModal({
     let nextAspect = aspectCount + 1
     if (nextAspect == imageAspect.length) nextAspect = 0
     setAspectCount(nextAspect);
-    setCurrentAspect(imageAspect[nextAspect]);
-
+    
+    const nextAspectRatio = imageAspect[nextAspect];
+    let newCrop = {
+      x: 0,
+      y: 0,
+    }
+    if (nextAspectRatio >= 1) {
+      newCrop = {
+        ...newCrop,
+        width: 50 * imageAspect[nextAspect],
+        height: 50,
+      }
+    } else {
+      newCrop = {
+        ...newCrop,
+        width: 50,
+        height: 50 / imageAspect[nextAspect],
+      }
+    }
     setCrop(c => ({
       ...c,
-      x: c.y,
-      y: c.x,
-      width: c.height,
-      height: c.width,
+      ...newCrop
     }))
   }
 
@@ -125,7 +139,7 @@ export default function CropperModal({
   const onImageLoad = (e) => {
     const { width, height } = e.currentTarget;
 
-    setCrop(centerAspectCrop(width, height, Array.isArray(imageAspect) ? currentAspect: imageAspect ?? 1))
+    setCrop(centerAspectCrop(width, height, Array.isArray(imageAspect) ? currentAspect : imageAspect ?? 1))
   }
 
   return (
@@ -136,16 +150,18 @@ export default function CropperModal({
         maskClosable={false}
         open={isOpen ? isOpen : isModalOpen}
         footer={[
-          <Button key="back"  onClick={handleCancel}>
+          <Button key="back" onClick={handleCancel}>
             Cancel
           </Button>,
-          {...(Array.isArray(imageAspect) ?
-            (<Button key="aspect" loading={loading} onClick={onChangeAspect}>
-              Change Aspect
-            </Button>
-            ) : (
-              <></>
-            ))},
+          {
+            ...(Array.isArray(imageAspect) ?
+              (<Button key="aspect" loading={loading} onClick={onChangeAspect}>
+                Change Aspect
+              </Button>
+              ) : (
+                <></>
+              ))
+          },
           < Button key="submit" type="primary" loading={loading} onClick={onFinalizeCrop} >
             Crop
           </Button >,
@@ -162,6 +178,7 @@ export default function CropperModal({
             display: 'block',
             width: "fit-content"
           }}
+          keepSelection
         >
           <img
             ref={imgRef}

@@ -1,4 +1,4 @@
-import { Space, Button as AntButton, Tooltip, Modal, message, Image, Flex, Tag } from 'antd';
+import { Space, Button as AntButton, Tooltip, Modal, message, Image, Flex, Tag, Switch } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { Card, Row, CardBody, Container } from "reactstrap";
 import { Link } from 'react-router-dom';
@@ -59,6 +59,14 @@ const MediaList = () => {
           moment(row.modified_at).format("DD MMM YYYY HH:mm")
         )
       }
+    },
+    {
+      id: 'hide', label: 'Mark as Draft', filter: true,
+      render: (row) => (
+        <Tooltip title="Hide data on Landing Page">
+          <Switch defaultValue={row?.hide} onChange={(checked) => toggleHide(checked, row?.id)} />
+        </Tooltip>
+      )
     },
     {
       id: '', label: '', filter: false,
@@ -156,6 +164,15 @@ const MediaList = () => {
       }
     });
   };
+
+  const toggleHide = async (checked, id) => {
+    try {
+      await Media.edit(id, { hide: checked })
+      // initializeData()
+    } catch (e) {
+      message.error("Error updating book")
+    }
+  }
 
   const initializeData = async () => {
     setLoading(true)

@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
-import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag, DatePicker, Checkbox, Divider, InputNumber, Tooltip } from 'antd';
+import { useHistory, Link, Prompt } from 'react-router-dom';
+import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Segmented, Tag, DatePicker, Checkbox, Divider, InputNumber, Tooltip, Switch } from 'antd';
 import { Card, CardBody, Container } from 'reactstrap';
 import { Col, Row } from 'react-bootstrap';
 import Palette from '../../../utils/Palette';
@@ -39,12 +39,16 @@ export default function BookFormPage({
   const history = useHistory();
 
   const [loading, setLoading] = useState(true);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState({
+    save: false,
+    saveDraft: false
+  });
   const [form] = Form.useForm();
   const [formDisabled, setFormDisabled] = useState(false);
   const [initialBookCategories, setInitialBookCategories] = useState([]);
   const [initialBookAuthors, setInitialBookAuthors] = useState([]);
   const [language, setLanguage] = useState("ID");
+  const [hasChanges, setHasChanges] = useState(false);
 
   const [publishers, setPublishers] = useState([]);
   const [translators, setTranslators] = useState([]);
@@ -151,8 +155,46 @@ export default function BookFormPage({
     }
   }
 
-  const onSubmit = async () => {
-    setLoadingSubmit(true);
+  const onValuesChanged = (changedValues, allValues) => {
+    const changed = Object.keys(allValues).some((key) => {
+      if (key == "authors") {
+        if (!allValues[key]) allValues[key] = [];
+        if (allValues[key].length != initialBookAuthors.length) return true
+        if (allValues[key].some(id => !initialBookAuthors.includes(id))) return true
+        return false
+      }
+      if (key == "categories") {
+        if (!allValues[key]) allValues[key] = [];
+        if (allValues[key].length != initialBookCategories.length) return true
+        if (allValues[key].some(id => !initialBookCategories.includes(id))) return true
+        return false
+      }
+      if (key == "release_date") {
+        if (!dayjs(allValues[key]).isSame(bookData[key])) return true
+        return false
+      }
+      if (allValues[key] != bookData[key]) {
+        return true
+      }
+      return false
+    })
+    setHasChanges(changed)
+  }
+
+  const toggleLoadingSubmit = (action) => {
+    setLoadingSubmit((prevLoadings) => {
+      const newLoadings = { ...prevLoadings }
+      newLoadings[action] = !prevLoadings[action];
+      return newLoadings;
+    })
+  }
+
+  const onSubmit = async (asDraft = false) => {
+    if (asDraft) {
+      toggleLoadingSubmit("saveDraft")
+    } else {
+      toggleLoadingSubmit("save")
+    }
     try {
       let result;
       let body;
@@ -161,6 +203,9 @@ export default function BookFormPage({
         await uploadImage();
       }
       body = form.getFieldsValue()
+      if (asDraft) {
+        body["hide"] = true
+      }
       console.log("Body: ", body)
 
       let msg;
@@ -242,7 +287,11 @@ export default function BookFormPage({
         confirmButtonText: 'Okay'
       })
     } finally {
-      setLoadingSubmit(false);
+      if (asDraft) {
+        toggleLoadingSubmit("saveDraft")
+      } else {
+        toggleLoadingSubmit("save")
+      }
     }
   }
 
@@ -297,6 +346,7 @@ export default function BookFormPage({
         translation_rights: bookData.translation_rights,
         contact_person_name: bookData.contact_person_name,
         contact_person_email: bookData.contact_person_email,
+        hide: bookData.hide,
       })
 
       if (bookData.release_date) {
@@ -357,14 +407,29 @@ export default function BookFormPage({
                   <Form
                     layout='vertical'
                     form={form}
-                    onFinish={onSubmit}
+                    onFinish={() => onSubmit(false)}
+                    onValuesChange={onValuesChanged}
                     validateTrigger="onSubmit"
                     disabled={formDisabled}
                     autoComplete='off'
                   >
                     <Flex gap={"48px"}>
                       <Flex vertical style={{ width: "60%" }}>
-                        <Flex justify="flex-end">
+                        <Flex justify='space-between' align='center'>
+                          <Flex align='center' gap={12}>
+                            <Typography.Text>
+                              Mark as draft
+                            </Typography.Text>
+                            <Form.Item
+                              label={"Mark as draft"}
+                              name={"hide"}
+                              valuePropName='checked'
+                              noStyle
+                            >
+                              <Switch />
+                            </Form.Item>
+                          </Flex>
+
                           <Segmented
                             value={language}
                             style={{ marginBottom: 8 }}
@@ -587,10 +652,16 @@ export default function BookFormPage({
                         </Row>
 
                         {!formDisabled ? (
-                          <div className={"d-flex flex-row"}>
-                            <Button size="sm" type='primary' variant="primary" htmlType='submit' loading={loadingSubmit}>
+                          <div className={"d-flex flex-row"} style={{ gap: "12px" }}>
+                            <Button size="sm" type='primary' variant="primary" htmlType='submit' loading={loadingSubmit["save"]}>
                               {!bookData ? "Add Book" : "Save Book"}
                             </Button>
+                            {!bookData ? (
+                              <Button size="sm" type='default' onClick={() => onSubmit(true)} loading={loadingSubmit["saveDraft"]}>
+                                {"Save As Draft"}
+                              </Button>
+                            ) : <></>
+                            }
                           </div>
                         ) : (
                           <></>
@@ -600,10 +671,10 @@ export default function BookFormPage({
                         <CropperUploadForm
                           label={"Cover Image"}
                           name={"image_cover"}
-                          onImageChange={(file) => setImageFile(file)} 
+                          onImageChange={(file) => setImageFile(file)}
                           helperTextTop={[
                             <>Recommended: 600px × 900px (Width × Height)</>,
-                          ]}/>
+                          ]} />
                       </Flex>
                     </Flex>
                   </Form>
@@ -613,6 +684,10 @@ export default function BookFormPage({
           </CardBody>
         </Card>
       </Container>
+      <Prompt
+        when={hasChanges}
+        message={"Are you sure you want to leave before saving?"}
+      />
     </>
   );
 }

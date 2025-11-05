@@ -112,6 +112,7 @@ const CustomTable = ({
 	extendToolbar = null,
 	defaultOrder = null,
 	rowAction,
+	onSearch,
 }) => {
 	const [selected, setSelected] = useState([]);
 	const [order, setOrder] = useState('desc');
@@ -130,11 +131,19 @@ const CustomTable = ({
 	}, [columns]);
 
 	const handleFilterByName = (event) => {
+		const searchValue = event.target.value;
 		setPage(0);
-		setFilterName(event.target.value);
+		setFilterName(searchValue);
+
+		if (onSearch) {
+		onSearch(searchValue);
+		}
 	};
 
-	const filteredData = applySortFilter(data, getComparator(order, orderBy), filterName, columns);
+	 const filteredData = onSearch 
+    ? data 
+    : applySortFilter(data, getComparator(order, orderBy), filterName, columns);
+
 	const handleRequestSort = (event, property) => {
 		const isAsc = orderBy === property && order === 'asc';
 		setOrder(isAsc ? 'desc' : 'asc');

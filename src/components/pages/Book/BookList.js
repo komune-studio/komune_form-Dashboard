@@ -9,6 +9,46 @@ import Palette from "../../../utils/Palette";
 import Book from 'models/BookModel';
 import BookCategory from 'models/BookCategoryModel';
 import Helper from 'utils/Helper';
+import { create } from "zustand";
+
+const useFilter = create((set) => ({
+  filters: {
+    category: {},
+  },
+  search: "",
+
+ 
+  setFilterAuthor: (category_id, checked) => set((state) => {
+    let filterCategoryToUpdate = state.filters.category;
+
+    if (checked) {
+      filterCategoryToUpdate = {
+        ...filterCategoryToUpdate,
+        [category_id]: checked
+      }
+    } else {
+      delete filterCategoryToUpdate[category_id];
+    }
+
+    return {
+      filters: {
+        ...state.filters,
+        category: {
+          ...filterCategoryToUpdate
+        }
+      }
+    }
+  }),
+  setSearch: (keyword) => set((state) => ({
+    search: keyword
+  })),
+  resetFilters: () => set((state) => ({
+    filters: {
+      category_id: {},
+    },
+    search: "",
+  }))
+}))
 
 const BookList = () => {
 
@@ -17,6 +57,9 @@ const BookList = () => {
   const [selectedBook, setSelectedBook] = useState(null)
   const [openBookModal, setOpenBookModal] = useState(false)
   const [isNewRecord, setIsNewRecord] = useState(false)
+
+  const filters = useFilter((state) => state.filters);
+  const search = useFilter((state) => state.search);
 
   const columns = [
     {
@@ -190,10 +233,11 @@ const BookList = () => {
     }
   }
 
-  const initializeData = async () => {
+  // const initializeData = async (filters = {}) => {
+  const initializeData = async (keyword) => {
     setLoading(true)
     try {
-      let result = await Book.getAllWithCategoriesAndAuthors();
+      let result = await Book.getAllWithFilter(1, keyword);
       let formattedResult = result.map((value) => {
         let bookAuthorsJoined = value.book_authors.map((book_author) => book_author.authors.name).join(",");
         let bookCategoriesJoined = value.book_categories.map((book_category) => book_category.categories.name).join(",");
@@ -243,6 +287,9 @@ const BookList = () => {
               searchText={''}
               data={dataSource}
               columns={columns}
+              onSearch={(searchTerm) => {
+                initializeData(searchTerm);
+              }}
             />
           </CardBody>
         </Card>

@@ -21,6 +21,7 @@ import dayjs from 'dayjs';
 import LiteraryAgencies from 'models/LiteraryAgenciesModel';
 import CropperUploadForm from 'components/reusable/CropperUploadForm';
 import ReactQuill from 'react-quill';
+import Helper from 'utils/Helper';
 
 const modules = {
   toolbar: [
@@ -202,7 +203,7 @@ export default function BookFormPage({
         return false
       }
       if (key == "description" || key == "description_tl") {
-        if (allValues[key] && allValues[key] != '<p><br></p>' && allValues[key] != bookData[key]) return true
+        if (allValues[key] && allValues[key] != '<p><br></p>' && Helper.removeHTMLTags(allValues[key])?.trim() != Helper.removeHTMLTags(bookData[key])?.trim()) return true
         return false
       }
       if (!!allValues[key] && allValues[key] != bookData[key]) {

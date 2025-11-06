@@ -80,7 +80,7 @@ export default function AuthorFormPage({
     }
     const changed = Object.keys(allValues).some((key) => {
       if (key == "awards") {
-        if (allValues[key] && allValues[key] != '<p><br></p>' && removeHTMLTags(allValues[key])?.trim() != removeHTMLTags(bookData[key])?.trim()) return true
+        if (allValues[key] && allValues[key] != '<p><br></p>' && Helper.removeHTMLTags(allValues[key])?.trim() != Helper.removeHTMLTags(authorData[key])?.trim()) return true
         return false
       }
       if (!!allValues[key] && allValues[key] != authorData[key]) {

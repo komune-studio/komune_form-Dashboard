@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
+import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment, FormControl, InputLabel, Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import {Icon} from "@iconify/react";
 
 
@@ -43,43 +43,115 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
     background:'#2f2f2f'
 }));
 
+const StyledFormControl = styled(FormControl)(({ theme }) => ({
+  minWidth: 200,
+  '& .MuiInputLabel-root': {
+    color: '#ffffff',
+  },
+  '& .MuiOutlinedInput-root': {
+    height: '2.75em',
+    color: '#ffffff',
+    background: '#2f2f2f',
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#2f2f2f',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#4f4f4f',
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#ffffff',
+    },
+  },
+  '& .MuiSelect-icon': {
+    color: '#ffffff',
+  },
+}));
+
+const StyledMenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: 48 * 4.5 + 8,
+      width: 250,
+      backgroundColor: '#2f2f2f', // Dark background for dropdown
+      color: '#ffffff', // White text
+    },
+  },
+};
+
 
 // ----------------------------------------------------------------------
 
 ListTableToolbar.propTypes = {
-    numSelected: PropTypes.number,
-    filterName: PropTypes.string,
-    onFilterName: PropTypes.func,
+  numSelected: PropTypes.number,
+  filterName: PropTypes.string,
+  onFilterName: PropTypes.func,
+  categoryFilter: PropTypes.array,
+  onCategoryChange: PropTypes.func,
+  categories: PropTypes.array,
 };
 
-export default function ListTableToolbar({ numSelected, filterName, onFilterName, placeholder, size, extendToolbar}) {
+export default function ListTableToolbar({ numSelected, filterName, onFilterName, placeholder, size, extendToolbar, categoryFilter = [], onCategoryChange,      
+  categories = [] }) {
     return (
-        <StyledRoot
-            sx={{
-                ...(numSelected > 0 && {
-                    color: 'primary.main',
-                    bgcolor: 'primary.lighter',
-                }),
-            }}
-        >
-            {numSelected > 0 ? (
-                <Typography component="div" variant="subtitle1">
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <StyledSearch
-                    size={'medium'}
-                    value={filterName}
-                    onChange={onFilterName}
-                    placeholder={'Input search keyword'}
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <Icon icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-                        </InputAdornment>
-                    }
-                />
+      <StyledRoot
+        sx={{
+          ...(numSelected > 0 && {
+            color: "primary.main",
+            bgcolor: "primary.lighter",
+          }),
+        }}
+      >
+        {numSelected > 0 ? (
+          <Typography component="div" variant="subtitle1">
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <>
+            <StyledSearch
+              size={"medium"}
+              value={filterName}
+              onChange={onFilterName}
+              placeholder={"Input search keyword"}
+              startAdornment={
+                <InputAdornment position="start">
+                  <Icon
+                    icon="eva:search-fill"
+                    sx={{ color: "text.disabled", width: 20, height: 20 }}
+                  />
+                </InputAdornment>
+              }
+            />
 
-            )}
-        </StyledRoot>
+            {/* Multiple Category Filter with Checkboxes */}
+            <StyledFormControl>
+              <InputLabel id="category-multiple-checkbox-label">
+                Categories
+              </InputLabel>
+              <Select
+                labelId="category-multiple-checkbox-label"
+                multiple
+                value={categoryFilter}
+                onChange={onCategoryChange}
+                input={<OutlinedInput label="Categories" />}
+                renderValue={(selected) => {
+                  // Display selected category names
+                  const selectedNames = categories
+                    .filter((cat) => selected.includes(cat.id))
+                    .map((cat) => cat.name);
+                  return selectedNames.join(", ");
+                }}
+                MenuProps={StyledMenuProps}
+              >
+                {categories.map((category) => (
+                  <MenuItem key={category.id} value={category.id}>
+                    <Checkbox checked={categoryFilter.includes(category.id)} />
+                    <ListItemText primary={category.name} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </StyledFormControl>
+          </>
+        )}
+      </StyledRoot>
     );
 }

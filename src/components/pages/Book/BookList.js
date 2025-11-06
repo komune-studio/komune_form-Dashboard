@@ -12,182 +12,213 @@ import Helper from 'utils/Helper';
 import { create } from "zustand";
 
 const useFilter = create((set) => ({
-  filters: {
-    category: {},
-  },
   search: "",
+  categories: [],
 
- 
-  setFilterAuthor: (category_id, checked) => set((state) => {
-    let filterCategoryToUpdate = state.filters.category;
+  setSelectedCategories: (categories) =>
+    set((state) => ({
+      selectedCategories: categories,
+    })),
 
-    if (checked) {
-      filterCategoryToUpdate = {
-        ...filterCategoryToUpdate,
-        [category_id]: checked
-      }
-    } else {
-      delete filterCategoryToUpdate[category_id];
-    }
-
-    return {
+  setSearch: (keyword) =>
+    set((state) => ({
+      search: keyword,
+    })),
+  resetFilters: () =>
+    set((state) => ({
       filters: {
-        ...state.filters,
-        category: {
-          ...filterCategoryToUpdate
-        }
-      }
-    }
-  }),
-  setSearch: (keyword) => set((state) => ({
-    search: keyword
-  })),
-  resetFilters: () => set((state) => ({
-    filters: {
-      category_id: {},
-    },
-    search: "",
-  }))
-}))
+        category_id: {},
+      },
+      search: "",
+    })),
+}));
 
 const BookList = () => {
-
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
-  const [selectedBook, setSelectedBook] = useState(null)
-  const [openBookModal, setOpenBookModal] = useState(false)
-  const [isNewRecord, setIsNewRecord] = useState(false)
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [openBookModal, setOpenBookModal] = useState(false);
+  const [isNewRecord, setIsNewRecord] = useState(false);
 
-  const filters = useFilter((state) => state.filters);
   const search = useFilter((state) => state.search);
+  const selectedCategories = useFilter((state) => state.selectedCategories);
+  const setSelectedCategories = useFilter(
+    (state) => state.setSelectedCategories
+  );
+  const setSearch = useFilter((state) => state.setSearch);
+
+  const handleCategoryChange = (event) => {
+    const { value } = event.target;
+    setSelectedCategories(value);
+    initializeData(value, search);
+  };
+
+  const categories = [
+    { id: 1, name: "Non-fiksi" },
+    { id: 2, name: "Fiksi" },
+    { id: 12, name: "Anak" },
+    { id: 13, name: "Komik" },
+  ];
 
   const columns = [
     {
-      id: 'image_cover', label: 'Cover Image', filter: false, allowSort: false,
+      id: "image_cover",
+      label: "Cover Image",
+      filter: false,
+      allowSort: false,
       render: (row) => {
         return (
-          <Flex style={{ height: "100px", width: "auto", aspectRatio: "3/4", alignItems: "center", justifyContent: "center" }}>
+          <Flex
+            style={{
+              height: "100px",
+              width: "auto",
+              aspectRatio: "3/4",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             {!row?.image_cover ? (
               <Iconify
                 icon={"material-symbols:hide-image-outline"}
                 style={{
-                  fontSize: "48px"
+                  fontSize: "48px",
                 }}
               />
             ) : (
-              <Image height={"100%"} width={"100%"} style={{ objectFit: "contain" }} src={row?.image_cover}></Image>
+              <Image
+                height={"100%"}
+                width={"100%"}
+                style={{ objectFit: "contain" }}
+                src={row?.image_cover}
+              ></Image>
             )}
           </Flex>
-        )
-      }
+        );
+      },
     },
     {
-      id: 'title', label: 'Title', filter: true,
+      id: "title",
+      label: "Title",
+      filter: true,
       // render: (row) => (
       //   textToUppercase(row.title)
       // )
     },
     {
-      id: 'authors', label: 'Authors', filter: true,
+      id: "authors",
+      label: "Authors",
+      filter: true,
       render: (row) => (
         <Space wrap size={4} style={{ maxWidth: "200px" }}>
-          {row?.book_authors && row?.book_authors?.length > 0 ? (
-            row?.book_authors?.map((ba) => (
-              `- ${ba.authors.name}`
-            ))
-          ) : (
-            '-'
-          )}
+          {row?.book_authors && row?.book_authors?.length > 0
+            ? row?.book_authors?.map((ba) => `- ${ba.authors.name}`)
+            : "-"}
         </Space>
-      )
+      ),
     },
     {
-      id: 'publisher', label: 'Publisher', filter: true,
-      render: (row) => row?.publishers ? row?.publishers.name : '-'
+      id: "publisher",
+      label: "Publisher",
+      filter: true,
+      render: (row) => (row?.publishers ? row?.publishers.name : "-"),
     },
     {
-      id: 'categories', label: 'Categories', filter: true, allowSort: false,
+      id: "categories",
+      label: "Categories",
+      filter: true,
+      allowSort: false,
       render: (row) => (
         <Space wrap size={4} style={{ maxWidth: "200px" }}>
-          {row?.book_categories && row?.book_categories?.length > 0 ? (
-            row?.book_categories?.map((bc) => (
-              <Tag>{bc.categories.name}</Tag>
-            ))
-          ) : (
-            '-'
-          )}
+          {row?.book_categories && row?.book_categories?.length > 0
+            ? row?.book_categories?.map((bc) => <Tag>{bc.categories.name}</Tag>)
+            : "-"}
         </Space>
-      )
+      ),
     },
     {
-      id: 'hide', label: 'Mark as Draft', filter: true,
+      id: "hide",
+      label: "Mark as Draft",
+      filter: true,
       render: (row) => (
         <Tooltip title="Hide data on Landing Page">
-          <Switch defaultValue={row?.hide} onChange={(checked) => toggleHide(checked, row?.id)} />
+          <Switch
+            defaultValue={row?.hide}
+            onChange={(checked) => toggleHide(checked, row?.id)}
+          />
         </Tooltip>
-      )
+      ),
     },
     {
-      id: '', label: '', filter: false,
-      render: ((row) => {
+      id: "",
+      label: "",
+      filter: false,
+      render: (row) => {
         return (
           <>
             <Space size="small">
               <Tooltip title="Open on Landing Page">
                 <AntButton
-                  type={'link'}
+                  type={"link"}
                   style={{ color: Palette.MAIN_THEME }}
                   onClick={() => {
-                    window.open(`${Helper.redirectURL}books/details/${row?.id}`)
+                    window.open(
+                      `${Helper.redirectURL}books/details/${row?.id}`
+                    );
                   }}
                   className={"d-flex align-items-center justify-content-center"}
                   shape="circle"
-                  icon={<Iconify icon={"mdi:external-link"} />} />
+                  icon={<Iconify icon={"mdi:external-link"} />}
+                />
               </Tooltip>
 
               <Tooltip title="Detail">
                 <Link to={`/books/${row.id}`}>
                   <AntButton
-                    type={'link'}
+                    type={"link"}
                     style={{ color: Palette.MAIN_THEME }}
                     onClick={() => {
-                      setOpenBookModal(true)
-                      setSelectedBook(row)
-                      setIsNewRecord(false)
+                      setOpenBookModal(true);
+                      setSelectedBook(row);
+                      setIsNewRecord(false);
                     }}
-                    className={"d-flex align-items-center justify-content-center"}
+                    className={
+                      "d-flex align-items-center justify-content-center"
+                    }
                     shape="circle"
-                    icon={<Iconify icon={"material-symbols:search-rounded"} />} />
+                    icon={<Iconify icon={"material-symbols:search-rounded"} />}
+                  />
                 </Link>
               </Tooltip>
               <Tooltip title="Edit">
                 <Link to={`/books/${row.id}/edit`}>
                   <AntButton
-                    type={'link'}
+                    type={"link"}
                     style={{ color: Palette.MAIN_THEME }}
-                    onClick={() => {
-                    }}
-                    className={"d-flex align-items-center justify-content-center"}
+                    onClick={() => {}}
+                    className={
+                      "d-flex align-items-center justify-content-center"
+                    }
                     shape="circle"
-                    icon={<Iconify icon={"material-symbols:edit"} />} />
+                    icon={<Iconify icon={"material-symbols:edit"} />}
+                  />
                 </Link>
               </Tooltip>
               <Tooltip title="Delete">
                 <AntButton
-                  type={'link'}
+                  type={"link"}
                   style={{ color: Palette.MAIN_THEME }}
                   onClick={() => {
-                    onDelete(row.id)
+                    onDelete(row.id);
                   }}
                   className={"d-flex align-items-center justify-content-center"}
                   shape="circle"
-                  icon={<Iconify icon={"material-symbols:delete-outline"} />} />
+                  icon={<Iconify icon={"material-symbols:delete-outline"} />}
+                />
               </Tooltip>
             </Space>
           </>
-        )
-
-      })
+        );
+      },
     },
     /* {
       id: '', label: '', filter: false,
@@ -200,18 +231,18 @@ const BookList = () => {
 
       })
     }, */
-  ]
+  ];
 
   const deleteItem = async (id) => {
     try {
-      await Book.delete(id)
-      message.success('Book deleted')
+      await Book.delete(id);
+      message.success("Book deleted");
       initializeData();
     } catch (e) {
-      message.error('There was error from server')
-      setLoading(true)
+      message.error("There was error from server");
+      setLoading(true);
     }
-  }
+  };
 
   const onDelete = (record) => {
     Modal.confirm({
@@ -219,82 +250,91 @@ const BookList = () => {
       okText: "Yes",
       okType: "danger",
       onOk: () => {
-        deleteItem(record)
-      }
+        deleteItem(record);
+      },
     });
   };
 
   const toggleHide = async (checked, id) => {
     try {
-      await Book.edit(id, { hide: checked })
+      await Book.edit(id, { hide: checked });
       // initializeData()
     } catch (e) {
-      message.error("Error updating book")
+      message.error("Error updating book");
     }
-  }
+  };
 
-  // const initializeData = async (filters = {}) => {
-  const initializeData = async (keyword) => {
-    setLoading(true)
+  const initializeData = async (categoryIds = [], keyword = '') => {
+    setLoading(true);
     try {
-      const searchKeyword = keyword ?? ''; 
-      let result = await Book.getAllWithFilter(1, searchKeyword);
+      let result = await Book.getAllWithFilter(categoryIds, keyword);
       let formattedResult = result.map((value) => {
-      let bookAuthorsJoined = value.book_authors.map((book_author) => book_author.authors.name).join(",");
-      let bookCategoriesJoined = value.book_categories.map((book_category) => book_category.categories.name).join(",");
+        let bookAuthorsJoined = value.book_authors
+          .map((book_author) => book_author.authors.name)
+          .join(",");
+        let bookCategoriesJoined = value.book_categories
+          .map((book_category) => book_category.categories.name)
+          .join(",");
         return {
           ...value,
           authors: bookAuthorsJoined,
           categories: bookCategoriesJoined,
-        }
-      })
-      console.log(formattedResult[0]?.book_authors?.length)
-      setDataSource(formattedResult)
-      setLoading(false)
+        };
+      });
+      console.log(formattedResult[0]?.book_authors?.length);
+      setDataSource(formattedResult);
+      setLoading(false);
     } catch (e) {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    initializeData()
-  }, [])
+    initializeData();
+  }, []);
 
   return (
     <>
       <Container fluid>
-        <Card style={{ background: Palette.BACKGROUND_DARK_GRAY, color: "white" }}
-          className="card-stats mb-4 mb-xl-0">
+        <Card
+          style={{ background: Palette.BACKGROUND_DARK_GRAY, color: "white" }}
+          className="card-stats mb-4 mb-xl-0"
+        >
           <CardBody>
-
             <Row>
-              <Col className='mb-3' md={6}>
-                <div style={{ fontWeight: "bold", fontSize: "1.1em" }}>Books</div>
+              <Col className="mb-3" md={6}>
+                <div style={{ fontWeight: "bold", fontSize: "1.1em" }}>
+                  Books
+                </div>
               </Col>
-              <Col className='mb-3 text-right' md={6}>
+              <Col className="mb-3 text-right" md={6}>
                 <Link to="/books/create">
                   <AntButton
-                    onClick={() => { }}
-                    size={'middle'} type={'primary'}>Add Book</AntButton>
+                    onClick={() => {}}
+                    size={"middle"}
+                    type={"primary"}
+                  >
+                    Add Book
+                  </AntButton>
                 </Link>
               </Col>
             </Row>
-            <Row>
-
-            </Row>
+            <Row></Row>
             <CustomTable
               showFilter={true}
               pagination={true}
-              searchText={''}
+              searchText={""}
               data={dataSource}
               columns={columns}
               onSearch={(searchTerm) => {
-                initializeData(searchTerm);
+                initializeData(selectedCategories, searchTerm);
               }}
+              categoryFilter={selectedCategories}
+              onCategoryChange={handleCategoryChange}
+              categories={categories}
             />
           </CardBody>
         </Card>
-
       </Container>
 
       {/* <BookFormModal
@@ -308,9 +348,8 @@ const BookList = () => {
           setOpenBookModal(false)
         }}
       /> */}
-
     </>
-  )
-}
+  );
+};
 
 export default BookList;

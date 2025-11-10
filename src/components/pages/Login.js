@@ -15,7 +15,7 @@ import Admin from "../../models/AdminModel"
 import React, {useEffect, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 
-import logo from "../../assets/img/brand/read_indonesia_logo_4.png"
+import logo from "../../assets/img/brand/Logo_ReadIndonesia.png"
 import Palette from "../../utils/Palette";
 import swal from "../../components/reusable/CustomSweetAlert";
 

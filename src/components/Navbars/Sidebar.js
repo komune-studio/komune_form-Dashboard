@@ -21,7 +21,7 @@ import { NavLink as NavLinkRRD, Link, useHistory } from "react-router-dom";
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
 
-import logo from "../../assets/img/brand/read_indonesia_logo_4.png"
+import logo from "../../assets/img/brand/Logo_ReadIndonesia.png"
 
 // reactstrap components
 import {
@@ -238,9 +238,9 @@ const Sidebar = (props) => {
                 {/* Collapse */}
                 <Collapse navbar isOpen={collapseOpen}>
                     {/* Collapse header */}
-                    <div className="d-flex align-items-start justify-content-start mb-2">
+                    <div className="d-flex align-items-start justify-content-start mb-2 mt-n5">
                         <img
-                            style={{ height: 100, objectFit: "contain" }}
+                            style={{ height: 200, objectFit: "cover", width: "100%" }}
                             src={logo} />
                     </div>
                     {/* Navigation */}

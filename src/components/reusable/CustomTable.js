@@ -102,6 +102,7 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 }));
 
 const CustomTable = ({
+  // Original Props
   data,
   columns,
   checkbox = false,
@@ -112,18 +113,30 @@ const CustomTable = ({
   extendToolbar = null,
   defaultOrder = null,
   rowAction,
+
+  // API Search and Filter Props
   onSearch,
   categoryFilter,
   onCategoryChange,
   categories = [],
   categoryLoading = false,
+
+  // API Pagination Props
+  apiPagination = false,
+  totalCount = 0,
+  currentPage = 0, 
+  onPageChange, 
+  onRowsPerPageChange,
+  rowsPerPage = 10, 
+  loading = false,
 }) => {
   const [selected, setSelected] = useState([]);
   const [order, setOrder] = useState("desc");
   const [orderBy, setOrderBy] = useState("name");
   const [filterName, setFilterName] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [localPage, setLocalPage] = useState(0);
+  const [localRowsPerPage, setLocalRowsPerPage] = useState(10);
+  
   useEffect(() => {
     if (columns && columns.length > 0) {
       if (defaultOrder) {
@@ -150,11 +163,19 @@ const CustomTable = ({
 
   const handleFilterByName = (event) => {
     const searchValue = event.target.value;
-    setPage(0);
+    if (apiPagination) {
+      // Reset to first page when searching with API pagination
+      onPageChange?.(null, 0);
+    } else {
+      setLocalPage(0);
+    }
     setFilterName(searchValue);
   };
 
-  const filteredData = onSearch
+    // Use API data directly when API pagination is enabled
+  const filteredData = apiPagination 
+    ? data 
+    : onSearch
     ? data
     : applySortFilter(data, getComparator(order, orderBy), filterName, columns);
 
@@ -178,12 +199,23 @@ const CustomTable = ({
   };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    if (apiPagination) {
+      onPageChange?.(event, newPage);
+    } else {
+      setLocalPage(newPage);
+    }
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPage(0);
-    setRowsPerPage(parseInt(event.target.value, 10));
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    
+    if (apiPagination) {
+      onRowsPerPageChange?.(event);
+      onPageChange?.(null, 0); // Reset to first page
+    } else {
+      setLocalPage(0);
+      setLocalRowsPerPage(newRowsPerPage);
+    }
   };
 
   const handleClick = (event, name) => {
@@ -204,10 +236,18 @@ const CustomTable = ({
     setSelected(newSelected);
   };
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+  const emptyRows = apiPagination
+    ? 0 // API handles data slicing
+    : localPage > 0 
+      ? Math.max(0, (1 + localPage) * localRowsPerPage - data.length) 
+      : 0;
 
   const isNotFound = !filteredData.length && !!filterName;
+
+  // Use appropriate values for pagination
+  const currentPageValue = apiPagination ? currentPage : localPage;
+  const currentRowsPerPage = apiPagination ? rowsPerPage : localRowsPerPage;
+  const totalCountValue = apiPagination ? totalCount : data.length;
 
   return (
     <>
@@ -291,9 +331,23 @@ const CustomTable = ({
           </TableHead>
 
           <TableBody>
-            {filteredData
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, key) => {
+            {loading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length + (checkbox ? 1 : 0)}
+                  align="center"
+                >
+                  Loading...
+                </TableCell>
+              </TableRow>
+            ) : (
+              (apiPagination
+                ? filteredData
+                : filteredData.slice(
+                    currentPageValue * currentRowsPerPage,
+                    currentPageValue * currentRowsPerPage + currentRowsPerPage
+                  )
+              ).map((row, key) => {
                 const { id } = row;
                 const selectedItem = selected.indexOf(id) !== -1;
 
@@ -342,10 +396,11 @@ const CustomTable = ({
                     })}
                   </TableRow>
                 );
-              })}
-            {emptyRows > 0 && (
+              })
+            )}
+            {!apiPagination && emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
+                <TableCell colSpan={columns.length + (checkbox ? 1 : 0)} />
               </TableRow>
             )}
           </TableBody>
@@ -383,10 +438,9 @@ const CustomTable = ({
         <TablePagination
           rowsPerPageOptions={[10, 25, 50, 100]}
           component="div"
-          classes={"flex"}
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
+          count={totalCountValue} // Use totalCount for API, data.length for local
+          rowsPerPage={currentRowsPerPage}
+          page={currentPageValue}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           sx={{

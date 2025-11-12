@@ -39,6 +39,9 @@ const BookList = () => {
   const [category, setCategory] = useState([]);
   const [categoryLoading, setCategoryLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const [selectedBook, setSelectedBook] = useState(null);
   const [openBookModal, setOpenBookModal] = useState(false);
   const [isNewRecord, setIsNewRecord] = useState(false);
@@ -53,15 +56,8 @@ const BookList = () => {
   const handleCategoryChange = (event) => {
     const { value } = event.target;
     setSelectedCategories(value);
-    initializeData(value, search);
+    setPage(0); 
   };
-
-  const categories = [
-    { id: 1, name: "Non-fiksi" },
-    { id: 2, name: "Fiksi" },
-    { id: 12, name: "Anak" },
-    { id: 13, name: "Komik" },
-  ];
 
   const columns = [
     {
@@ -240,7 +236,7 @@ const BookList = () => {
     try {
       await Book.delete(id);
       message.success("Book deleted");
-      initializeData();
+      fetchData();
     } catch (e) {
       message.error("There was error from server");
       setLoading(true);
@@ -280,11 +276,20 @@ const BookList = () => {
     }
   };
 
-  const initializeData = async (categoryIds = [], keyword = '') => {
+  const fetchData = async (currentPage = page, currentRowsPerPage = rowsPerPage) => {
     setLoading(true);
     try {
-      let result = await Book.getAllWithFilter(categoryIds, keyword);
-      let formattedResult = result.map((value) => {
+      let result = await Book.getAllWithFilter(
+        selectedCategories || [],
+        search || "",
+        currentRowsPerPage,
+        currentPage,
+      );
+
+      // console.log("result: ", result.meta);
+
+      // Format the data
+      let formattedResult = result.data.map((value) => {
         let bookAuthorsJoined = value.book_authors
           .map((book_author) => book_author.authors.name)
           .join(",");
@@ -297,19 +302,42 @@ const BookList = () => {
           categories: bookCategoriesJoined,
         };
       });
-      console.log(formattedResult[0]?.book_authors?.length);
+      // console.log(formattedResult[0]?.book_authors?.length);
       setDataSource(formattedResult);
+      setTotalCount(result.meta.meta.total_data)
       setLoading(false);
     } catch (error) {
-      setLoading(false);
       console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    initializeData();
+    fetchData(0, rowsPerPage);
+  }, [search]);
+
+   useEffect(() => {
+    fetchData(page, rowsPerPage);
+  }, [page, rowsPerPage, selectedCategories]);
+
+  useEffect(() => {
     initializeCategory();
+    fetchData(0, rowsPerPage);
   }, []);
+
+    const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleSearch = (searchTerm) => {
+    setSearch(searchTerm);
+  };
 
   return (
     <>
@@ -341,16 +369,21 @@ const BookList = () => {
             <CustomTable
               showFilter={true}
               pagination={true}
-              searchText={""}
+              searchText={search}
               data={dataSource}
               columns={columns}
-              onSearch={(searchTerm) => {
-                initializeData(selectedCategories, searchTerm);
-              }}
+              onSearch={handleSearch}
               categoryFilter={selectedCategories}
               onCategoryChange={handleCategoryChange}
               categories={category}
               categoryLoading={categoryLoading} 
+              // API Pagination Props
+              apiPagination={true}
+              totalCount={totalCount}
+              currentPage={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
             />
           </CardBody>
         </Card>

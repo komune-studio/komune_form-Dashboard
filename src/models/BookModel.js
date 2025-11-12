@@ -5,8 +5,8 @@ export default class Book {
     return await ApiRequest.set("v1/books/getall-books", "GET");
   } 
 
-  static getAllWithFilter = async (category_id, keyword) => {
-    return await ApiRequest.set(`v1/books/getall-books-with-categories-with-filter?category_id=${category_id}&keyword=${keyword}`, "GET");
+  static getAllWithFilter = async (category_id, keyword, limit, page) => {
+    return await ApiRequest.set(`v1/books/getall-books-with-categories-filter-with-pagination?category_id=${category_id}&keyword=${keyword}&limit=${limit}&page=${page}`, "GET");
   } 
 
   static getById = async (id) => {

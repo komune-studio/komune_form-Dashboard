@@ -136,6 +136,10 @@ const CustomTable = ({
   const [filterName, setFilterName] = useState("");
   const [localPage, setLocalPage] = useState(0);
   const [localRowsPerPage, setLocalRowsPerPage] = useState(10);
+
+  useEffect(() => {
+    setFilterName(searchText || "");
+  }, [searchText]);
   
   useEffect(() => {
     if (columns && columns.length > 0) {

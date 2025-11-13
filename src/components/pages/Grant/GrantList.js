@@ -10,14 +10,28 @@ import Grant from 'models/GrantModel';
 import GrantReviewModal from './GrantReviewModal';
 import moment from 'moment';
 import Helper from 'utils/Helper';
+import { create } from "zustand";
+
+const useFilter = create((set) => ({
+  search: "",
+
+  setSearch: (keyword) =>
+    set((state) => ({
+      search: keyword,
+    })),
+  resetSearch: () =>
+    set((state) => ({
+      search: "",
+    })),
+}));
 
 const tabs = [
   {
-    key: 'pending',
+    key: 'PENDING',
     label: 'Pending',
   },
   {
-    key: 'completed',
+    key: 'NOT_PENDING',
     label: 'Completed',
   },
 ];
@@ -25,17 +39,63 @@ const tabs = [
 const GrantList = () => {
 
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const [dataSource, setDataSource] = useState([]);
   const [selectedGrant, setSelectedGrant] = useState(null)
   const [openGrantModal, setOpenGrantModal] = useState(false)
-  const [selectedTab, setSelectedTab] = useState("pending");
+  const [selectedTab, setSelectedTab] = useState("PENDING");
+  const search = useFilter((state) => state.search);
+  const setSearch = useFilter((state) => state.setSearch);
+  const resetSearch = useFilter((state) => state.resetSearch);
 
-  const filteredData = dataSource.filter((data) => {
-    if (selectedTab == "pending") {
-      return data.status == "WAITING"
+  const resetAllFilters = () => {
+    resetSearch();
+    setPage(0);
+  };
+
+  const handleTabChange = (key) => {
+    resetAllFilters();
+    setSelectedTab(key); 
+  };
+
+    const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+    const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleSearch = (searchTerm) => {
+    setSearch(searchTerm);
+  };
+
+    const approveGrant = async (id) => {
+    try {
+      await Grant.approveGrant(id)
+      message.success('Grant approved')
+      initializeData();
+      setOpenGrantModal(false);
+    } catch (e) {
+      message.error('There was error from server')
+      setLoading(true)
     }
-    return data.status != "WAITING"
-  })
+  }
+
+  const rejectGrant = async (id, reject_reason) => {
+    try {
+      await Grant.rejectGrant(id, { reject_reason })
+      message.success('Grant rejected')
+      initializeData();
+      setOpenGrantModal(false);
+    } catch (e) {
+      message.error('There was error from server')
+      setLoading(true)
+    }
+  }
 
   const columns = [
     {
@@ -143,31 +203,9 @@ const GrantList = () => {
 
       })
     },
-  ]
+  ] 
 
-  const approveGrant = async (id) => {
-    try {
-      await Grant.approveGrant(id)
-      message.success('Grant approved')
-      initializeData();
-      setOpenGrantModal(false);
-    } catch (e) {
-      message.error('There was error from server')
-      setLoading(true)
-    }
-  }
 
-  const rejectGrant = async (id, reject_reason) => {
-    try {
-      await Grant.rejectGrant(id, { reject_reason })
-      message.success('Grant rejected')
-      initializeData();
-      setOpenGrantModal(false);
-    } catch (e) {
-      message.error('There was error from server')
-      setLoading(true)
-    }
-  }
 
   // const onApprove = (record) => {
   //   Modal.confirm({
@@ -205,19 +243,29 @@ const GrantList = () => {
   //   });
   // };
 
-  const initializeData = async () => {
-    setLoading(true)
+  const initializeData = async (currentPage = page, currentRowsPerPage = rowsPerPage) => {
+    setLoading(true);
     try {
-      let result = await Grant.getAll();
-      setDataSource(result)
-      setLoading(false)
+      let result = await Grant.searchByStatusAndPagination(
+        search || "",
+        currentRowsPerPage,
+        currentPage + 1,
+        selectedTab,
+      );
+      setDataSource(result.data);
+      setTotalCount(result.meta.pagination.total);
+      setLoading(false);
     } catch (e) {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   useEffect(() => {
-    initializeData()
+    initializeData(page, rowsPerPage);
+  }, [page, rowsPerPage, search, selectedTab]);
+
+  useEffect(() => {
+    initializeData(0, rowsPerPage)
   }, [])
 
   return (
@@ -241,16 +289,23 @@ const GrantList = () => {
             </Row>
             <Row>
               <Col>
-                <Tabs defaultActiveKey='pending' items={tabs} onChange={(key) => setSelectedTab(key)} />
+                <Tabs defaultActiveKey='pending' items={tabs} onChange={handleTabChange} />
               </Col>
             </Row>
             <CustomTable
               showFilter={true}
               pagination={true}
-              searchText={''}
-              data={filteredData}
+              searchText={search}
+              data={dataSource}
               columns={columns}
               defaultOrder={"created_at"}
+              onSearch={handleSearch}
+              apiPagination={true}
+              totalCount={totalCount}
+              currentPage={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
             />
           </CardBody>
         </Card>

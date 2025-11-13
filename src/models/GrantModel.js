@@ -5,6 +5,10 @@ export default class Grant {
     return await ApiRequest.set("v1/grants/get-all", "GET");
   }
 
+  static searchByStatusAndPagination = async ( keyword, limit, page, status) => {
+    return await ApiRequest.set(`v1/grants/search-by-status-with-pagination?keyword=${keyword}&limit=${limit}&page=${page}&status=${status}`, "GET");
+  } 
+
   static approveGrant = async (id) => {
     return await ApiRequest.set(`v1/grants/approve-grant-by-id/${id}`, "PUT");
   }

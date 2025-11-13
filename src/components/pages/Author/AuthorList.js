@@ -9,13 +9,47 @@ import Palette from "../../../utils/Palette";
 import Author from 'models/AuthorModel';
 import AuthorDetailModal from './AuthorDetailModal';
 import Helper from 'utils/Helper';
+import { create } from "zustand";
+
+const useFilter = create((set) => ({
+  search: "",
+
+  setSearch: (keyword) =>
+    set((state) => ({
+      search: keyword,
+    })),
+  resetSearch: () =>
+    set((state) => ({
+      search: "",
+    })),
+}));
 
 const AuthorList = () => {
 
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const [dataSource, setDataSource] = useState([]);
   const [selectedAuthor, setSelectedAuthor] = useState(null)
   const [openAuthorModal, setOpenAuthorModal] = useState(false)
+
+  const search = useFilter((state) => state.search);
+  const setSearch = useFilter((state) => state.setSearch);
+  const resetSearch = useFilter((state) => state.resetSearch);
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleSearch = (searchTerm) => {
+    setSearch(searchTerm);
+  };
 
   const columns = [
     {
@@ -170,11 +204,16 @@ const AuthorList = () => {
     }
   }
 
-  const initializeData = async () => {
+  const initializeData = async (currentPage = page, currentRowsPerPage = rowsPerPage) => {
     setLoading(true)
     try {
-      let result = await Author.getAll();
-      setDataSource(result)
+      let result = await Author.getAllWithPagination(
+        currentRowsPerPage,
+        currentPage + 1,
+        search || "",
+      );
+      setDataSource(result.data)
+      setTotalCount(result.meta.meta.total_data);
       setLoading(false)
     } catch (e) {
       setLoading(false)
@@ -182,7 +221,11 @@ const AuthorList = () => {
   }
 
   useEffect(() => {
-    initializeData()
+    initializeData(page, rowsPerPage);
+  }, [page, rowsPerPage, search]);
+
+  useEffect(() => {
+    initializeData(0, rowsPerPage)
   }, [])
 
   return (
@@ -210,9 +253,17 @@ const AuthorList = () => {
             <CustomTable
               showFilter={true}
               pagination={true}
-              searchText={''}
+              searchText={search}
               data={dataSource}
               columns={columns}
+              defaultOrder={"created_at"}
+              onSearch={handleSearch}
+              apiPagination={true}
+              totalCount={totalCount}
+              currentPage={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
             />
           </CardBody>
         </Card>

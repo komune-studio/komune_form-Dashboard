@@ -9,6 +9,10 @@ export default class Publisher {
     return await ApiRequest.set(`v1/publishers/getbyid/${id}`, "GET");
   }
 
+  static getAllWithPagination = async (limit, page, keyword) => {
+    return await ApiRequest.set(`v1/publishers/get-with-pagination?page=${page}&limit=${limit}&keyword=${keyword}`, "GET")
+  }
+
   static create = async (body) => {
     return await ApiRequest.set("v1/publishers/create", "POST", body);
   }

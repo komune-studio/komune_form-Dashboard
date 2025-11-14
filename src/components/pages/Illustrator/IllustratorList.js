@@ -9,14 +9,48 @@ import Palette from 'utils/Palette';
 import { InputGroup, Form, Col } from "react-bootstrap";
 import CustomTable from "../../reusable/CustomTable";
 import swal from "../../reusable/CustomSweetAlert";
-import IllustratorDetailModal from './IllustratorDetailModal'; // Import modal detail
+import IllustratorDetailModal from './IllustratorDetailModal';
 import Helper from 'utils/Helper';
+import { create } from "zustand";
+
+const useFilter = create((set) => ({
+  search: "",
+
+  setSearch: (keyword) =>
+    set((state) => ({
+      search: keyword,
+    })),
+  resetSearch: () =>
+    set((state) => ({
+      search: "",
+    })),
+}));
 
 const IllustratorList = () => {
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const [dataSource, setDataSource] = useState([]);
   const [selectedIllustrator, setSelectedIllustrator] = useState(null); // State untuk illustrator yang dipilih
   const [openIllustratorModal, setOpenIllustratorModal] = useState(false); // State untuk modal detail
+
+  const search = useFilter((state) => state.search);
+  const setSearch = useFilter((state) => state.setSearch);
+  const resetSearch = useFilter((state) => state.resetSearch);
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleSearch = (searchTerm) => {
+    setSearch(searchTerm);
+  };
 
   const columns = [
     {
@@ -169,22 +203,32 @@ const IllustratorList = () => {
     }
   }
 
-  const initializeData = async () => {
-    setLoading(true)
+  const initializeData = async (
+    currentPage = page,
+    currentRowsPerPage = rowsPerPage
+  ) => {
+    setLoading(true);
     try {
-      let result = await Illustrator.getAll()
-
-      // console.log("Result: ", result)
-      setDataSource(result)
-      setLoading(false)
+      let result = await Illustrator.getAllWithPagination(
+        currentRowsPerPage,
+        currentPage + 1,
+        search || ""
+      );
+      setDataSource(result.data);
+      setTotalCount(result.meta.meta.total_data);
+      setLoading(false);
     } catch (e) {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    initializeData()
-  }, [])
+    initializeData(page, rowsPerPage);
+  }, [page, rowsPerPage, search]);
+
+  useEffect(() => {
+    initializeData(0, rowsPerPage);
+  }, []);
 
   return (
     <>
@@ -207,9 +251,17 @@ const IllustratorList = () => {
             <CustomTable
               showFilter={true}
               pagination={true}
-              searchText={''}
+              searchText={search}
               data={dataSource}
               columns={columns}
+              defaultOrder={"created_at"}
+              onSearch={handleSearch}
+              apiPagination={true}
+              totalCount={totalCount}
+              currentPage={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
             />
           </CardBody>
         </Card>

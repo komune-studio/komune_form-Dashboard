@@ -10,6 +10,10 @@ export default class Illustrator {
     return await ApiRequest.set(`/v1/illustrators/getbyid/${id}`, "GET");
   }
 
+  static getAllWithPagination = async (limit, page, keyword) => {
+    return await ApiRequest.set(`v1/illustrators/get-with-pagination?page=${page}&limit=${limit}&keyword=${keyword}`, "GET")
+  }
+
   static create = async (body) => {
     return await ApiRequest.set("/v1/illustrators/create", "POST", body);
   }

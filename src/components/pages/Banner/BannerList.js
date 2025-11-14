@@ -179,7 +179,7 @@ const BannerList = () => {
 
             </Row>
             <CustomTable
-              showFilter={true}
+              showFilter={false}
               pagination={true}
               searchText={''}
               data={dataSource}

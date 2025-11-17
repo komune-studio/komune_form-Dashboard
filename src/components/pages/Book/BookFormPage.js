@@ -566,6 +566,7 @@ export default function BookFormPage({
                             variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_publisher}
+                            allowClear
                           />
                         </Form.Item>
 
@@ -583,6 +584,7 @@ export default function BookFormPage({
                             variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_categories}
+                            allowClear
                           />
                         </Form.Item>
 
@@ -628,6 +630,7 @@ export default function BookFormPage({
                             variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_illustrator}
+                            allowClear
                           />
                         </Form.Item>
 
@@ -644,6 +647,7 @@ export default function BookFormPage({
                             variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_translator}
+                            allowClear
                           />
                         </Form.Item>
 
@@ -681,6 +685,7 @@ export default function BookFormPage({
                             variant='filled'
                             filterOption={selectFilterFunction}
                             placeholder={Placeholder.select_agency}
+                            allowClear
                           />
                         </Form.Item>
                         <Row>

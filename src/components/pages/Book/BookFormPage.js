@@ -237,6 +237,19 @@ export default function BookFormPage({
         await uploadImage();
       }
       body = form.getFieldsValue()
+
+      // Validate undefined values
+      if (body.literary_agency_id === undefined) {
+        body.literary_agency_id = null;
+      }
+      if (body.contact_person_name === undefined) {
+        body.contact_person_name = null;
+      }
+      if (body.contact_person_email === undefined) {
+        body.contact_person_email = null;
+      }
+
+
       if (asDraft) {
         body["hide"] = true
       }
@@ -364,13 +377,27 @@ export default function BookFormPage({
   }, [])
 
   useEffect(() => {
-  if (contactOption !== "Individual") {
-    form.resetFields(["contact_person_name", "contact_person_email"]);
-  }
-  if (contactOption !== "Literary Agency") {
-    form.resetFields(["literary_agency_id"]);
-  }
-}, [contactOption]);
+    if (contactOption !== "Individual") {
+      form.resetFields(["contact_person_name", "contact_person_email"]);
+    }
+    if (contactOption !== "Literary Agency") {
+      form.resetFields(["literary_agency_id"]);
+    }
+  }, [contactOption]);
+
+  // Set contactOption state when load
+  useEffect(() => {
+    const body = form.getFieldsValue();
+    const hasData = body.contact_person_name || body.contact_person_email || body.literary_agency_id;
+    
+    if (hasData) {
+      if (body.contact_person_name || body.contact_person_email) {
+        setContactOption("Individual");
+      } else if (body.literary_agency_id) {
+        setContactOption("Literary Agency");
+      }
+    }
+  }, [form, form.getFieldsValue()]);
 
   useEffect(() => {
     if (bookData) {

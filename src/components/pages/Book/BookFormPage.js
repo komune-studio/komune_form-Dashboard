@@ -244,6 +244,15 @@ export default function BookFormPage({
       body = form.getFieldsValue()
 
       // Validate undefined values
+      if (body.publisher_id === undefined) {
+        body.publisher_id = null;
+      }
+      if (body.translator_id === undefined) {
+        body.translator_id = null;
+      }
+      if (body.illustrator_id === undefined) {
+        body.illustrator_id = null;
+      }
       if (body.literary_agency_id === undefined) {
         body.literary_agency_id = null;
       }

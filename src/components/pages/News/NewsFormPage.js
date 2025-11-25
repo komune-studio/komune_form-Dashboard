@@ -215,6 +215,7 @@ export default function NewsFormPage({
         body: newsData.body,
         body_tl: newsData.body_tl,
         video_url: newsData.video_url,
+        highlight: newsData.highlight,
         hide: newsData.hide,
       })
 
@@ -271,19 +272,36 @@ export default function NewsFormPage({
                     <Flex gap={"48px"} >
                       <Flex vertical style={{ width: "100%" }}>
                         <Flex justify='space-between' align='center'>
-                          <Flex align='center' gap={12}>
-                            <Typography.Text>
-                              Mark as draft
-                            </Typography.Text>
-                            <Form.Item
-                              label={"Mark as draft"}
-                              name={"hide"}
-                              valuePropName='checked'
-                              noStyle
-                            >
-                              <Switch />
-                            </Form.Item>
+                          <Flex gap={40}>
+                            <Flex align='center' gap={12}>
+                              <Typography.Text>
+                                Mark as draft
+                              </Typography.Text>
+                              <Form.Item
+                                label={"Mark as draft"}
+                                name={"hide"}
+                                valuePropName='checked'
+                                noStyle
+                              >
+                                <Switch />
+                              </Form.Item>
+                            </Flex>
+
+                            <Flex align='center' gap={12}>
+                              <Typography.Text>
+                                Highlight News
+                              </Typography.Text>
+                              <Form.Item
+                                label={"Highlight News"}
+                                name={"highlight"}
+                                valuePropName='checked'
+                                noStyle
+                              >
+                                <Switch />
+                              </Form.Item>
+                            </Flex>
                           </Flex>
+                          
 
                           <Segmented
                             value={language}

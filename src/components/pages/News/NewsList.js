@@ -84,18 +84,18 @@ const NewsList = () => {
       }
     },
     {
-      id: 'modified_at', label: 'Modified At', filter: false,
-      render: (row) => {
-        return (
-          moment(row.modified_at).format("DD MMM YYYY HH:mm")
-        )
-      }
+      id: 'highlight', label: 'Highlight', filter: true, allowSort: true,
+      render: (row) => (
+        <Tooltip title="Make this News Highlighted">
+          <Switch defaultValue={row?.highlight} onChange={(checked) => toggleField("highlight", checked, row?.id)} />
+        </Tooltip>
+      )
     },
     {
       id: 'hide', label: 'Mark as Draft', filter: true,
       render: (row) => (
         <Tooltip title="Hide data on Landing Page">
-          <Switch defaultValue={row?.hide} onChange={(checked) => toggleHide(checked, row?.id)} />
+          <Switch defaultValue={row?.hide} onChange={(checked) => toggleField("hide", checked, row?.id)} />
         </Tooltip>
       )
     },
@@ -196,14 +196,14 @@ const NewsList = () => {
     });
   };
 
-  const toggleHide = async (checked, id) => {
+  const toggleField = async (field, checked, id) => {
     try {
-      await News.edit(id, { hide: checked })
-      // initializeData()
+      await News.edit(id, { [field]: checked });
+      // initializeData();
     } catch (e) {
-      message.error("Error updating book")
+      message.error(`Error updating news ${field}`);
     }
-  }
+  };
 
   const initializeData = async (
     currentPage = page,

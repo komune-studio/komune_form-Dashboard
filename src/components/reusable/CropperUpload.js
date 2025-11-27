@@ -47,7 +47,7 @@ export default function CropperUpload({
         .then((res) => res.blob())
         .then((blob) => {
           const file = new File([blob], imageName, { type: 'image/jpeg' });
-          console.log({fileSize: file.size / 1024 / 1024})
+          console.log({ fileSize: file.size / 1024 / 1024 })
           onImageChange(file)
         });
     } catch (error) {
@@ -82,7 +82,7 @@ export default function CropperUpload({
           <Flex vertical align='center'>
             {imagePreviewURL ? (
               <>
-                <img src={imagePreviewURL} style={{ width: "100%", height: "auto" }} />
+                <img src={imagePreviewURL} style={{ height: "auto", maxHeight: '400px', width: "auto", maxWidth: '100%', objectFit: 'contain' }} />
               </>
             ) : (
               <>

@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useHistory, Link, Prompt } from 'react-router-dom';
-import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Tag, Segmented, Switch } from 'antd';
+import { Button, Flex, message, Spin, Typography, Form, Input, Select, Upload as AntUpload, Space, Tag, Segmented, Switch, Divider } from 'antd';
 import { Card, CardBody, Container } from 'reactstrap';
 import { Col, Row } from 'react-bootstrap';
 import Palette from '../../../utils/Palette';
@@ -180,6 +180,15 @@ export default function NewsFormPage({
     </span>
   );
 
+  const seoTag = (text, tagColor = Palette.MAIN_THEME) => (
+    <span>
+      {text}{" "}
+      <Tag style={{ fontSize: '10px', marginLeft: '8px', color: 'white' }}>
+        SEO
+      </Tag>
+    </span>
+  );
+
   const FormQuill = ({ value, onChange, placeholder, ...props }) => {
     return (
       <ReactQuill
@@ -214,11 +223,13 @@ export default function NewsFormPage({
         title_tl: newsData.title_tl,
         body: newsData.body,
         body_tl: newsData.body_tl,
-        summary: newsData.summary, 
-        summary_tl: newsData.summary_tl, 
+        summary: newsData.summary,
+        summary_tl: newsData.summary_tl,
         video_url: newsData.video_url,
         highlight: newsData.highlight,
         hide: newsData.hide,
+        meta_title: newsData.meta_title,
+        meta_description: newsData.meta_description,
       })
 
       if (newsData.image_cover) {
@@ -330,6 +341,33 @@ export default function NewsFormPage({
                           <Input variant='filled' placeholder={Placeholder.translated.name_news} />
                         </Form.Item>
 
+                        <Form.Item
+                          label={languageTag("Summary")}
+                          name={"summary"}
+                          hidden={language !== "ID"}
+                        >
+                          <Input.TextArea
+                            showCount
+                            maxLength={500}
+                            variant='filled'
+                            rows={4}
+                            placeholder={Placeholder.summary_news}
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          label={languageTag("Summary")}
+                          name={"summary_tl"}
+                          hidden={language === "ID"}
+                        >
+                          <Input.TextArea
+                            showCount
+                            maxLength={500}
+                            variant='filled'
+                            rows={4}
+                            placeholder={Placeholder.translated.summary_news}
+                          />
+                        </Form.Item>
+
                         <CropperUploadForm
                           label={"Image Cover"}
                           name={"image_cover"}
@@ -356,29 +394,20 @@ export default function NewsFormPage({
                         </Form.Item>
 
                         <Form.Item
-                          label={languageTag("Summary")}
-                          name={"summary"}
-                          hidden={language !== "ID"}
+                          label={seoTag("Meta Title")}
+                          name={"meta_title"}
                         >
-                          <Input.TextArea
-                            showCount
-                            maxLength={500}
-                            variant='filled'
-                            rows={4}
-                            placeholder={Placeholder.summary_news}
-                          />
+                          <Input variant='filled' placeholder={Placeholder.meta_title} />
                         </Form.Item>
+
                         <Form.Item
-                          label={languageTag("Summary")}
-                          name={"summary_tl"}
-                          hidden={language === "ID"}
+                          label={seoTag( 'Meta Description' )}
+                          name={"meta_description"}
                         >
                           <Input.TextArea
-                            showCount
-                            maxLength={500}
                             variant='filled'
                             rows={4}
-                            placeholder={Placeholder.translated.summary_news}
+                            placeholder={Placeholder.meta_description}
                           />
                         </Form.Item>
 

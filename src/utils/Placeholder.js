@@ -35,6 +35,8 @@ export default class Placeholder {
   static isbn = "e.g. 978-0-306-40615-7"
   static total_page = "e.g. 224"
   static summary_news = "Insert news summary here"
+  static meta_title = "Insert title to display on web search results"
+  static meta_description = "Insert description to display on web search results"
 
 
   static translated = {

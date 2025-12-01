@@ -145,6 +145,8 @@ export default function PublisherFormPage({
         youtube: publisherData?.youtube,
         website_url: publisherData?.website_url,
         hide: publisherData?.hide,
+        meta_title: publisherData?.meta_title,
+        meta_description: publisherData?.meta_description,
       })
 
       if (publisherData.publisher_logo) {
@@ -360,6 +362,26 @@ export default function PublisherFormPage({
                             </Form.Item>
                           </Col>
                         </Row>
+
+                        <Divider>SEO Information</Divider>
+
+                        <Form.Item
+                          label={"Meta Title"}
+                          name={"meta_title"}
+                        >
+                          <Input variant='filled' placeholder={Placeholder.meta_title} />
+                        </Form.Item>
+
+                        <Form.Item
+                          label={'Meta Description'}
+                          name={"meta_description"}
+                        >
+                          <Input.TextArea
+                            variant='filled'
+                            rows={4}
+                            placeholder={Placeholder.meta_description}
+                          />
+                        </Form.Item>
 
                         {!formDisabled ? (
                           <div className={"d-flex flex-row"} style={{ gap: "12px" }}>

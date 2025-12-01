@@ -191,6 +191,8 @@ export default function AuthorFormPage({
         biography: authorData.biography,
         biography_tl: authorData.biography_tl,
         hide: authorData.hide,
+        meta_title: authorData.meta_title,
+        meta_description: authorData.meta_description,
       })
 
       if (authorData.profile_picture) {
@@ -407,6 +409,26 @@ export default function AuthorFormPage({
                             </Form.Item>
                           </Col>
                         </Row>
+
+                        <Divider>SEO Information</Divider>
+
+                        <Form.Item
+                          label={"Meta Title"}
+                          name={"meta_title"}
+                        >
+                          <Input variant='filled' placeholder={Placeholder.meta_title} />
+                        </Form.Item>
+
+                        <Form.Item
+                          label={'Meta Description'}
+                          name={"meta_description"}
+                        >
+                          <Input.TextArea
+                            variant='filled'
+                            rows={4}
+                            placeholder={Placeholder.meta_description}
+                          />
+                        </Form.Item>
 
                         {!formDisabled ? (
                           <div className={"d-flex flex-row"} style={{ gap: "12px" }}>

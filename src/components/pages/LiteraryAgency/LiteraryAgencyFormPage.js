@@ -145,7 +145,9 @@ export default function LiteraryAgencyFormPage({
         twitter: agencyData?.twitter,
         youtube: agencyData?.youtube,
         website_url: agencyData?.website_url,
-        hide: agencyData?.hide
+        hide: agencyData?.hide,
+        meta_title: agencyData?.meta_title,
+        meta_description: agencyData?.meta_description,
       })
 
       if (agencyData.agency_logo) {
@@ -361,6 +363,26 @@ export default function LiteraryAgencyFormPage({
                             </Form.Item>
                           </Col>
                         </Row>
+
+                        <Divider>SEO Information</Divider>
+
+                        <Form.Item
+                          label={"Meta Title"}
+                          name={"meta_title"}
+                        >
+                          <Input variant='filled' placeholder={Placeholder.meta_title} />
+                        </Form.Item>
+
+                        <Form.Item
+                          label={'Meta Description'}
+                          name={"meta_description"}
+                        >
+                          <Input.TextArea
+                            variant='filled'
+                            rows={4}
+                            placeholder={Placeholder.meta_description}
+                          />
+                        </Form.Item>
 
                         {!formDisabled ? (
                           <div className={"d-flex flex-row"} style={{ gap: "12px" }}>

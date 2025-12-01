@@ -180,15 +180,6 @@ export default function NewsFormPage({
     </span>
   );
 
-  const seoTag = (text, tagColor = Palette.MAIN_THEME) => (
-    <span>
-      {text}{" "}
-      <Tag style={{ fontSize: '10px', marginLeft: '8px', color: 'white' }}>
-        SEO
-      </Tag>
-    </span>
-  );
-
   const FormQuill = ({ value, onChange, placeholder, ...props }) => {
     return (
       <ReactQuill
@@ -394,14 +385,14 @@ export default function NewsFormPage({
                         </Form.Item>
 
                         <Form.Item
-                          label={seoTag("Meta Title")}
+                          label={"Meta Title"}
                           name={"meta_title"}
                         >
                           <Input variant='filled' placeholder={Placeholder.meta_title} />
                         </Form.Item>
 
                         <Form.Item
-                          label={seoTag( 'Meta Description' )}
+                          label={'Meta Description'}
                           name={"meta_description"}
                         >
                           <Input.TextArea

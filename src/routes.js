@@ -39,6 +39,8 @@ import AuthorEdit from "components/pages/Author/AuthorEdit";
 import NewsList from "components/pages/News/NewsList";
 import NewsCreate from "components/pages/News/NewsCreate";
 import NewsEdit from "components/pages/News/NewsEdit";
+import EBulletinList from "components/pages/EBulletin/EBulletinList";
+import EBulletinCreate from "components/pages/EBulletin/EBulletinCreate";
 import MediaList from "components/pages/Media/MediaList";
 import MediaCreate from "components/pages/Media/MediaCreate";
 import MediaEdit from "components/pages/Media/MediaEdit";
@@ -130,6 +132,19 @@ var routes = [
         path: "/news",
         name: "News",
         component: NewsList,
+        layout: "/admin",
+    },
+    // Routes are matched in order. Put catch-all route last.
+    {
+        path: "/e-bulletins/create",
+        name: "E Bulletins",
+        component: EBulletinCreate,
+        layout: "/admin",
+    },
+    {
+        path: "/e-bulletins",
+        name: "E Bulletins",
+        component: EBulletinList,
         layout: "/admin",
     },
     {

@@ -84,6 +84,13 @@ const SIDEBAR = [
         color: SIDEBAR_COLOR
     },
     {
+        path: "/e-bulletins",
+        name: "E Bulletins",
+        // Need to change Icon
+        icon: "material-symbols:newsmode-rounded",
+        color: SIDEBAR_COLOR
+    },
+    {
         path: "/medias",
         name: "Medias",
         icon: "mdi:library-video",

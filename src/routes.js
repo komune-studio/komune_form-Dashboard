@@ -49,7 +49,33 @@ import LiteraryAgencyEdit from "components/pages/LiteraryAgency/LiteraryAgencyEd
 import GrantList from "components/pages/Grant/GrantList";
 import BannerList from "components/pages/Banner/BannerList";
 
+// Import Visitor Components
+import VisitorList from "components/pages/Visitors/VisitorList";
+import VisitorCreate from "components/pages/Visitors/VisitorCreate";
+import VisitorEdit from "components/pages/Visitors/VisitorEdit";
+
 var routes = [
+    // ==================== VISITORS ROUTES ====================
+    {
+        path: "/visitors/create",
+        name: "Visitor Create",
+        component: VisitorCreate,
+        layout: "/admin",
+    },
+    {
+        path: "/visitors/:id/edit",
+        name: "Visitor Edit",
+        component: VisitorEdit,
+        layout: "/admin",
+    },
+    {
+        path: "/visitors",
+        name: "Visitors",
+        component: VisitorList,
+        layout: "/admin",
+    },
+    // ==================== END VISITORS ROUTES ====================
+
     {
         path: "/publishers/create",
         name: "Publisher Create",

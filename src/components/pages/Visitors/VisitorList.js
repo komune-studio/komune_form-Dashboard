@@ -8,7 +8,8 @@ import CustomTable from "../../reusable/CustomTable";
 import Palette from "../../../utils/Palette";
 import FormModel from 'models/VisitorModel';
 import moment from 'moment';
-import { create } from "zustand";
+import create from 'zustand';
+
 
 const { Search } = Input;
 

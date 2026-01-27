@@ -129,7 +129,7 @@ const CustomTable = ({
   currentPage = 0,
   onPageChange,
   onRowsPerPageChange,
-  rowsPerPage = 10,
+  rowsPerPage = 5,
   loading = false,
 }) => {
   const [selected, setSelected] = useState([]);
@@ -137,7 +137,7 @@ const CustomTable = ({
   const [orderBy, setOrderBy] = useState("name");
   const [filterName, setFilterName] = useState("");
   const [localPage, setLocalPage] = useState(0);
-  const [localRowsPerPage, setLocalRowsPerPage] = useState(10);
+  const [localRowsPerPage, setLocalRowsPerPage] = useState(5);
 
   useEffect(() => {
     setFilterName(searchText || "");

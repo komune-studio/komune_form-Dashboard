@@ -10,7 +10,6 @@ import FormModel from 'models/VisitorModel';
 import moment from 'moment';
 import create from 'zustand';
 
-
 const { Search } = Input;
 
 const useFilter = create((set) => ({
@@ -75,7 +74,6 @@ const VisitorList = () => {
   };
 
   const getProfileTagColor = (profile) => {
-    // Semua tag berwarna hitam putih
     return 'default';
   };
 
@@ -108,7 +106,7 @@ const VisitorList = () => {
     },
     {
       id: 'filled_by', 
-      label: 'Filled By', 
+      label: 'Staff', 
       filter: true,
       render: (row) => (
         <div style={{ color: '#333' }}>{row.filled_by}</div>
@@ -496,6 +494,142 @@ const VisitorList = () => {
           background: white !important;
           color: #333 !important;
         }
+        
+        /* ==========================================
+           TABLET/IPAD RESPONSIVE STYLES (768px - 1024px)
+           ========================================== */
+        @media (min-width: 768px) and (max-width: 1024px) {
+          /* Larger fonts for better readability on tablets */
+          .visitor-search.ant-input-affix-wrapper {
+            height: 44px !important;
+            font-size: 16px !important;
+          }
+          
+          .visitor-search .ant-input {
+            font-size: 16px !important;
+          }
+          
+          .visitor-search .ant-input::placeholder {
+            font-size: 16px !important;
+          }
+          
+          .visitor-search .ant-input-prefix {
+            font-size: 22px !important;
+          }
+          
+          .filter-select .ant-select-selector {
+            height: 44px !important;
+            font-size: 16px !important;
+            padding: 5px 11px !important;
+          }
+          
+          .filter-select .ant-select-selection-placeholder {
+            font-size: 16px !important;
+            line-height: 32px !important;
+          }
+          
+          .filter-select .ant-select-selection-item {
+            font-size: 16px !important;
+            line-height: 32px !important;
+          }
+          
+          .ant-select-item {
+            font-size: 16px !important;
+            padding: 10px 12px !important;
+            min-height: 44px !important;
+          }
+          
+          .custom-add-button {
+            font-size: 16px !important;
+            height: 44px !important;
+            padding: 0 24px !important;
+          }
+          
+          /* Table text larger on tablets */
+          .ant-table-thead > tr > th {
+            font-size: 16px !important;
+            padding: 18px 16px !important;
+            font-weight: 600 !important;
+          }
+          
+          .ant-table-tbody > tr > td {
+            font-size: 15px !important;
+            padding: 18px 16px !important;
+          }
+          
+          /* Visitor name larger */
+          .ant-table-tbody > tr > td > div > div:first-child {
+            font-size: 16px !important;
+            font-weight: 600 !important;
+          }
+          
+          /* Phone number text larger */
+          .ant-table-tbody > tr > td > div > div:last-child {
+            font-size: 14px !important;
+          }
+          
+          /* Tags larger */
+          .ant-tag {
+            font-size: 15px !important;
+            padding: 6px 14px !important;
+          }
+          
+          /* Action buttons larger */
+          .ant-btn-circle {
+            font-size: 22px !important;
+            width: 40px !important;
+            height: 40px !important;
+          }
+          
+          /* Pagination larger */
+          .ant-pagination-item {
+            min-width: 40px !important;
+            height: 40px !important;
+            line-height: 38px !important;
+          }
+          
+          .ant-pagination-item a {
+            font-size: 16px !important;
+          }
+          
+          .ant-pagination-prev .ant-pagination-item-link,
+          .ant-pagination-next .ant-pagination-item-link {
+            font-size: 18px !important;
+          }
+          
+          /* Title larger */
+          .visitor-management-title {
+            font-size: 26px !important;
+          }
+          
+          /* Modal text larger */
+          .ant-modal-title {
+            font-size: 20px !important;
+          }
+          
+          .ant-modal-content {
+            font-size: 16px !important;
+          }
+          
+          .ant-modal-footer .ant-btn {
+            font-size: 16px !important;
+            height: 42px !important;
+          }
+          
+          /* Tooltip larger */
+          .ant-tooltip-inner {
+            font-size: 15px !important;
+            padding: 10px 14px !important;
+          }
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 767px) {
+          .custom-add-button {
+            width: 100%;
+            margin-top: 12px;
+          }
+        }
       `}</style>
       <Container fluid>
         <Card style={{ 
@@ -508,12 +642,12 @@ const VisitorList = () => {
           <CardBody>
             {/* Header dengan title dan buttons */}
             <Row className="mb-4">
-              <Col md={6}>
-                <div style={{ fontWeight: "bold", fontSize: "1.2em", color: '#333' }}>
+              <Col md={6} xs={12}>
+                <div className="visitor-management-title" style={{ fontWeight: "bold", fontSize: "1.2em", color: '#333' }}>
                   Visitors Management
                 </div>
               </Col>
-              <Col md={6} className="text-right">
+              <Col md={6} xs={12} className="text-md-right text-center">
                 <Link to="/visitors/create">
                   <AntButton
                     size={'middle'} 
@@ -529,7 +663,7 @@ const VisitorList = () => {
 
             {/* Search and Filter Row */}
             <Row style={{ marginBottom: 24, alignItems: 'center' }}>
-              <Col md={5}>
+              <Col lg={5} md={12} className="mb-3 mb-lg-0">
                 <Input
                   className="visitor-search"
                   placeholder="Search by name, phone, or staff"
@@ -545,8 +679,8 @@ const VisitorList = () => {
                   style={{ width: '100%' }}
                 />
               </Col>
-              <Col md={3}></Col>
-              <Col md={2}>
+              <Col lg={2} className="d-none d-lg-block"></Col>
+              <Col lg={2} md={6} xs={6} className="mb-3 mb-lg-0 pe-md-2">
                 <Select
                   className="filter-select"
                   placeholder="Status"
@@ -554,12 +688,12 @@ const VisitorList = () => {
                   value={status}
                   onChange={handleStatusChange}
                 >
-                  <Select.Option value="all">All Visitors</Select.Option>
-                  <Select.Option value="active">Active Only</Select.Option>
+                  <Select.Option value="all">All Status</Select.Option>
+                  <Select.Option value="active">Active</Select.Option>
                   <Select.Option value="checked-out">Checked Out</Select.Option>
                 </Select>
               </Col>
-              <Col md={2}>
+              <Col lg={3} md={6} xs={6} className="mb-3 mb-lg-0 ps-md-2">
                 <Select
                   className="filter-select"
                   placeholder="Profile"
@@ -568,9 +702,9 @@ const VisitorList = () => {
                   onChange={handleProfileChange}
                 >
                   <Select.Option value="">All Profiles</Select.Option>
-                  <Select.Option value="Player">Player</Select.Option>
-                  <Select.Option value="Visitor">Visitor</Select.Option>
-                  <Select.Option value="Other">Other</Select.Option>
+                  <Select.Option value="Player">Players</Select.Option>
+                  <Select.Option value="Visitor">Visitors</Select.Option>
+                  <Select.Option value="Other">Others</Select.Option>
                 </Select>
               </Col>
             </Row>

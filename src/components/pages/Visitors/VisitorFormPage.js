@@ -23,6 +23,8 @@ const { Title, Text, Paragraph } = Typography;
 export default function VisitorFormPage({
   visitorData,
   disabled,
+  isStandalone = false,
+  onSubmitSuccess,
 }) {
   const history = useHistory();
 
@@ -32,6 +34,7 @@ export default function VisitorFormPage({
   const [formDisabled, setFormDisabled] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [currentProfile, setCurrentProfile] = useState("Visitor");
+  const [formKey, setFormKey] = useState(0);
 
   const onValuesChanged = (changedValues, allValues) => {
     if (changedValues.visitor_profile) {
@@ -96,7 +99,23 @@ export default function VisitorFormPage({
 
       if (result && result.http_code === 200) {
         message.success(msg);
-        history.push("/visitors");
+        
+        // ✅ Perbedaan behavior untuk form standalone vs regular form
+        if (isStandalone && onSubmitSuccess) {
+          // Jika form standalone, reset form tanpa redirect
+          form.resetFields();
+          setHasChanges(false);
+          setCurrentProfile("Visitor");
+          setFormKey(prev => prev + 1);
+          
+          // Panggil callback untuk memberi tahu parent
+          setTimeout(() => {
+            onSubmitSuccess();
+          }, 300);
+        } else {
+          // Jika regular form, redirect ke visitor list
+          history.push("/visitors");
+        }
       } else {
         throw new Error(result?.error_message || "Failed to save visitor");
       }
@@ -180,12 +199,18 @@ export default function VisitorFormPage({
         filled_by: visitorData.filled_by,
       });
       setCurrentProfile(visitorData.visitor_profile);
+      setHasChanges(false);
+    } else {
+      // Reset form untuk create mode
+      form.resetFields();
+      setCurrentProfile("Visitor");
+      setHasChanges(false);
     }
     
     if (disabled) {
       setFormDisabled(disabled);
     }
-  }, [visitorData, form, disabled]);
+  }, [visitorData, form, disabled, formKey]);
 
   // Styles - Black & White Theme
   const containerStyle = {
@@ -200,20 +225,6 @@ export default function VisitorFormPage({
     border: '1px solid #e0e0e0',
     marginBottom: '20px',
     boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-  };
-
-  const headerCardStyle = {
-    ...cardStyle,
-    border: '1px solid #e0e0e0'
-  };
-
-  const formCardStyle = {
-    ...cardStyle,
-    padding: '48px 32px'
-  };
-
-  const cardBodyStyle = {
-    padding: '32px 0'
   };
 
   const labelStyle = {
@@ -241,60 +252,19 @@ export default function VisitorFormPage({
     marginLeft: '4px'
   };
 
-  const dividerStyle = {
-    margin: '32px 0',
-    borderColor: '#e0e0e0'
-  };
-
   return (
     <>
       <div style={containerStyle}>
-        <Container fluid style={{ maxWidth: '1400px', margin: '0 auto' }}>
+        <Container fluid style={{ maxWidth: '100%', margin: '0 auto' }}>
           <Row gutter={[24, 24]}>
-            {/* Back Button */}
-            <Col span={24}>
-              <Link to="/visitors" style={{ color: '#000000', fontSize: '14px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                <span>←</span> Back to Visitors List
-              </Link>
-            </Col>
-
-            {/* Header Card */}
-            <Col span={24}>
-              <div style={headerCardStyle}>
-                <div style={{ padding: '32px' }}>
-                  <Title level={2} style={{ margin: 0, fontSize: '32px', color: '#000000', fontWeight: 600 }}>
-                    {!visitorData ? "Visitor Registration Form" : "Update Visitor Information"}
-                  </Title>
-                  <Paragraph style={{ margin: '8px 0 0 0', fontSize: '14px', color: '#666666' }}>
-                    Please fill out this form to register your visit
-                  </Paragraph>
-                  
-                  {visitorData && (
-                    <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #e0e0e0' }}>
-                      <Row gutter={[16, 8]}>
-                        <Col xs={24} sm={12} md={8}>
-                          <Text style={{ fontSize: '13px', color: '#666666' }}>
-                            <strong style={{ color: '#000000' }}>Created:</strong> {moment(visitorData.created_at).format('DD MMM YYYY HH:mm')}
-                          </Text>
-                        </Col>
-                        <Col xs={24} sm={12} md={8}>
-                          <Text style={{ fontSize: '13px', color: '#666666' }}>
-                            <strong style={{ color: '#000000' }}>Modified:</strong> {moment(visitorData.modified_at).format('DD MMM YYYY HH:mm')}
-                          </Text>
-                        </Col>
-                        {visitorData.checked_out_at && (
-                          <Col xs={24} sm={12} md={8}>
-                            <Text style={{ fontSize: '13px', color: '#d93025' }}>
-                              <strong>Checked out:</strong> {moment(visitorData.checked_out_at).format('DD MMM YYYY HH:mm')}
-                            </Text>
-                          </Col>
-                        )}
-                      </Row>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Col>
+            {/* Back Button - Sembunyikan jika form standalone */}
+            {!isStandalone && (
+              <Col span={24}>
+                <Link to="/visitors" style={{ color: '#000000', fontSize: '14px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  <span>←</span> Back to Visitors List
+                </Link>
+              </Col>
+            )}
 
             {loading ? (
               <Col span={24}>
@@ -304,105 +274,142 @@ export default function VisitorFormPage({
               </Col>
             ) : (
               <Col span={24}>
-                <div style={formCardStyle}>
-                  <Form
-                    layout='vertical'
-                    form={form}
-                    onFinish={onSubmit}
-                    onValuesChange={onValuesChanged}
-                    validateTrigger="onSubmit"
-                    disabled={formDisabled}
-                    autoComplete='off'
-                  >
-                    {/* Visitor Name */}
-                    <Form.Item
-                      label={
-                        <span style={labelStyle}>
-                          Visitor Name <span style={requiredStyle}>*</span>
-                        </span>
-                      }
-                      name="visitor_name"
-                      rules={[
-                        { required: true, message: 'Please input visitor name!' },
-                        { max: 255, message: 'Maximum 255 characters!' }
-                      ]}
-                      style={{ marginBottom: 40 }}
+                {/* SATU CARD UNTUK SEMUA (Header + Form) */}
+                <div style={cardStyle}>
+                  {/* Header di bagian atas card */}
+                  <div style={{ 
+                    padding: '32px 32px 0 32px',
+                    borderBottom: visitorData ? '1px solid #f0f0f0' : 'none',
+                    marginBottom: visitorData ? '24px' : '0',
+                    paddingBottom: visitorData ? '24px' : '0'
+                  }}>
+                    <Title level={2} style={{ margin: 0, fontSize: '32px', color: '#000000', fontWeight: 600 }}>
+                      {!visitorData ? "Visitor Registration Form" : "Update Visitor Information"}
+                    </Title>
+                    <Paragraph style={{ margin: '8px 0 0 0', fontSize: '14px', color: '#666666' }}>
+                      Please fill out this form to register your visit
+                    </Paragraph>
+                    
+                    {visitorData && (
+                      <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #e0e0e0' }}>
+                        <Row gutter={[16, 8]}>
+                          <Col xs={24} sm={12} md={8}>
+                            <Text style={{ fontSize: '13px', color: '#666666' }}>
+                              <strong style={{ color: '#000000' }}>Created:</strong> {moment(visitorData.created_at).format('DD MMM YYYY HH:mm')}
+                            </Text>
+                          </Col>
+                          <Col xs={24} sm={12} md={8}>
+                            <Text style={{ fontSize: '13px', color: '#666666' }}>
+                              <strong style={{ color: '#000000' }}>Modified:</strong> {moment(visitorData.modified_at).format('DD MMM YYYY HH:mm')}
+                            </Text>
+                          </Col>
+                          {visitorData.checked_out_at && (
+                            <Col xs={24} sm={12} md={8}>
+                              <Text style={{ fontSize: '13px', color: '#d93025' }}>
+                                <strong>Checked out:</strong> {moment(visitorData.checked_out_at).format('DD MMM YYYY HH:mm')}
+                              </Text>
+                            </Col>
+                          )}
+                        </Row>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Form di bagian bawah card */}
+                  <div style={{ padding: '32px' }}>
+                    <Form
+                      layout='vertical'
+                      form={form}
+                      onFinish={onSubmit}
+                      onValuesChange={onValuesChanged}
+                      validateTrigger="onSubmit"
+                      disabled={formDisabled}
+                      autoComplete='off'
+                      key={formKey}
                     >
-                      <Input 
-                        placeholder="Your answer"
-                        style={inputStyle}
-                        className="bw-form-input"
-                      />
-                    </Form.Item>
-
-                    <Divider style={dividerStyle} />
-
-                    {/* Phone Number */}
-                    <Form.Item
-                      label={
-                        <span style={labelStyle}>
-                          Phone Number <span style={requiredStyle}>*</span>
-                        </span>
-                      }
-                      name="phone_number"
-                      rules={[
-                        { required: true, message: 'Please input phone number!' },
-                        { 
-                          pattern: /^[0-9+()-]+$/, 
-                          message: 'Invalid phone number format!' 
-                        },
-                        { max: 20, message: 'Maximum 20 characters!' }
-                      ]}
-                      style={{ marginBottom: 40 }}
-                    >
-                      <Input 
-                        placeholder="Your answer"
-                        style={inputStyle}
-                        className="bw-form-input"
-                      />
-                    </Form.Item>
-
-                    <Divider style={dividerStyle} />
-
-                    {/* Visitor Profile */}
-                    <Form.Item
-                      label={
-                        <span style={labelStyle}>
-                          Visitor Profile <span style={requiredStyle}>*</span>
-                        </span>
-                      }
-                      name="visitor_profile"
-                      rules={[{ required: true, message: 'Please select visitor profile!' }]}
-                      style={{ marginBottom: 40 }}
-                    >
-                      <Radio.Group 
-                        style={{ width: '100%' }}
-                        onChange={(e) => setCurrentProfile(e.target.value)}
+                      {/* Visitor Name */}
+                      <Form.Item
+                        label={
+                          <span style={labelStyle}>
+                            Visitor Name <span style={requiredStyle}>*</span>
+                          </span>
+                        }
+                        name="visitor_name"
+                        rules={[
+                          { required: true, message: 'Please input visitor name!' },
+                          { max: 255, message: 'Maximum 255 characters!' }
+                        ]}
+                        style={{ marginBottom: 40 }}
                       >
-                        <Space direction="vertical" style={{ width: '100%' }} size={12}>
-                          {profileOptions.map(option => (
-                            <Radio 
-                              key={option.value} 
-                              value={option.value}
-                              style={{ 
-                                fontSize: '15px',
-                                color: '#000000',
-                                display: 'flex',
-                                alignItems: 'center',
-                                padding: '6px 0'
-                              }}
-                            >
-                              {option.label}
-                            </Radio>
-                          ))}
-                        </Space>
-                      </Radio.Group>
-                    </Form.Item>
+                        <Input 
+                          placeholder="Your answer"
+                          style={inputStyle}
+                          className="bw-form-input"
+                        />
+                      </Form.Item>
 
-                    {/* Other Profile Specification */}
-                    {currentProfile === "Other" && (
-                      <>
-                        <Divider style={dividerStyle} />
+                      {/* Phone Number */}
+                      <Form.Item
+                        label={
+                          <span style={labelStyle}>
+                            Phone Number <span style={requiredStyle}>*</span>
+                          </span>
+                        }
+                        name="phone_number"
+                        rules={[
+                          { required: true, message: 'Please input phone number!' },
+                          { 
+                            pattern: /^[0-9+()-]+$/, 
+                            message: 'Invalid phone number format!' 
+                          },
+                          { max: 20, message: 'Maximum 20 characters!' }
+                        ]}
+                        style={{ marginBottom: 40 }}
+                      >
+                        <Input 
+                          placeholder="Your answer"
+                          style={inputStyle}
+                          className="bw-form-input"
+                        />
+                      </Form.Item>
+
+                      {/* Visitor Profile */}
+                      <Form.Item
+                        label={
+                          <span style={labelStyle}>
+                            Visitor Profile <span style={requiredStyle}>*</span>
+                          </span>
+                        }
+                        name="visitor_profile"
+                        rules={[{ required: true, message: 'Please select visitor profile!' }]}
+                        style={{ marginBottom: 40 }}
+                      >
+                        <Radio.Group 
+                          style={{ width: '100%' }}
+                          onChange={(e) => setCurrentProfile(e.target.value)}
+                        >
+                          <Space direction="vertical" style={{ width: '100%' }} size={12}>
+                            {profileOptions.map(option => (
+                              <Radio 
+                                key={option.value} 
+                                value={option.value}
+                                style={{ 
+                                  fontSize: '15px',
+                                  color: '#000000',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  padding: '6px 0'
+                                }}
+                              >
+                                {option.label}
+                              </Radio>
+                            ))}
+                          </Space>
+                        </Radio.Group>
+                      </Form.Item>
+
+                      {/* Other Profile Specification */}
+                      {currentProfile === "Other" && (
                         <Form.Item
                           label={
                             <span style={labelStyle}>
@@ -422,114 +429,125 @@ export default function VisitorFormPage({
                             className="bw-form-input"
                           />
                         </Form.Item>
-                      </>
-                    )}
+                      )}
 
-                    <Divider style={dividerStyle} />
+                      {/* Filled By */}
+                      <Form.Item
+                        label={
+                          <span style={labelStyle}>
+                            Staff Name <span style={requiredStyle}>*</span>
+                          </span>
+                        }
+                        name="filled_by"
+                        rules={[
+                          { required: true, message: 'Please input staff name!' },
+                          { max: 255, message: 'Maximum 255 characters!' }
+                        ]}
+                        style={{ marginBottom: 40 }}
+                      >
+                        <Input 
+                          placeholder="Your answer"
+                          style={inputStyle}
+                          className="bw-form-input"
+                        />
+                      </Form.Item>
 
-                    {/* Filled By */}
-                    <Form.Item
-                      label={
-                        <span style={labelStyle}>
-                          Staff Name <span style={requiredStyle}>*</span>
-                        </span>
-                      }
-                      name="filled_by"
-                      rules={[
-                        { required: true, message: 'Please input staff name!' },
-                        { max: 255, message: 'Maximum 255 characters!' }
-                      ]}
-                      style={{ marginBottom: 40 }}
-                    >
-                      <Input 
-                        placeholder="Your answer"
-                        style={inputStyle}
-                        className="bw-form-input"
-                      />
-                    </Form.Item>
-
-           
-
-                    {/* Action Buttons */}
-                    <div style={{ marginTop: '40px' }}>
-                      {!formDisabled ? (
-                        <>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
-                            <Button 
-                              htmlType='submit' 
-                              loading={loadingSubmit}
-                              size="large"
-                              style={{ 
-                                background: '#000000',
-                                borderColor: '#000000',
-                                fontWeight: 500,
-                                height: '44px',
-                                paddingLeft: '32px',
-                                paddingRight: '32px',
-                                fontSize: '16px',
-                                color: '#FFFFFF'
-                              }}
-                            >
-                              {!visitorData ? "Submit Form" : "Save Changes"}
-                            </Button>
-                            
-                            {visitorData && !visitorData.checked_out_at && (
+                      {/* Action Buttons */}
+                      <div style={{ marginTop: '40px' }}>
+                        {!formDisabled ? (
+                          <>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
                               <Button 
-                                onClick={handleCheckout}
+                                htmlType='submit' 
+                                loading={loadingSubmit}
                                 size="large"
                                 style={{ 
+                                  background: '#000000',
+                                  borderColor: '#000000',
+                                  fontWeight: 500,
                                   height: '44px',
                                   paddingLeft: '32px',
                                   paddingRight: '32px',
                                   fontSize: '16px',
-                                  background: '#FFFFFF',
-                                  borderColor: '#000000',
-                                  color: '#000000'
+                                  color: '#FFFFFF'
                                 }}
                               >
-                                Checkout Visitor
+                                {!visitorData ? "Submit Form" : "Save Changes"}
                               </Button>
-                            )}
-                            
-                            {visitorData && (
-                              <Button 
-                                onClick={handleDelete}
-                                size="large"
-                                style={{ 
-                                  height: '44px',
-                                  paddingLeft: '32px',
-                                  paddingRight: '32px',
-                                  fontSize: '16px',
-                                  background: '#FFFFFF',
-                                  borderColor: '#000000',
-                                  color: '#000000'
-                                }}
-                              >
-                                Delete Visitor
-                              </Button>
-                            )}
+                              
+                              {visitorData && !visitorData.checked_out_at && !isStandalone && (
+                                <Button 
+                                  onClick={handleCheckout}
+                                  size="large"
+                                  style={{ 
+                                    height: '44px',
+                                    paddingLeft: '32px',
+                                    paddingRight: '32px',
+                                    fontSize: '16px',
+                                    background: '#FFFFFF',
+                                    borderColor: '#000000',
+                                    color: '#000000'
+                                  }}
+                                >
+                                  Checkout Visitor
+                                </Button>
+                              )}
+                              
+                              {visitorData && !isStandalone && (
+                                <Button 
+                                  onClick={handleDelete}
+                                  size="large"
+                                  style={{ 
+                                    height: '44px',
+                                    paddingLeft: '32px',
+                                    paddingRight: '32px',
+                                    fontSize: '16px',
+                                    background: '#FFFFFF',
+                                    borderColor: '#000000',
+                                    color: '#000000'
+                                  }}
+                                >
+                                  Delete Visitor
+                                </Button>
+                              )}
 
-                            <Button 
-                              type='default'
-                              onClick={() => history.push("/visitors")}
-                              size="large"
-                              style={{ 
-                                height: '44px',
-                                paddingLeft: '32px',
-                                paddingRight: '32px',
-                                fontSize: '16px',
-                                background: '#FFFFFF',
-                                borderColor: '#e0e0e0',
-                                color: '#666666'
-                              }}
-                            >
-                              Cancel
-                            </Button>
-                          </div>
-                        </>
-                      ) : null}
-                    </div>
-                  </Form>
+                              {!isStandalone && (
+                                <Button 
+                                  type='default'
+                                  onClick={() => history.push("/visitors")}
+                                  size="large"
+                                  style={{ 
+                                    height: '44px',
+                                    paddingLeft: '32px',
+                                    paddingRight: '32px',
+                                    fontSize: '16px',
+                                    background: '#FFFFFF',
+                                    borderColor: '#e0e0e0',
+                                    color: '#666666'
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                              )}
+                            </div>
+                            
+                            {/* Pesan untuk form standalone */}
+                            {isStandalone && (
+                              <Paragraph style={{ 
+                                fontSize: '14px', 
+                                color: '#666666',
+                                textAlign: 'center',
+                                marginTop: '20px',
+                                fontStyle: 'italic'
+                              }}>
+                                Form will reset after successful submission
+                              </Paragraph>
+                            )}
+                          </>
+                        ) : null}
+                      </div>
+                    </Form>
+                  </div>
                 </div>
               </Col>
             )}

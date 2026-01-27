@@ -65,6 +65,12 @@ const SIDEBAR = [
         name: "Visitors",
         icon: "mdi:account-group",
         color: SIDEBAR_COLOR
+    },
+    {
+        path: "/form",
+        name: "Form",
+        icon: "mdi:clipboard-text",
+        color: SIDEBAR_COLOR
     }
 ]
 

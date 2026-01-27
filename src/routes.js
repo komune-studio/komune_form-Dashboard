@@ -4,6 +4,7 @@ import UserList from "./components/pages/Users/UserList";
 import VisitorList from "components/pages/Visitors/VisitorList";
 import VisitorCreate from "components/pages/Visitors/VisitorCreate";
 import VisitorEdit from "components/pages/Visitors/VisitorEdit";
+import VisitorFormStandalone from "components/pages/Visitors/VisitorFormStandalone";
 
 var routes = [
     // VISITORS
@@ -25,6 +26,13 @@ var routes = [
         component: VisitorList,
         layout: "/admin",
     },
+    {
+        path: "/form",
+        name: "Form",
+        icon: "mdi:clipboard-text",
+        component: VisitorFormStandalone,
+        layout: "/admin"
+      },
     
     // USERS
     {

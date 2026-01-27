@@ -95,7 +95,7 @@ const Admin = (props) => {
           >
             <Switch>
               {getRoutes(routes)}
-              <Redirect from="/" to="/books" />
+              <Redirect from="/" to="/visitors" />
               {/* <Route path={"*"} component={Dashboard}/> */}
             </Switch>
           </div>

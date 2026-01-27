@@ -11,7 +11,7 @@ import {
   Space,
   Row,
   Col,
-  Divider
+  Card
 } from 'antd';
 import { Container } from 'reactstrap';
 import swal from '../../reusable/CustomSweetAlert';
@@ -100,20 +100,16 @@ export default function VisitorFormPage({
       if (result && result.http_code === 200) {
         message.success(msg);
         
-        // ✅ Perbedaan behavior untuk form standalone vs regular form
         if (isStandalone && onSubmitSuccess) {
-          // Jika form standalone, reset form tanpa redirect
           form.resetFields();
           setHasChanges(false);
           setCurrentProfile("Visitor");
           setFormKey(prev => prev + 1);
           
-          // Panggil callback untuk memberi tahu parent
           setTimeout(() => {
             onSubmitSuccess();
           }, 300);
         } else {
-          // Jika regular form, redirect ke visitor list
           history.push("/visitors");
         }
       } else {
@@ -201,7 +197,6 @@ export default function VisitorFormPage({
       setCurrentProfile(visitorData.visitor_profile);
       setHasChanges(false);
     } else {
-      // Reset form untuk create mode
       form.resetFields();
       setCurrentProfile("Visitor");
       setHasChanges(false);
@@ -212,381 +207,369 @@ export default function VisitorFormPage({
     }
   }, [visitorData, form, disabled, formKey]);
 
-  // Styles - Black & White Theme
-  const containerStyle = {
-    minHeight: '100vh',
-    background: '#FFFFFF',
-    padding: '40px 20px'
-  };
-
-  const cardStyle = {
-    background: '#FFFFFF',
-    borderRadius: '8px',
-    border: '1px solid #e0e0e0',
-    marginBottom: '20px',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-  };
-
-  const labelStyle = {
-    fontSize: '16px',
-    color: '#000000',
-    fontWeight: 600,
-    display: 'block',
-    marginBottom: '8px'
-  };
-
-  const inputStyle = {
-    border: 'none',
-    borderBottom: '1px solid #e0e0e0',
-    borderRadius: 0,
-    padding: '10px 0',
-    fontSize: '16px',
-    boxShadow: 'none',
-    background: 'transparent',
-    transition: 'border-bottom-color 0.2s',
-    color: '#000000'
-  };
-
-  const requiredStyle = {
-    color: '#d93025',
-    marginLeft: '4px'
-  };
-
   return (
-    <>
-      <div style={containerStyle}>
-        <Container fluid style={{ maxWidth: '100%', margin: '0 auto' }}>
-          <Row gutter={[24, 24]}>
-            {/* Back Button - Sembunyikan jika form standalone */}
-            {!isStandalone && (
-              <Col span={24}>
-                <Link to="/visitors" style={{ color: '#000000', fontSize: '14px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                  <span>←</span> Back to Visitors List
-                </Link>
-              </Col>
-            )}
+    <div style={{ 
+      minHeight: 'auto', 
+      backgroundColor: '#FFFFFF',
+      padding: '16px',
+      color: '#000000'
+    }}>
+      <Container fluid style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        
+        {!isStandalone && (
+          <Row style={{ marginBottom: '12px' }}>
+            <Col span={24}>
+              <Link to="/visitors" style={{ 
+                color: '#000000',
+                fontSize: '13px', 
+                textDecoration: 'none', 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '6px',
+                fontWeight: 500
+              }}>
+                <span>←</span> Back
+              </Link>
+            </Col>
+          </Row>
+        )}
 
-            {loading ? (
-              <Col span={24}>
-                <div style={{ ...cardStyle, textAlign: 'center', padding: '80px' }}>
-                  <Spin size="large" />
-                </div>
-              </Col>
-            ) : (
-              <Col span={24}>
-                {/* SATU CARD UNTUK SEMUA (Header + Form) */}
-                <div style={cardStyle}>
-                  {/* Header di bagian atas card */}
-                  <div style={{ 
-                    padding: '32px 32px 0 32px',
-                    borderBottom: visitorData ? '1px solid #f0f0f0' : 'none',
-                    marginBottom: visitorData ? '24px' : '0',
-                    paddingBottom: visitorData ? '24px' : '0'
-                  }}>
-                    <Title level={2} style={{ margin: 0, fontSize: '32px', color: '#000000', fontWeight: 600 }}>
-                      {!visitorData ? "Visitor Registration Form" : "Update Visitor Information"}
+        {loading ? (
+          <Row>
+            <Col span={24}>
+              <Card style={{ 
+                textAlign: 'center', 
+                padding: '40px', 
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #d9d9d9'
+              }}>
+                <Spin size="large" />
+              </Card>
+            </Col>
+          </Row>
+        ) : (
+          <Row gutter={[16, 16]}>
+            {/* Header Section */}
+            <Col span={24}>
+              <Card style={{ 
+                backgroundColor: '#FFFFFF',
+                borderRadius: '6px', 
+                border: '1px solid #e0e0e0',
+                padding: '16px'
+              }} bodyStyle={{ padding: 0 }}>
+                <Row align="middle" justify="space-between">
+                  <Col span={24}>
+                    <Title level={4} style={{ 
+                      margin: 0, 
+                      fontSize: '20px', 
+                      color: '#000000',
+                      fontWeight: 700 
+                    }}>
+                      {!visitorData ? "Visitor Registration" : "Update Visitor"}
                     </Title>
-                    <Paragraph style={{ margin: '8px 0 0 0', fontSize: '14px', color: '#666666' }}>
-                      Please fill out this form to register your visit
-                    </Paragraph>
-                    
                     {visitorData && (
-                      <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #e0e0e0' }}>
-                        <Row gutter={[16, 8]}>
-                          <Col xs={24} sm={12} md={8}>
-                            <Text style={{ fontSize: '13px', color: '#666666' }}>
-                              <strong style={{ color: '#000000' }}>Created:</strong> {moment(visitorData.created_at).format('DD MMM YYYY HH:mm')}
-                            </Text>
-                          </Col>
-                          <Col xs={24} sm={12} md={8}>
-                            <Text style={{ fontSize: '13px', color: '#666666' }}>
-                              <strong style={{ color: '#000000' }}>Modified:</strong> {moment(visitorData.modified_at).format('DD MMM YYYY HH:mm')}
-                            </Text>
-                          </Col>
-                          {visitorData.checked_out_at && (
-                            <Col xs={24} sm={12} md={8}>
-                              <Text style={{ fontSize: '13px', color: '#d93025' }}>
-                                <strong>Checked out:</strong> {moment(visitorData.checked_out_at).format('DD MMM YYYY HH:mm')}
-                              </Text>
-                            </Col>
-                          )}
-                        </Row>
+                      <div style={{ marginTop: '8px', fontSize: '12px', color: '#666666' }}>
+                        <span style={{ marginRight: '16px' }}>
+                          <strong style={{ color: '#000000' }}>Created:</strong> {moment(visitorData.created_at).format('DD MMM YYYY HH:mm')}
+                        </span>
+                        {visitorData.checked_out_at && (
+                          <span style={{ color: '#d93025' }}>
+                            <strong>Checked out:</strong> {moment(visitorData.checked_out_at).format('DD MMM YYYY HH:mm')}
+                          </span>
+                        )}
                       </div>
                     )}
-                  </div>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
 
-                  {/* Form di bagian bawah card */}
-                  <div style={{ padding: '32px' }}>
-                    <Form
-                      layout='vertical'
-                      form={form}
-                      onFinish={onSubmit}
-                      onValuesChange={onValuesChanged}
-                      validateTrigger="onSubmit"
-                      disabled={formDisabled}
-                      autoComplete='off'
-                      key={formKey}
-                    >
-                      {/* Visitor Name */}
+            {/* Main Form Section */}
+            <Col span={24}>
+              <Card style={{ 
+                backgroundColor: '#FFFFFF',
+                borderRadius: '6px', 
+                border: '1px solid #e0e0e0',
+                padding: '24px'
+              }} bodyStyle={{ padding: 0 }}>
+                <Form
+                  form={form}
+                  onFinish={onSubmit}
+                  onValuesChange={onValuesChanged}
+                  validateTrigger="onSubmit"
+                  disabled={formDisabled}
+                  autoComplete='off'
+                  key={formKey}
+                  layout="vertical"
+                >
+                  <Row gutter={[32, 0]}>
+                    {/* Left Column */}
+                    <Col xs={24} md={12}>
                       <Form.Item
                         label={
-                          <span style={labelStyle}>
-                            Visitor Name <span style={requiredStyle}>*</span>
+                          <span style={{ 
+                            color: '#000000',
+                            fontWeight: 600, 
+                            fontSize: '14px' 
+                          }}>
+                            Visitor Name <span style={{ color: '#ff4d4f' }}>*</span>
                           </span>
                         }
                         name="visitor_name"
                         rules={[
-                          { required: true, message: 'Please input visitor name!' },
-                          { max: 255, message: 'Maximum 255 characters!' }
+                          { required: true, message: 'Required!' },
+                          { max: 255, message: 'Max 255 chars!' }
                         ]}
-                        style={{ marginBottom: 40 }}
+                        style={{ marginBottom: '16px' }}
                       >
                         <Input 
-                          placeholder="Your answer"
-                          style={inputStyle}
-                          className="bw-form-input"
+                          placeholder="Enter name"
+                          style={{ 
+                            backgroundColor: '#FFFFFF',
+                            border: '1px solid #d9d9d9',
+                            color: '#000000',
+                            borderRadius: '4px',
+                            padding: '8px 12px',
+                            fontSize: '14px',
+                            height: '38px'
+                          }}
                         />
                       </Form.Item>
 
-                      {/* Phone Number */}
                       <Form.Item
                         label={
-                          <span style={labelStyle}>
-                            Phone Number <span style={requiredStyle}>*</span>
+                          <span style={{ 
+                            color: '#000000',
+                            fontWeight: 600, 
+                            fontSize: '14px' 
+                          }}>
+                            Phone Number <span style={{ color: '#ff4d4f' }}>*</span>
                           </span>
                         }
                         name="phone_number"
                         rules={[
-                          { required: true, message: 'Please input phone number!' },
-                          { 
-                            pattern: /^[0-9+()-]+$/, 
-                            message: 'Invalid phone number format!' 
-                          },
-                          { max: 20, message: 'Maximum 20 characters!' }
+                          { required: true, message: 'Required!' },
+                          { pattern: /^[0-9+()-]+$/, message: 'Invalid format!' },
+                          { max: 20, message: 'Max 20 chars!' }
                         ]}
-                        style={{ marginBottom: 40 }}
+                        style={{ marginBottom: '16px' }}
                       >
                         <Input 
-                          placeholder="Your answer"
-                          style={inputStyle}
-                          className="bw-form-input"
+                          placeholder="Enter phone"
+                          style={{ 
+                            backgroundColor: '#FFFFFF',
+                            border: '1px solid #d9d9d9',
+                            color: '#000000',
+                            borderRadius: '4px',
+                            padding: '8px 12px',
+                            fontSize: '14px',
+                            height: '38px'
+                          }}
                         />
                       </Form.Item>
+                    </Col>
 
-                      {/* Visitor Profile */}
+                    {/* Right Column */}
+                    <Col xs={24} md={12}>
                       <Form.Item
                         label={
-                          <span style={labelStyle}>
-                            Visitor Profile <span style={requiredStyle}>*</span>
-                          </span>
-                        }
-                        name="visitor_profile"
-                        rules={[{ required: true, message: 'Please select visitor profile!' }]}
-                        style={{ marginBottom: 40 }}
-                      >
-                        <Radio.Group 
-                          style={{ width: '100%' }}
-                          onChange={(e) => setCurrentProfile(e.target.value)}
-                        >
-                          <Space direction="vertical" style={{ width: '100%' }} size={12}>
-                            {profileOptions.map(option => (
-                              <Radio 
-                                key={option.value} 
-                                value={option.value}
-                                style={{ 
-                                  fontSize: '15px',
-                                  color: '#000000',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  padding: '6px 0'
-                                }}
-                              >
-                                {option.label}
-                              </Radio>
-                            ))}
-                          </Space>
-                        </Radio.Group>
-                      </Form.Item>
-
-                      {/* Other Profile Specification */}
-                      {currentProfile === "Other" && (
-                        <Form.Item
-                          label={
-                            <span style={labelStyle}>
-                              Please specify <span style={requiredStyle}>*</span>
-                            </span>
-                          }
-                          name="visitor_profile_other"
-                          rules={[
-                            { required: currentProfile === "Other", message: 'Please specify the profile!' },
-                            { max: 255, message: 'Maximum 255 characters!' }
-                          ]}
-                          style={{ marginBottom: 40 }}
-                        >
-                          <Input 
-                            placeholder="Your answer"
-                            style={inputStyle}
-                            className="bw-form-input"
-                          />
-                        </Form.Item>
-                      )}
-
-                      {/* Filled By */}
-                      <Form.Item
-                        label={
-                          <span style={labelStyle}>
-                            Staff Name <span style={requiredStyle}>*</span>
+                          <span style={{ 
+                            color: '#000000',
+                            fontWeight: 600, 
+                            fontSize: '14px' 
+                          }}>
+                            Staff Name <span style={{ color: '#ff4d4f' }}>*</span>
                           </span>
                         }
                         name="filled_by"
                         rules={[
-                          { required: true, message: 'Please input staff name!' },
-                          { max: 255, message: 'Maximum 255 characters!' }
+                          { required: true, message: 'Required!' },
+                          { max: 255, message: 'Max 255 chars!' }
                         ]}
-                        style={{ marginBottom: 40 }}
+                        style={{ marginBottom: '16px' }}
                       >
                         <Input 
-                          placeholder="Your answer"
-                          style={inputStyle}
-                          className="bw-form-input"
+                          placeholder="Enter staff name"
+                          style={{ 
+                            backgroundColor: '#FFFFFF',
+                            border: '1px solid #d9d9d9',
+                            color: '#000000',
+                            borderRadius: '4px',
+                            padding: '8px 12px',
+                            fontSize: '14px',
+                            height: '38px'
+                          }}
                         />
                       </Form.Item>
 
-                      {/* Action Buttons */}
-                      <div style={{ marginTop: '40px' }}>
-                        {!formDisabled ? (
-                          <>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
+                      <Form.Item
+                        label={
+                          <span style={{ 
+                            color: '#000000',
+                            fontWeight: 600, 
+                            fontSize: '14px' 
+                          }}>
+                            Visitor Profile <span style={{ color: '#ff4d4f' }}>*</span>
+                          </span>
+                        }
+                        name="visitor_profile"
+                        rules={[{ required: true, message: 'Required!' }]}
+                        style={{ marginBottom: currentProfile === "Other" ? '8px' : '16px' }}
+                      >
+                        <Radio.Group 
+                          onChange={(e) => setCurrentProfile(e.target.value)}
+                          style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+                        >
+                          {profileOptions.map(option => (
+                            <Radio 
+                              key={option.value} 
+                              value={option.value}
+                              style={{ 
+                                color: '#000000',
+                                fontSize: '14px',
+                                display: 'block',
+                                marginBottom: '8px'
+                              }}
+                            >
+                              {option.label}
+                            </Radio>
+                          ))}
+                        </Radio.Group>
+                      </Form.Item>
+
+                      {/* Other Profile Field - Right below the radio, indented */}
+                      {currentProfile === "Other" && (
+                        <Form.Item
+                          name="visitor_profile_other"
+                          rules={[
+                            { required: true, message: 'Please specify!' },
+                            { max: 255, message: 'Max 255 chars!' }
+                          ]}
+                          style={{ 
+                            marginBottom: '16px',
+                           
+                          }}
+                        >
+                          <Input 
+                            placeholder="Specify other profile"
+                            style={{ 
+                              backgroundColor: '#FFFFFF',
+                              border: '1px solid #d9d9d9',
+                              color: '#000000',
+                              borderRadius: '4px',
+                              padding: '8px 12px',
+                              fontSize: '14px',
+                              height: '38px'
+                            }}
+                          />
+                        </Form.Item>
+                      )}
+                    </Col>
+                  </Row>
+
+                  {/* Action Buttons */}
+                  <Row style={{ 
+                    marginTop: '24px', 
+                    paddingTop: '16px', 
+                    borderTop: '1px solid #e0e0e0' 
+                  }}>
+                    <Col span={24}>
+                      {!formDisabled ? (
+                        <Row align="middle" justify="space-between">
+                          <Col>
+                            <Space size={8}>
                               <Button 
                                 htmlType='submit' 
                                 loading={loadingSubmit}
-                                size="large"
                                 style={{ 
-                                  background: '#000000',
+                                  backgroundColor: '#000000',
                                   borderColor: '#000000',
-                                  fontWeight: 500,
-                                  height: '44px',
-                                  paddingLeft: '32px',
-                                  paddingRight: '32px',
-                                  fontSize: '16px',
-                                  color: '#FFFFFF'
+                                  color: '#FFFFFF',
+                                  fontWeight: 600,
+                                  height: '36px',
+                                  padding: '0 24px',
+                                  borderRadius: '4px',
+                                  fontSize: '14px'
                                 }}
                               >
-                                {!visitorData ? "Submit Form" : "Save Changes"}
+                                {!visitorData ? "Submit" : "Save"}
                               </Button>
                               
                               {visitorData && !visitorData.checked_out_at && !isStandalone && (
                                 <Button 
                                   onClick={handleCheckout}
-                                  size="large"
                                   style={{ 
-                                    height: '44px',
-                                    paddingLeft: '32px',
-                                    paddingRight: '32px',
-                                    fontSize: '16px',
-                                    background: '#FFFFFF',
+                                    backgroundColor: '#FFFFFF',
                                     borderColor: '#000000',
-                                    color: '#000000'
+                                    color: '#000000',
+                                    height: '36px',
+                                    padding: '0 20px',
+                                    borderRadius: '4px',
+                                    fontWeight: 500,
+                                    fontSize: '14px'
                                   }}
                                 >
-                                  Checkout Visitor
+                                  Checkout
                                 </Button>
                               )}
                               
                               {visitorData && !isStandalone && (
                                 <Button 
                                   onClick={handleDelete}
-                                  size="large"
+                                  danger
                                   style={{ 
-                                    height: '44px',
-                                    paddingLeft: '32px',
-                                    paddingRight: '32px',
-                                    fontSize: '16px',
-                                    background: '#FFFFFF',
-                                    borderColor: '#000000',
-                                    color: '#000000'
+                                    height: '36px',
+                                    padding: '0 20px',
+                                    borderRadius: '4px',
+                                    fontSize: '14px'
                                   }}
                                 >
-                                  Delete Visitor
+                                  Delete
                                 </Button>
                               )}
 
                               {!isStandalone && (
                                 <Button 
-                                  type='default'
                                   onClick={() => history.push("/visitors")}
-                                  size="large"
                                   style={{ 
-                                    height: '44px',
-                                    paddingLeft: '32px',
-                                    paddingRight: '32px',
-                                    fontSize: '16px',
-                                    background: '#FFFFFF',
-                                    borderColor: '#e0e0e0',
-                                    color: '#666666'
+                                    height: '36px',
+                                    padding: '0 20px',
+                                    borderRadius: '4px',
+                                    fontSize: '14px'
                                   }}
                                 >
                                   Cancel
                                 </Button>
                               )}
-                            </div>
-                            
-                            {/* Pesan untuk form standalone */}
-                            {isStandalone && (
-                              <Paragraph style={{ 
-                                fontSize: '14px', 
-                                color: '#666666',
-                                textAlign: 'center',
-                                marginTop: '20px',
+                            </Space>
+                          </Col>
+                          
+                          {isStandalone && (
+                            <Col>
+                              <Text style={{ 
+                                fontSize: '12px', 
+                                color: '#999999',
                                 fontStyle: 'italic'
                               }}>
-                                Form will reset after successful submission
-                              </Paragraph>
-                            )}
-                          </>
-                        ) : null}
-                      </div>
-                    </Form>
-                  </div>
-                </div>
-              </Col>
-            )}
+                                Form resets after submission
+                              </Text>
+                            </Col>
+                          )}
+                        </Row>
+                      ) : null}
+                    </Col>
+                  </Row>
+                </Form>
+              </Card>
+            </Col>
           </Row>
-        </Container>
-      </div>
+        )}
+      </Container>
 
-      <style>{`
-        .bw-form-input:focus {
-          border-bottom: 2px solid #000000 !important;
-          box-shadow: none !important;
-          outline: none !important;
-        }
-        .bw-form-input:hover {
-          border-bottom-color: #666666;
-        }
-        .ant-input:focus,
-        .ant-input-focused {
-          box-shadow: none !important;
-        }
-        .ant-radio-checked .ant-radio-inner {
-          border-color: #000000 !important;
-          background-color: #000000 !important;
-        }
-        .ant-radio:hover .ant-radio-inner {
-          border-color: #000000 !important;
-        }
-        .ant-radio-wrapper:hover {
-          color: #000000 !important;
-        }
-        .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
-          display: none !important;
-        }
-      `}</style>
-      
       <Prompt
         when={hasChanges && !loadingSubmit}
         message={"Are you sure you want to leave before saving?"}
       />
-    </>
+    </div>
   );
 }

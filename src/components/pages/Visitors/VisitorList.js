@@ -663,7 +663,7 @@ const VisitorList = () => {
 
             {/* Search and Filter Row */}
             <Row style={{ marginBottom: 24, alignItems: 'center' }}>
-              <Col lg={5} md={12} className="mb-3 mb-lg-0">
+              <Col xl={5} lg={4} md={12} className="mb-3 mb-lg-0">
                 <Input
                   className="visitor-search"
                   placeholder="Search by name, phone, or staff"
@@ -679,8 +679,8 @@ const VisitorList = () => {
                   style={{ width: '100%' }}
                 />
               </Col>
-              <Col lg={2} className="d-none d-lg-block"></Col>
-              <Col lg={2} md={6} xs={6} className="mb-3 mb-lg-0 pe-md-2">
+              <Col xl={3} lg={3} className="d-none d-lg-block"></Col>
+              <Col xl={2} lg={2} md={6} xs={6} className="mb-3 mb-lg-0 pe-md-2">
                 <Select
                   className="filter-select"
                   placeholder="Status"
@@ -693,7 +693,7 @@ const VisitorList = () => {
                   <Select.Option value="checked-out">Checked Out</Select.Option>
                 </Select>
               </Col>
-              <Col lg={3} md={6} xs={6} className="mb-3 mb-lg-0 ps-md-2">
+              <Col xl={2} lg={3} md={6} xs={6} className="mb-3 mb-lg-0 ps-md-2">
                 <Select
                   className="filter-select"
                   placeholder="Profile"

@@ -1,4 +1,8 @@
-import { Link, useHistory } from "react-router-dom";
+import { 
+  Link, 
+  useHistory,
+  useLocation // ✅ IMPORT useLocation
+} from "react-router-dom";
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
 import {
@@ -13,7 +17,13 @@ import {
 
 const AdminNavbar = () => {
   const history = useHistory();
+  const location = useLocation(); // ✅ Pakai useLocation
   const adminName = localStorage.getItem('admin_name') || '-';
+
+  // ✅ CEK: Jika pathname adalah /form, return null (tidak render navbar)
+  if (location.pathname.startsWith('/form')) {
+    return null;
+  }
 
   const logout = () => {
     localStorage.removeItem("super_token");
@@ -36,7 +46,7 @@ const AdminNavbar = () => {
       expand="md"
       id="navbar-main"
       style={{
-        backgroundColor: '#fff', // optional: biar kontras
+        backgroundColor: '#fff',
       }}
     >
       <Nav className="align-items-center d-none d-md-flex mx-3" navbar>
@@ -44,13 +54,13 @@ const AdminNavbar = () => {
           <DropdownToggle
             className="pr-0"
             nav
-            style={{ color: '#000' }} // FIX dropdown text
+            style={{ color: '#000' }}
           >
             <Media className="align-items-center">
               <Media className="mr-2 d-none d-lg-block">
                 <span
                   className="mb-0 text-sm font-weight-bold"
-                  style={{ color: '#000' }} // FIX admin name
+                  style={{ color: '#000' }}
                 >
                   {adminName}
                 </span>
@@ -61,7 +71,7 @@ const AdminNavbar = () => {
                 icon={<UserOutlined />}
                 style={{
                   backgroundColor: '#f0f0f0',
-                  color: '#000', // FIX avatar icon
+                  color: '#000',
                 }}
               />
             </Media>

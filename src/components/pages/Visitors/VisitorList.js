@@ -417,7 +417,7 @@ const VisitorList = () => {
           background: #333 !important;
         }
         
-        /* Modal styling */
+        /* Modal styling - FIXED TEXT COLOR */
         .ant-modal-header {
           background: white !important;
           border-bottom: 1px solid #f0f0f0 !important;
@@ -432,8 +432,29 @@ const VisitorList = () => {
           color: #333 !important;
         }
         
+        .ant-modal-body {
+          color: #333 !important;
+        }
+        
+        .ant-modal-confirm-body .ant-modal-confirm-title {
+          color: #333 !important;
+        }
+        
+        .ant-modal-confirm-body .ant-modal-confirm-content {
+          color: #333 !important;
+        }
+        
         .ant-modal-footer {
           border-top: 1px solid #f0f0f0 !important;
+        }
+        
+        /* Fix modal backdrop color */
+        .ant-modal-mask {
+          background-color: rgba(0, 0, 0, 0.45) !important;
+        }
+        
+        .ant-modal-wrap {
+          background: transparent !important;
         }
         
         .ant-btn-primary {

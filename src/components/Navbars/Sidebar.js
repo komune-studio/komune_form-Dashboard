@@ -17,7 +17,12 @@
 */
 /*eslint-disable*/
 import { useState } from "react";
-import { NavLink as NavLinkRRD, Link, useHistory } from "react-router-dom";
+import { 
+  NavLink as NavLinkRRD, 
+  Link, 
+  useHistory,
+  useLocation  // ✅ IMPORT useLocation
+} from "react-router-dom";
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
 
@@ -57,7 +62,7 @@ import Iconify from "../reusable/Iconify";
 import Palette from "../../utils/Palette";
 
 // Mengubah SIDEBAR_COLOR dari biru menjadi putih
-const SIDEBAR_COLOR = "#FFFFFF"; // Ganti dari Palette.MAIN_THEME menjadi putih
+const SIDEBAR_COLOR = "#FFFFFF";
 
 const SIDEBAR = [
     {
@@ -76,7 +81,13 @@ const SIDEBAR = [
 
 const Sidebar = (props) => {
     const history = useHistory();
+    const location = useLocation(); // ✅ Pakai useLocation
     const [collapseOpen, setCollapseOpen] = useState();
+    
+    // ✅ CEK: Jika pathname adalah /form, return null (tidak render sidebar)
+    if (location.pathname.startsWith('/form')) {
+        return null;
+    }
     
     // verifies if routeName is the one active (in browser input)
     const activeRoute = (routeName) => {
@@ -93,7 +104,7 @@ const Sidebar = (props) => {
         setCollapseOpen(false);
     };
     
-    // Handle logout - sama kayak di AdminNavbar
+    // Handle logout
     const handleLogout = () => {
         localStorage.removeItem("super_token");
         localStorage.removeItem("username");
@@ -117,7 +128,7 @@ const Sidebar = (props) => {
             let tint = Palette.INACTIVE_GRAY
 
             if(activeRoute(prop.path)){
-                tint = SIDEBAR_COLOR // Sekarang akan berwarna putih saat aktif
+                tint = SIDEBAR_COLOR
             }
             return (
                 <NavItem

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import VisitorFormPage from "./VisitorFormPage";
 
 const VisitorFormStandalone = () => {
@@ -14,13 +14,24 @@ const VisitorFormStandalone = () => {
   };
 
   return (
-    <div>
-      <VisitorFormPage 
-        key={key} 
-        visitorData={null}
-        isStandalone={true}
-        onSubmitSuccess={handleSubmitSuccess}  // ✅ Pass prop ke VisitorFormPage
-      />
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      padding: '20px',
+      width: '100%',
+      marginTop: '-40px'
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: '600px'
+      }}>
+        <VisitorFormPage 
+          key={key} 
+          visitorData={null}
+          isStandalone={true}
+          onSubmitSuccess={handleSubmitSuccess}
+        />
+      </div>
     </div>
   );
 };

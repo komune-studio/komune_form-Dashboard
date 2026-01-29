@@ -20,6 +20,15 @@ import moment from 'moment';
 
 const { Title, Text, Paragraph } = Typography;
 
+// Add custom styles for responsive field spacing
+const customStyles = `
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .visitor-form-item {
+      margin-bottom: 14px !important;
+    }
+  }
+`;
+
 export default function VisitorFormPage({
   visitorData,
   disabled,
@@ -211,10 +220,11 @@ export default function VisitorFormPage({
     <div style={{ 
       minHeight: 'auto', 
       backgroundColor: '#FFFFFF',
-      padding: '16px',
+      padding: '8px',
       color: '#000000'
     }}>
-      <Container fluid style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <style>{customStyles}</style>
+      <Container fluid style={{ maxWidth: '600px', margin: '0 auto' }}>
         
         {!isStandalone && (
           <Row style={{ marginBottom: '12px' }}>
@@ -255,7 +265,7 @@ export default function VisitorFormPage({
                 backgroundColor: '#FFFFFF',
                 borderRadius: '6px', 
                 border: '1px solid #e0e0e0',
-                padding: '16px'
+                padding: '12px'
               }} bodyStyle={{ padding: 0 }}>
                 <Row align="middle" justify="space-between">
                   <Col span={24}>
@@ -290,7 +300,7 @@ export default function VisitorFormPage({
                 backgroundColor: '#FFFFFF',
                 borderRadius: '6px', 
                 border: '1px solid #e0e0e0',
-                padding: '24px'
+                padding: '16px'
               }} bodyStyle={{ padding: 0 }}>
                 <Form
                   form={form}
@@ -303,8 +313,8 @@ export default function VisitorFormPage({
                   layout="vertical"
                 >
                   <Row gutter={[32, 0]}>
-                    {/* Left Column */}
-                    <Col xs={24} md={12}>
+                    {/* Single Column - All fields vertical */}
+                    <Col xs={24}>
                       <Form.Item
                         label={
                           <span style={{ 
@@ -320,7 +330,8 @@ export default function VisitorFormPage({
                           { required: true, message: 'Required!' },
                           { max: 255, message: 'Max 255 chars!' }
                         ]}
-                        style={{ marginBottom: '16px' }}
+                        style={{ marginBottom: '10px' }}
+                        className="visitor-form-item"
                       >
                         <Input 
                           placeholder="Enter name"
@@ -331,8 +342,9 @@ export default function VisitorFormPage({
                             borderRadius: '4px',
                             padding: '8px 12px',
                             fontSize: '14px',
-                            height: '38px'
+                            height: '34px'
                           }}
+                          className="responsive-input"
                         />
                       </Form.Item>
 
@@ -352,7 +364,8 @@ export default function VisitorFormPage({
                           { pattern: /^[0-9+()-]+$/, message: 'Invalid format!' },
                           { max: 20, message: 'Max 20 chars!' }
                         ]}
-                        style={{ marginBottom: '16px' }}
+                        style={{ marginBottom: '10px' }}
+                        className="visitor-form-item"
                       >
                         <Input 
                           placeholder="Enter phone"
@@ -363,14 +376,11 @@ export default function VisitorFormPage({
                             borderRadius: '4px',
                             padding: '8px 12px',
                             fontSize: '14px',
-                            height: '38px'
+                            height: '34px'
                           }}
                         />
                       </Form.Item>
-                    </Col>
 
-                    {/* Right Column */}
-                    <Col xs={24} md={12}>
                       <Form.Item
                         label={
                           <span style={{ 
@@ -386,7 +396,8 @@ export default function VisitorFormPage({
                           { required: true, message: 'Required!' },
                           { max: 255, message: 'Max 255 chars!' }
                         ]}
-                        style={{ marginBottom: '16px' }}
+                        style={{ marginBottom: '10px' }}
+                        className="visitor-form-item"
                       >
                         <Input 
                           placeholder="Enter staff name"
@@ -397,7 +408,7 @@ export default function VisitorFormPage({
                             borderRadius: '4px',
                             padding: '8px 12px',
                             fontSize: '14px',
-                            height: '38px'
+                            height: '34px'
                           }}
                         />
                       </Form.Item>
@@ -414,11 +425,11 @@ export default function VisitorFormPage({
                         }
                         name="visitor_profile"
                         rules={[{ required: true, message: 'Required!' }]}
-                        style={{ marginBottom: currentProfile === "Other" ? '8px' : '16px' }}
+                        style={{ marginBottom: currentProfile === "Other" ? '6px' : '10px' }}
                       >
                         <Radio.Group 
                           onChange={(e) => setCurrentProfile(e.target.value)}
-                          style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+                          style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
                         >
                           {profileOptions.map(option => (
                             <Radio 
@@ -428,7 +439,7 @@ export default function VisitorFormPage({
                                 color: '#000000',
                                 fontSize: '14px',
                                 display: 'block',
-                                marginBottom: '8px'
+                                marginBottom: '4px'
                               }}
                             >
                               {option.label}
@@ -437,7 +448,7 @@ export default function VisitorFormPage({
                         </Radio.Group>
                       </Form.Item>
 
-                      {/* Other Profile Field - Right below the radio, indented */}
+                      {/* Other Profile Field */}
                       {currentProfile === "Other" && (
                         <Form.Item
                           name="visitor_profile_other"
@@ -446,7 +457,7 @@ export default function VisitorFormPage({
                             { max: 255, message: 'Max 255 chars!' }
                           ]}
                           style={{ 
-                            marginBottom: '16px',
+                            marginBottom: '10px',
                            
                           }}
                         >
@@ -459,7 +470,7 @@ export default function VisitorFormPage({
                               borderRadius: '4px',
                               padding: '8px 12px',
                               fontSize: '14px',
-                              height: '38px'
+                              height: '34px'
                             }}
                           />
                         </Form.Item>
@@ -469,13 +480,25 @@ export default function VisitorFormPage({
 
                   {/* Action Buttons */}
                   <Row style={{ 
-                    marginTop: '24px', 
-                    paddingTop: '16px', 
+                    marginTop: '16px', 
+                    paddingTop: '12px', 
                     borderTop: '1px solid #e0e0e0' 
                   }}>
                     <Col span={24}>
                       {!formDisabled ? (
                         <Row align="middle" justify="space-between">
+                          <Col>
+                            {isStandalone && (
+                              <Text style={{ 
+                                fontSize: '12px', 
+                                color: '#999999',
+                                fontStyle: 'italic'
+                              }}>
+                                Form resets after submission
+                              </Text>
+                            )}
+                          </Col>
+                          
                           <Col>
                             <Space size={8}>
                               <Button 
@@ -516,8 +539,10 @@ export default function VisitorFormPage({
                               {visitorData && !isStandalone && (
                                 <Button 
                                   onClick={handleDelete}
-                                  danger
                                   style={{ 
+                                    backgroundColor: '#d93025',
+                                    borderColor: '#d93025',
+                                    color: '#FFFFFF',
                                     height: '36px',
                                     padding: '0 20px',
                                     borderRadius: '4px',
@@ -543,18 +568,6 @@ export default function VisitorFormPage({
                               )}
                             </Space>
                           </Col>
-                          
-                          {isStandalone && (
-                            <Col>
-                              <Text style={{ 
-                                fontSize: '12px', 
-                                color: '#999999',
-                                fontStyle: 'italic'
-                              }}>
-                                Form resets after submission
-                              </Text>
-                            </Col>
-                          )}
                         </Row>
                       ) : null}
                     </Col>

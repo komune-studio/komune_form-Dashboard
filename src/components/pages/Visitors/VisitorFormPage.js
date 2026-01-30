@@ -20,12 +20,58 @@ import moment from 'moment';
 
 const { Title, Text, Paragraph } = Typography;
 
-// Add custom styles for responsive field spacing
+// Add custom styles for responsive field spacing and radio buttons
 const customStyles = `
   @media (min-width: 768px) and (max-width: 1024px) {
     .visitor-form-item {
       margin-bottom: 14px !important;
     }
+  }
+  
+  /* Custom Radio Button Styles */
+  .custom-radio .ant-radio-wrapper {
+    display: flex !important;
+    align-items: flex-start !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .custom-radio .ant-radio {
+    top: 2px !important;
+  }
+  
+  .custom-radio .ant-radio-inner {
+    width: 20px !important;
+    height: 20px !important;
+    border: 2px solid #d9d9d9 !important;
+    background-color: #ffffff !important;
+  }
+  
+  .custom-radio .ant-radio-inner::after {
+    width: 20px !important;
+    height: 20px !important;
+    margin-top: -10px !important;
+    margin-left: -10px !important;
+    background-color: #000000 !important;
+  }
+  
+  .custom-radio .ant-radio-checked .ant-radio-inner {
+    border-color: #000000 !important;
+  }
+  
+  .custom-radio .ant-radio-wrapper:hover .ant-radio-inner {
+    border-color: #000000 !important;
+  }
+  
+  .custom-radio .ant-radio-input:focus + .ant-radio-inner {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .custom-radio .ant-radio + span {
+    padding-left: 12px !important;
+    padding-right: 0 !important;
+    color: #000000 !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
   }
 `;
 
@@ -275,7 +321,7 @@ export default function VisitorFormPage({
                       color: '#000000',
                       fontWeight: 700 
                     }}>
-                      {!visitorData ? "Visitor Registration" : "Update Visitor"}
+                      {!visitorData ? "FORM CHECK-IN KULA VISITOR (INTERNAL)" : "Update Visitor"}
                     </Title>
                     {visitorData && (
                       <div style={{ marginTop: '8px', fontSize: '12px', color: '#666666' }}>
@@ -311,18 +357,16 @@ export default function VisitorFormPage({
                   autoComplete='off'
                   key={formKey}
                   layout="vertical"
+                  requiredMark={false}
                 >
                   <Row gutter={[32, 0]}>
                     {/* Single Column - All fields vertical */}
                     <Col xs={24}>
+                      {/* 1. Nama Visitor */}
                       <Form.Item
                         label={
-                          <span style={{ 
-                            color: '#000000',
-                            fontWeight: 600, 
-                            fontSize: '14px' 
-                          }}>
-                            Visitor Name <span style={{ color: '#ff4d4f' }}>*</span>
+                          <span style={{ fontWeight: 600, fontSize: '14px', color: '#000' }}>
+                            Nama Visitor <span style={{ color: '#ff4d4f' }}>*</span>
                           </span>
                         }
                         name="visitor_name"
@@ -333,21 +377,20 @@ export default function VisitorFormPage({
                         style={{ marginBottom: '10px' }}
                         className="visitor-form-item"
                       >
-                        <Input 
+                        <Input
                           placeholder="Enter name"
-                          style={{ 
+                          style={{
                             backgroundColor: '#FFFFFF',
                             border: '1px solid #d9d9d9',
-                            color: '#000000',
                             borderRadius: '4px',
                             padding: '8px 12px',
                             fontSize: '14px',
                             height: '34px'
                           }}
-                          className="responsive-input"
                         />
                       </Form.Item>
 
+                      {/* 2. No HP (cara penulisan: 08XXXXXXXX) */}
                       <Form.Item
                         label={
                           <span style={{ 
@@ -355,7 +398,7 @@ export default function VisitorFormPage({
                             fontWeight: 600, 
                             fontSize: '14px' 
                           }}>
-                            Phone Number <span style={{ color: '#ff4d4f' }}>*</span>
+                            No HP (cara penulisan: 08XXXXXXXX) <span style={{ color: '#ff4d4f' }}>*</span>
                           </span>
                         }
                         name="phone_number"
@@ -368,7 +411,7 @@ export default function VisitorFormPage({
                         className="visitor-form-item"
                       >
                         <Input 
-                          placeholder="Enter phone"
+                          placeholder="08XXXXXXXX"
                           style={{ 
                             backgroundColor: '#FFFFFF',
                             border: '1px solid #d9d9d9',
@@ -381,6 +424,7 @@ export default function VisitorFormPage({
                         />
                       </Form.Item>
 
+                      {/* 3. Profile Visitor */}
                       <Form.Item
                         label={
                           <span style={{ 
@@ -388,7 +432,72 @@ export default function VisitorFormPage({
                             fontWeight: 600, 
                             fontSize: '14px' 
                           }}>
-                            Staff Name <span style={{ color: '#ff4d4f' }}>*</span>
+                            Profile Visitor <span style={{ color: '#ff4d4f' }}>*</span>
+                          </span>
+                        }
+                        name="visitor_profile"
+                        rules={[{ required: true, message: 'Required!' }]}
+                        style={{ marginBottom: currentProfile === "Other" ? '6px' : '10px' }}
+                      >
+                        <div className="custom-radio">
+                          <Radio.Group 
+                            onChange={(e) => setCurrentProfile(e.target.value)}
+                            style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+                          >
+                            {profileOptions.map(option => (
+                              <Radio 
+                                key={option.value} 
+                                value={option.value}
+                                style={{ 
+                                  fontSize: '14px',
+                                  display: 'block',
+                                  marginBottom: '4px'
+                                }}
+                              >
+                                {option.label}
+                              </Radio>
+                            ))}
+                          </Radio.Group>
+                        </div>
+                      </Form.Item>
+
+                      {/* Other Profile Field */}
+                      {currentProfile === "Other" && (
+                        <Form.Item
+                          name="visitor_profile_other"
+                          rules={[
+                            { required: true, message: 'Please specify!' },
+                            { max: 255, message: 'Max 255 chars!' }
+                          ]}
+                          style={{ 
+                            marginBottom: '10px',
+                            marginTop: '4px'
+                          }}
+                        >
+                          <Input 
+                            placeholder="Specify other profile"
+                            style={{ 
+                              backgroundColor: '#FFFFFF',
+                              border: '1px solid #d9d9d9',
+                              color: '#000000',
+                              borderRadius: '4px',
+                              padding: '8px 12px',
+                              fontSize: '14px',
+                              height: '34px'
+                            }}
+                          />
+                        </Form.Item>
+                      )}
+
+                      {/* 4. Diisi Oleh (Nama Front Desk) */}
+                      <Form.Item
+                        label={
+                          <span style={{ 
+                            color: '#000000',
+                            fontWeight: 600, 
+                            fontSize: '14px' 
+                          }}>
+                            Diisi Oleh (Nama Front Desk) <span style={{ color: '#ff4d4f' }}>*</span>
                           </span>
                         }
                         name="filled_by"
@@ -412,69 +521,6 @@ export default function VisitorFormPage({
                           }}
                         />
                       </Form.Item>
-
-                      <Form.Item
-                        label={
-                          <span style={{ 
-                            color: '#000000',
-                            fontWeight: 600, 
-                            fontSize: '14px' 
-                          }}>
-                            Visitor Profile <span style={{ color: '#ff4d4f' }}>*</span>
-                          </span>
-                        }
-                        name="visitor_profile"
-                        rules={[{ required: true, message: 'Required!' }]}
-                        style={{ marginBottom: currentProfile === "Other" ? '6px' : '10px' }}
-                      >
-                        <Radio.Group 
-                          onChange={(e) => setCurrentProfile(e.target.value)}
-                          style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-                        >
-                          {profileOptions.map(option => (
-                            <Radio 
-                              key={option.value} 
-                              value={option.value}
-                              style={{ 
-                                color: '#000000',
-                                fontSize: '14px',
-                                display: 'block',
-                                marginBottom: '4px'
-                              }}
-                            >
-                              {option.label}
-                            </Radio>
-                          ))}
-                        </Radio.Group>
-                      </Form.Item>
-
-                      {/* Other Profile Field */}
-                      {currentProfile === "Other" && (
-                        <Form.Item
-                          name="visitor_profile_other"
-                          rules={[
-                            { required: true, message: 'Please specify!' },
-                            { max: 255, message: 'Max 255 chars!' }
-                          ]}
-                          style={{ 
-                            marginBottom: '10px',
-                           
-                          }}
-                        >
-                          <Input 
-                            placeholder="Specify other profile"
-                            style={{ 
-                              backgroundColor: '#FFFFFF',
-                              border: '1px solid #d9d9d9',
-                              color: '#000000',
-                              borderRadius: '4px',
-                              padding: '8px 12px',
-                              fontSize: '14px',
-                              height: '34px'
-                            }}
-                          />
-                        </Form.Item>
-                      )}
                     </Col>
                   </Row>
 

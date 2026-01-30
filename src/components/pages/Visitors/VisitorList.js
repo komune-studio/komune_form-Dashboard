@@ -81,7 +81,7 @@ const VisitorList = () => {
       render: (row) => (
         <div>
           <div style={{ fontWeight: 500, color: '#333' }}>{row.visitor_name}</div>
-          <div style={{ fontSize: '12px', color: '#666' }}>Phone: {row.phone_number}</div>
+          <div style={{ fontSize: '12px', color: '#666' }}>{row.phone_number}</div>
         </div>
       )
     },
@@ -89,16 +89,16 @@ const VisitorList = () => {
       id: 'visitor_profile', 
       label: 'Profile', 
       filter: true,
-      render: (row) => (
-        <Tag style={{ 
-          background: '#f5f5f5', 
-          color: '#333',
-          border: '1px solid #d9d9d9'
-        }}>
-          {row.visitor_profile}
-          {row.visitor_profile_other && ` (${row.visitor_profile_other})`}
-        </Tag>
-      )
+      render: (row) => {
+        const profileType = row.visitor_profile?.toLowerCase() || 'other';
+        
+        return (
+          <Tag className={`profile-tag profile-${profileType}`}>
+            {row.visitor_profile}
+            {row.visitor_profile_other && ` (${row.visitor_profile_other})`}
+          </Tag>
+        );
+      }
     },
     {
       id: 'staff', 
@@ -107,11 +107,6 @@ const VisitorList = () => {
       render: (row) => (
         <div style={{ color: '#333' }}>
           {row.staff ? row.staff.name : 'No Staff'}
-          {row.staff && (
-            <div style={{ fontSize: '12px', color: '#666' }}>
-              Phone: {row.staff.phone_number}
-            </div>
-          )}
         </div>
       )
     },
@@ -464,7 +459,23 @@ const VisitorList = () => {
           color: #333 !important;
           font-weight: 500;
         }
+        .profile-tag.profile-player {
+          background: #e6f7f0 !important;
+          color: #00875a !important;
+          border: 1px solid #00875a !important;
+        }
         
+        .profile-tag.profile-visitor {
+          background: #e6f2ff !important;
+          color: #0052cc !important;
+          border: 1px solid #0052cc !important;
+        }
+        
+        .profile-tag.profile-other {
+          background: #f5f5f5 !important;
+          color: #333 !important;
+          border: 1px solid #d9d9d9 !important;
+        }
         .ant-pagination-prev .ant-pagination-item-link,
         .ant-pagination-next .ant-pagination-item-link {
           border: 1px solid #d9d9d9 !important;

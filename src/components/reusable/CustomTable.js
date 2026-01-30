@@ -377,11 +377,11 @@ const CustomTable = ({
                         headCell.allowSort || headCell.allowSort === undefined
                           ? "pointer"
                           : "auto",
-                      '&:hover': {
-                        color: '#004EEB !important',
-                      },
+                          '&:hover': {
+                            color: '#555 !important',
+                          },
                       '&.Mui-active': {
-                        color: '#004EEB !important',
+                        color: '#333 !important',
                       },
                     }}
                     hideSortIcon={false}

@@ -149,7 +149,6 @@ export default function VisitorFormPage({
   // New states for staff dropdown
   const [staffOptions, setStaffOptions] = useState([]);
   const [staffLoading, setStaffLoading] = useState(false);
-  const [selectedStaff, setSelectedStaff] = useState(null);
 
   // Fetch staff data for dropdown
   const fetchStaffData = async () => {
@@ -159,18 +158,10 @@ export default function VisitorFormPage({
       if (result && result.http_code === 200) {
         const options = result.data.map(staff => ({
           value: staff.id,
-          label: `${staff.name} - ${staff.phone_number}`,
+          label: staff.name,
           staffData: staff
         }));
         setStaffOptions(options);
-        
-        // If editing visitor, set the selected staff
-        if (visitorData && visitorData.staff_id) {
-          const staff = result.data.find(s => s.id === visitorData.staff_id);
-          if (staff) {
-            setSelectedStaff(staff);
-          }
-        }
       }
     } catch (error) {
       console.error("Error fetching staff:", error);
@@ -183,12 +174,6 @@ export default function VisitorFormPage({
   const onValuesChanged = (changedValues, allValues) => {
     if (changedValues.visitor_profile) {
       setCurrentProfile(changedValues.visitor_profile);
-    }
-    
-    // Handle staff_id change
-    if (changedValues.staff_id !== undefined) {
-      const selected = staffOptions.find(opt => opt.value === changedValues.staff_id);
-      setSelectedStaff(selected ? selected.staffData : null);
     }
 
     if (!visitorData) {
@@ -265,7 +250,6 @@ export default function VisitorFormPage({
           form.resetFields();
           setHasChanges(false);
           setCurrentProfile("Visitor");
-          setSelectedStaff(null);
           setFormKey(prev => prev + 1);
           
           setTimeout(() => {
@@ -368,7 +352,6 @@ export default function VisitorFormPage({
     } else {
       form.resetFields();
       setCurrentProfile("Visitor");
-      setSelectedStaff(null);
       setHasChanges(false);
     }
     
@@ -436,7 +419,7 @@ export default function VisitorFormPage({
                       color: '#000000',
                       fontWeight: 700 
                     }}>
-                      {!visitorData ? "FORM CHECK-IN KULA VISITOR (INTERNAL)" : "Update Visitor"}
+                      {!visitorData ? "FORM Welcome Drink" : "Update Visitor"}
                     </Title>
                     {visitorData && (
                       <div style={{ marginTop: '8px', fontSize: '12px', color: '#666666' }}>
@@ -472,6 +455,7 @@ export default function VisitorFormPage({
                   autoComplete='off'
                   key={formKey}
                   layout="vertical"
+                  requiredMark={false}
                 >
                   <Row gutter={[32, 0]}>
                     {/* Single Column - All fields vertical */}
@@ -484,7 +468,7 @@ export default function VisitorFormPage({
                             fontWeight: 600, 
                             fontSize: '14px' 
                           }}>
-                            Nama Visitor <span style={{ color: '#ff4d4f' }}>*</span>
+                            Nama Visitor
                           </span>
                         }
                         name="visitor_name"
@@ -518,7 +502,7 @@ export default function VisitorFormPage({
                             fontWeight: 600, 
                             fontSize: '14px' 
                           }}>
-                            No HP (cara penulisan: 08XXXXXXXX) <span style={{ color: '#ff4d4f' }}>*</span>
+                            No HP (cara penulisan: 08XXXXXXXX)
                           </span>
                         }
                         name="phone_number"
@@ -552,7 +536,7 @@ export default function VisitorFormPage({
                             fontWeight: 600, 
                             fontSize: '14px' 
                           }}>
-                            Profile Visitor <span style={{ color: '#ff4d4f' }}>*</span>
+                            Profile Visitor
                           </span>
                         }
                         name="visitor_profile"
@@ -615,7 +599,7 @@ export default function VisitorFormPage({
                             fontWeight: 600, 
                             fontSize: '14px' 
                           }}>
-                            Diisi Oleh (Staff) <span style={{ color: '#ff4d4f' }}>*</span>
+                            Diisi Oleh (Staff)
                           </span>
                         }
                         name="staff_id"
@@ -652,31 +636,6 @@ export default function VisitorFormPage({
                           ))}
                         </Select>
                       </Form.Item>
-
-                      {/* Selected Staff Info */}
-                      {selectedStaff && (
-                        <div style={{
-                          marginBottom: '16px',
-                          padding: '12px',
-                          backgroundColor: '#f5f5f5',
-                          border: '1px solid #e8e8e8',
-                          borderRadius: '4px',
-                          fontSize: '13px',
-                          color: '#333'
-                        }}>
-                          <div style={{ fontWeight: 500, marginBottom: '4px', color: '#000000' }}>
-                            Selected Staff: {selectedStaff.name}
-                          </div>
-                          <div style={{ color: '#666666' }}>
-                            Phone: {selectedStaff.phone_number}
-                          </div>
-                          {selectedStaff.active === false && (
-                            <div style={{ color: '#d93025', marginTop: '4px' }}>
-                              ⚠️ This staff is inactive
-                            </div>
-                          )}
-                        </div>
-                      )}
                     </Col>
                   </Row>
 

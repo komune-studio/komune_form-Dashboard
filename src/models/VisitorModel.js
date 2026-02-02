@@ -332,23 +332,34 @@ export default class FormModel {
   }
 
   // =============== EXPORT/IMPORT ===============
-  static exportVisitorsToCSV = (visitors) => {
-    if (!visitors || visitors.length === 0) return ""
+// =============== EXPORT CSV ===============
+static exportVisitorsToCSVFromAPI = async (params = {}) => {
+  try {
+    let queryString = ""
+    if (Object.keys(params).length > 0) {
+      const queryParams = new URLSearchParams(params).toString()
+      queryString = `?${queryParams}`
+    }
     
-    const headers = ["ID", "Name", "Phone", "Profile", "Profile Other", "Filled By", "Checkout Time", "Created At"]
-    const rows = visitors.map(visitor => [
-      visitor.id,
-      `"${visitor.visitor_name}"`,
-      `"${visitor.phone_number}"`,
-      visitor.visitor_profile,
-      visitor.visitor_profile_other ? `"${visitor.visitor_profile_other}"` : "",
-      `"${visitor.filled_by}"`,
-      visitor.checked_out_at ? new Date(visitor.checked_out_at).toLocaleString() : "",
-      visitor.created_at ? new Date(visitor.created_at).toLocaleString() : ""
-    ])
+    const response = await fetch(`https://komune-form.komunestudio.com/v1/visitor/export/csv${queryString}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
     
-    return [headers, ...rows].map(row => row.join(",")).join("\n")
+    if (!response.ok) {
+      throw new Error(`Export failed: ${response.status} ${response.statusText}`);
+    }
+    
+    const blob = await response.blob();
+    return blob;
+    
+  } catch (error) {
+    console.error("Error exportVisitorsToCSVFromAPI:", error);
+    throw error;
   }
+}
 
   // =============== DASHBOARD STATS ===============
   static calculateStats = (visitors) => {

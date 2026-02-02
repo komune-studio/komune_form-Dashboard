@@ -1,4 +1,4 @@
-import { Space, Button as AntButton, Tooltip, Modal, message, Image, Flex, Tag, Switch, Input, Select, Button } from 'antd';
+import { Space, Button as AntButton, Tooltip, Modal, message, Image, Flex, Tag, Switch, Input, Select, Button, Dropdown, Menu } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { Card, Row, CardBody, Container } from "reactstrap";
 import { Link } from 'react-router-dom';
@@ -39,6 +39,7 @@ const useFilter = create((set) => ({
 
 const VisitorList = () => {
   const [loading, setLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
@@ -180,6 +181,134 @@ const VisitorList = () => {
     });
   };
 
+  // ==================== EXPORT CSV YANG UDAH DIBENERIN ====================
+    // ==================== EXPORT CSV YANG UDAH DIBENERIN ====================
+    const exportCSV = async () => {
+      setExportLoading(true);
+      try {
+        // Ambil semua data dengan filter yang aktif
+        const filters = {};
+        if (search) filters.search = search;
+        if (profile) filters.visitorProfile = profile;
+        if (timeRange && timeRange !== "all") filters.timeRange = timeRange;
+        
+        // Fetch data JSON (bukan CSV) biar bisa gw proses sendiri
+        const result = await FormModel.getAllVisitors(filters);
+        
+        if (!result || result.http_code !== 200) {
+          throw new Error("Failed to fetch data");
+        }
+        
+        let data = result.data || [];
+        
+        // URUTIN BERDASARKAN ID ASCENDING (dari 1 ke atas)
+        data = data.sort((a, b) => {
+          // Convert ke integer buat mastiin sorting numerik bener
+          const idA = parseInt(a.id) || 0;
+          const idB = parseInt(b.id) || 0;
+          return idA - idB;
+        });
+        
+        // Header CSV - Hapus Profile Detail, Check-out, Staff Phone
+        const headers = [
+          'ID',
+          'Visitor Name',
+          'Phone Number',
+          'Profile',
+          'Staff Name',
+          'Check-in Date',
+          'Check-in Time',
+          'Status'
+        ];
+        
+        // Map data ke array of arrays - PAKE FIELD YANG BENER SESUAI LOG
+        const rows = data.map(visitor => {
+          // Format tanggal dari check_in_date (2026-02-02 -> 02/02/2026)
+          let checkInDate = '';
+          if (visitor.check_in_date) {
+            // Ubah dari format ISO (YYYY-MM-DD) ke format Indonesia (DD/MM/YYYY)
+            const parts = visitor.check_in_date.split('-');
+            if (parts.length === 3) {
+              checkInDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            } else {
+              checkInDate = visitor.check_in_date;
+            }
+          }
+          
+          // Ambil staff_name langsung (bukan dari object staff)
+          const staffName = visitor.staff_name || '';
+          
+          return [
+            visitor.id || '',
+            visitor.visitor_name || '',
+            visitor.phone_number || '',
+            visitor.visitor_profile || '',
+            staffName,
+            checkInDate,
+            visitor.check_in_time || '',
+            visitor.status || 'Active'
+          ];
+        });
+        
+        // Gabungin header dan rows
+        const allRows = [headers, ...rows];
+        
+        // Convert ke CSV string pake semicolon separator
+        const csvContent = allRows
+          .map(row => 
+            row
+              .map(cell => {
+                // Escape cell yang ada semicolon atau quote atau newline
+                const cellStr = String(cell || '');
+                if (cellStr.includes(';') || cellStr.includes('"') || cellStr.includes('\n')) {
+                  return `"${cellStr.replace(/"/g, '""')}"`;
+                }
+                return cellStr;
+              })
+              .join(';')  // Pake semicolon buat Excel Indonesia
+          )
+          .join('\n');
+        
+        // Tambahin BOM (Byte Order Mark) biar karakter Indonesia (UTF-8) ga ancur
+        const BOM = '\uFEFF';
+        const finalContent = BOM + csvContent;
+        
+        // Buat blob dan download
+        const blob = new Blob([finalContent], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        
+        // Nama file dengan timestamp
+        const timestamp = moment().format('YYYY-MM-DD_HH-mm');
+        link.download = `visitors_${timestamp}.csv`;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        message.success(`CSV exported! ${data.length} rows exported.`);
+        
+      } catch (error) {
+        console.error('Error exporting CSV:', error);
+        message.error('Failed to export CSV: ' + error.message);
+      } finally {
+        setExportLoading(false);
+      }
+    };
+
+  const exportMenu = (
+    <Menu>
+      <Menu.Item key="1" onClick={exportCSV}>
+        <Space>
+          <Iconify icon="mdi:file-excel-outline" />
+          Export to CSV
+        </Space>
+      </Menu.Item>
+    </Menu>
+  );
+
  const initializeData = async (currentPage = page, currentRowsPerPage = rowsPerPage) => {
   setLoading(true);
   try {
@@ -250,6 +379,17 @@ const VisitorList = () => {
         .custom-add-button:hover {
           background: #555 !important;
           border-color: #555 !important;
+        }
+        
+        .custom-export-button {
+          background: #27ae60 !important;
+          border-color: #27ae60 !important;
+          color: white !important;
+        }
+        
+        .custom-export-button:hover {
+          background: #219653 !important;
+          border-color: #219653 !important;
         }
         
         /* CSS untuk membuat search input seluruhnya putih */
@@ -459,6 +599,7 @@ const VisitorList = () => {
           color: #333 !important;
           font-weight: 500;
         }
+        
         .profile-tag.profile-player {
           background: #e6f7f0 !important;
           color: #00875a !important;
@@ -476,6 +617,7 @@ const VisitorList = () => {
           color: #333 !important;
           border: 1px solid #d9d9d9 !important;
         }
+        
         .ant-pagination-prev .ant-pagination-item-link,
         .ant-pagination-next .ant-pagination-item-link {
           border: 1px solid #d9d9d9 !important;
@@ -528,6 +670,12 @@ const VisitorList = () => {
           }
           
           .custom-add-button {
+            font-size: 16px !important;
+            height: 44px !important;
+            padding: 0 24px !important;
+          }
+          
+          .custom-export-button {
             font-size: 16px !important;
             height: 44px !important;
             padding: 0 24px !important;
@@ -609,13 +757,36 @@ const VisitorList = () => {
             font-size: 15px !important;
             padding: 10px 14px !important;
           }
+          
+          /* Button spacing untuk mobile */
+          .button-group {
+            display: flex !important;
+            gap: 10px !important;
+            flex-wrap: wrap !important;
+          }
+          
+          .button-group .ant-btn {
+            flex: 1 !important;
+            min-width: 120px !important;
+          }
         }
         
         /* Mobile responsiveness */
         @media (max-width: 767px) {
-          .custom-add-button {
+          .custom-add-button,
+          .custom-export-button {
             width: 100%;
             margin-top: 12px;
+          }
+          
+          .button-group {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
+          
+          .button-group .ant-btn {
+            width: 100% !important;
           }
         }
       `}</style>
@@ -636,16 +807,43 @@ const VisitorList = () => {
                 </div>
               </Col>
               <Col md={6} xs={12} className="text-md-right text-center">
-                <Link to="/visitors/create">
+                <div className="button-group" style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                  <Link to="/visitors/create" style={{ flexShrink: 0 }}>
+                    <AntButton
+                      size={'middle'} 
+                      type={'primary'}
+                      icon={<Iconify icon={"material-symbols:add"} />}
+                      className="custom-add-button"
+                    >
+                      Add Visitor
+                    </AntButton>
+                  </Link>
+                  
                   <AntButton
                     size={'middle'} 
                     type={'primary'}
-                    icon={<Iconify icon={"material-symbols:add"} />}
-                    className="custom-add-button"
+                    icon={<Iconify icon={"mdi:file-export-outline"} />}
+                    className="custom-export-button"
+                    onClick={exportCSV}
+                    loading={exportLoading}
                   >
-                    Add Visitor
+                    Export CSV
                   </AntButton>
-                </Link>
+                  
+                  {/* Alternatif: Jika ingin dropdown menu untuk export */}
+                  {/*
+                  <Dropdown overlay={exportMenu} trigger={['click']}>
+                    <AntButton
+                      size={'middle'} 
+                      type={'primary'}
+                      icon={<Iconify icon={"mdi:file-export-outline"} />}
+                      className="custom-export-button"
+                    >
+                      Export
+                    </AntButton>
+                  </Dropdown>
+                  */}
+                </div>
               </Col>
             </Row>
 
